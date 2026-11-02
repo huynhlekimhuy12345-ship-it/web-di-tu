@@ -50,6 +50,7 @@ button.red{background:var(--red);border-color:#b84a33}
     <span class="chip" id="srv">Server: …</span>
     <span class="chip" id="tt">TikTok: chưa kết nối</span>
     <span class="chip" id="cnt">0 người</span>
+    <span class="chip" id="sceneChip">Cảnh: Chánh điện</span>
   </div>
 </header>
 
@@ -118,6 +119,25 @@ button.red{background:var(--red);border-color:#b84a33}
     </div>
     <label class="check"><input type="checkbox" id="joinOnEnter"> Người vào phòng cũng được ngồi (không cần bình luận)</label>
   </section>
+
+  <section class="card">
+    <h2>4 · Sám Hối Địa Ngục</h2>
+    <p class="hint">Chuyển overlay sang cảnh địa ngục, phán quyết và thử donate cứu rỗi. Bấm nút phán quyết hoặc donate sẽ tự chuyển overlay sang Địa ngục trước.</p>
+    <div class="row">
+      <button id="btnScenePagoda">Chánh điện</button>
+      <button id="btnSceneHell" class="gold">Địa ngục</button>
+    </div>
+    <h2>Lệnh phán quyết</h2>
+    <div class="row">
+      <button data-verdict="phan-xet">Phán xét</button>
+      <button data-verdict="dinh-toi">Định tội</button>
+      <button data-verdict="khai-an">Khai ân</button>
+      <button data-verdict="giam-an">Giảm án</button>
+      <button data-verdict="sieu-do">Siêu độ</button>
+    </div>
+    <div class="row"><button id="btnSalvation" class="gold">Donate sám hối (thử)</button></div>
+    <p class="hint">Donate thử dùng tên ở mục "Thử tương tác". Vong hồn được chọn sẽ phát sáng, thoát xích và bay lên siêu thoát, nhường chỗ cho người mới.</p>
+  </section>
 </div>
 
 <section class="card" style="margin-top:16px">
@@ -152,7 +172,7 @@ function connect(){
   ws.onclose = () => { $('srv').textContent='Server: mất kết nối'; $('srv').className='chip bad'; setTimeout(connect, 2000); };
   ws.onmessage = e => {
     const m = JSON.parse(e.data);
-    if (m.t==='state'){ fillSettings(m.settings); setTT(m.tiktok); people.clear(); for (const v of m.viewers) people.set(v.id,v); renderPeople(); }
+    if (m.t==='state'){ fillSettings(m.settings); setTT(m.tiktok); if (m.scene) setSceneUI(m.scene); people.clear(); for (const v of m.viewers) people.set(v.id,v); renderPeople(); }
     else if (m.t==='logs'){ $('log').textContent=''; m.lines.forEach(logLine); }
     else if (m.t==='log') logLine(m.line);
     else if (m.t==='tiktok') setTT(m);
@@ -160,6 +180,7 @@ function connect(){
     else if (m.t==='leave'){ people.delete(m.id); renderPeople(); }
     else if (m.t==='gift'){ const p=people.get(m.id); if(p){ p.coins=m.total; renderPeople(); } }
     else if (m.t==='bots') $('btnBots').textContent = m.on ? 'Tắt bot' : 'Bật bot';
+    else if (m.t==='scene') setSceneUI(m.scene);
   };
 }
 connect();
@@ -177,6 +198,11 @@ $('btnSay').onclick = () => send('say', { text: $('sayText').value });
 $('btnChant').onclick = () => send('chant');
 $('btnBell').onclick = () => send('bell');
 $('btnMo').onclick = () => send('mo');
+function setSceneUI(s){ const el=$('sceneChip'); if (el) el.textContent = s==='hell' ? 'Cảnh: Địa ngục' : 'Cảnh: Chánh điện'; }
+$('btnScenePagoda').onclick = () => send('scene', { scene: 'pagoda' });
+$('btnSceneHell').onclick = () => send('scene', { scene: 'hell' });
+document.querySelectorAll('[data-verdict]').forEach(b => b.onclick = () => { send('scene', { scene: 'hell' }); send('verdict', { verdict: b.dataset.verdict }); });
+$('btnSalvation').onclick = () => { send('scene', { scene: 'hell' }); send('salvation', { name: $('simName').value }); };
 for (const k of SETTING_IDS) $(k).addEventListener('change', () => send('settings', { settings: readSettings() }));
 </script>
 </body>

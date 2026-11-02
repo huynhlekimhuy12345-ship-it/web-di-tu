@@ -33,6 +33,7 @@ const settings = {
   gifts: { readAll: true, minDiamonds: 1 },
 };
 const viewers = new Map();           // id -> { id, name, skin, avatar, coins, joinedAt, lastAt, lastText, lastTextAt, demo }
+let currentScene = 'pagoda'; // overlay scene: 'pagoda' | 'hell' (host-controlled from the panel)
 const startedAt = Date.now();
 let tiktok = null, tiktokState = { status: 'idle', uniqueId: '', error: '' };
 const log = [];
@@ -55,9 +56,10 @@ function skinFromText(t) {
   return null;
 }
 const DEFAULT_SKINS = ['man', 'woman', 'woman', 'man', 'granny'];
+const VERDICT_LABELS = { 'phan-xet': 'phán xét', 'dinh-toi': 'định tội', 'khai-an': 'khai ân', 'giam-an': 'giảm án', 'sieu-do': 'siêu độ' };
 
 function pub(v) { return { id: v.id, name: v.name, skin: v.skin, avatar: v.avatar || '', coins: v.coins, demo: !!v.demo }; }
-function snapshot() { return { t: 'state', settings, viewers: [...viewers.values()].map(pub), cap: capacity(), startedAt, tiktok: tiktokState }; }
+function snapshot() { return { t: 'state', settings, scene: currentScene, viewers: [...viewers.values()].map(pub), cap: capacity(), startedAt, tiktok: tiktokState }; }
 
 function seat(id, name, opts = {}) {
   let v = viewers.get(id);
@@ -109,7 +111,9 @@ function onGift(id, name, giftName, count, diamonds, avatar) {
   v.coins += coins;
   const prayer = (v.lastText && Date.now() - v.lastTextAt < 90_000 && v.lastText.length > 6) ? v.lastText : pickPrayer();
   const tier = coins >= 99 ? 3 : coins >= 10 ? 2 : 1;
-  const line = `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}. ${prayer}.`;
+  const line = currentScene === 'hell'
+    ? `Nam mô Địa Tạng Vương Bồ Tát. Linh hồn ${spoken(v.name)} nhờ công đức ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} mà được cứu rỗi, siêu thoát.`
+    : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}. ${prayer}.`;
   broadcast({ t: 'gift', id, name: v.name, giftName, count, coins, total: v.coins, tier, prayer });
   if (settings.gifts.readAll || coins >= settings.gifts.minDiamonds) say(line, { tag: 'gift', id });
 }
@@ -251,6 +255,9 @@ function onControl(m) {
       applySettings(m.settings || {});
       scheduleChant(); broadcast({ t: 'settings', settings, cap: capacity() }); break;
     case 'bots': setBots(!!m.on, +m.n || 12, m.pace); break;
+    case 'scene': { const s = m.scene === 'hell' ? 'hell' : 'pagoda'; currentScene = s; broadcast({ t: 'scene', scene: s }); addLog(s === 'hell' ? 'Chuyển overlay sang Sám Hối Địa Ngục' : 'Chuyển overlay sang Chánh Điện Tịnh Tâm'); break; }
+    case 'verdict': { const label = VERDICT_LABELS[m.verdict]; if (!label) break; broadcast({ t: 'verdict', verdict: m.verdict, label }); addLog(`⚖️ Phán quyết: ${label}`); break; }
+    case 'salvation': { const n = String(m.name || 'Khách').slice(0, 18); const found = [...viewers.values()].find(v => v.name.toLowerCase() === n.toLowerCase()); broadcast({ t: 'salvation', id: found ? found.id : null, name: found ? found.name : n }); addLog(found ? `✨ ${found.name} được cứu rỗi (thử)` : `✨ Linh hồn ${n} được cứu rỗi (thử)`); break; }
   }
 }
 

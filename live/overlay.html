@@ -59,6 +59,30 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 /* enable sound (needed once: browsers block autoplay) */
 #unmute{position:absolute;z-index:9;left:50%;top:1540px;transform:translateX(-50%);font:600 36px var(--body);padding:22px 44px;border-radius:24px;border:3px solid var(--gold2);background:var(--red);color:#fff4dc;cursor:pointer}
 #conn{position:absolute;z-index:4;right:16px;bottom:12px;font-size:20px;color:var(--muted);opacity:.6}
+
+/* hell scene cards + banners (shown only when the hell scene is active) */
+#hellGuide{left:24px;top:353px;width:290px;display:none}
+#hellGuide div+div{border-top:1px solid rgba(255,122,60,.3);margin-top:10px;padding-top:10px}
+#hellGuide b{color:#ffb08a}
+#hellBook{right:24px;top:353px;width:290px;max-height:634px;overflow:hidden;text-align:center;display:none}
+#hellBook h3{margin:0 0 8px;font-family:var(--display);font-size:30px;color:#ffb08a;letter-spacing:.06em}
+#hellBook ol{margin:0;padding:0;list-style:none;text-align:left;display:grid;gap:6px}
+#hellBook li{display:flex;justify-content:space-between;gap:10px}
+#hellBook li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hellBook li span:last-child{color:#ffb08a;font-variant-numeric:tabular-nums}
+#hellBook .empty{color:var(--muted);text-align:center}
+#verdict{left:70px;right:70px;top:330px;z-index:6;padding:26px 36px;text-align:center;border-radius:24px;border:3px solid #ff7a3c;
+  background:radial-gradient(ellipse at 50% 0%,rgba(120,20,10,.95),rgba(30,4,2,.95));box-shadow:0 0 60px rgba(255,90,30,.4);
+  opacity:0;transform:scale(.9);transition:opacity .45s,transform .45s}
+#verdict.show{opacity:1;transform:none}
+#verdict .who{font-family:var(--display);font-weight:700;font-size:34px;color:#ffb08a;letter-spacing:.08em}
+#verdict .txt{font-family:var(--display);font-style:italic;font-size:34px;margin-top:8px}
+#salvation{left:70px;right:70px;top:330px;z-index:6;padding:30px 40px;text-align:center;border-radius:28px;border:3px solid #ffd98a;
+  background:radial-gradient(ellipse at 50% 0%,rgba(150,90,20,.95),rgba(50,20,6,.95));box-shadow:0 0 60px rgba(255,210,120,.5);
+  opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s}
+#salvation.show{opacity:1;transform:none}
+#salvation .who{font-family:var(--display);font-weight:700;font-size:52px;color:#ffe9b0}
+#salvation .what{font-size:36px;margin-top:6px}
 @media (prefers-reduced-motion:reduce){#chant,#gift{transition:none}}
 </style>
 </head>
@@ -78,6 +102,15 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
   <div id="merit" class="card ui"><h3>✦ Công Đức ✦</h3><ol id="meritList"><li class="empty">Chưa có</li></ol></div>
   <div id="chant" class="ui"><h4>✦ TỤNG KINH ĐỊNH KỲ ✦</h4><p id="chantText"></p></div>
   <div id="gift" class="ui"><div class="who" id="giftWho"></div><div class="what" id="giftWhat"></div><div class="pray" id="giftPray"></div></div>
+  <div id="hellGuide" class="card ui">
+    <div>💬 <b>Bình luận bất kỳ</b> để vào sám hối</div>
+    <div>⚖️ Lệnh phán quyết: <b>phán xét · định tội · khai ân · giảm án · siêu độ</b></div>
+    <div>🎁 <b>Donate sám hối</b> → linh hồn được cứu rỗi</div>
+    <div>❤️ <b>1 tym = 1 lạy</b></div>
+  </div>
+  <div id="hellBook" class="card ui"><h3>✦ Sổ Sám Hối ✦</h3><ol id="hellBookList"><li class="empty">Chưa có</li></ol></div>
+  <div id="verdict" class="ui"><div class="who">⚖️ PHÁN QUYẾT ⚖️</div><div class="txt" id="verdictText"></div></div>
+  <div id="salvation" class="ui"><div class="who" id="salvationWho"></div><div class="what" id="salvationWhat"></div></div>
   <button id="unmute">🔔 Bấm để bật âm thanh</button>
   <div id="conn">đang kết nối…</div>
 </div></div>
@@ -90,7 +123,7 @@ addEventListener('resize', fit); fit();
 
 /* ======================= assets ======================= */
 const A = {};
-const IMG = { hall:'/assets/hall.jpg', monk:'/assets/c_monk.png', nun:'/assets/c_nun.png', granny:'/assets/c_granny.png', man:'/assets/c_man.png',
+const IMG = { hall:'/assets/hall.jpg', hell:'/assets/hell.jpg', monk:'/assets/c_monk.png', nun:'/assets/c_nun.png', granny:'/assets/c_granny.png', man:'/assets/c_man.png',
   woman:'/assets/c_woman.png', child:'/assets/c_child.png', anim_man:'/assets/anim_man.png', anim_woman:'/assets/anim_woman.png', anim_granny:'/assets/anim_granny.png',
   lotus:'/assets/fx_lotus.png', halo:'/assets/fx_halo.png', bell:'/assets/fx_bell.png', incense:'/assets/fx_incense.png', petal:'/assets/fx_petal.png' };
 for (const [k,src] of Object.entries(IMG)){ const im=new Image(); im.src=src; A[k]=im; }
@@ -134,7 +167,7 @@ const TEACHERS = [ { name:'Thầy Minh Đạo', skin:'monk', x:300, y:1085, s:.3
 
 function addVisitor(p, instant){
   if (visitors.has(p.id)) { Object.assign(visitors.get(p.id), { name:p.name, skin:p.skin, avatar:p.avatar, coins:p.coins }); return; }
-  const v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubbles:[], glow:0, bow:0, phase:Math.random()*6.28 };
+  const v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubble:null, glow:0, bow:0, phase:Math.random()*6.28 };
   visitors.set(p.id, v); order.push(p.id); reseat();
   if (instant || !hasAnim(v.skin) || !v.seat){ v.state='sit'; v.frame=7; v.x=v.tx=v.seat?.x||540; v.y=v.ty=v.seat?.y||1500; v.fade = instant?1:0; }
 }
@@ -142,7 +175,7 @@ function removeVisitor(id){ visitors.delete(id); reseat(); }
 
 /* ======================= HUD ======================= */
 let startedAt = Date.now();
-function updateCount(){ document.getElementById('count').textContent = `${visitors.size}/${cap}`; }
+function updateCount(){ document.getElementById('count').textContent = scene === 'hell' ? `${[...souls.values()].filter(s => s.seat).length}/48` : `${visitors.size}/${cap}`; }
 function renderMerit(){
   const top = [...visitors.values()].filter(v=>v.coins>0).sort((a,b)=>b.coins-a.coins).slice(0,5);
   const ol = document.getElementById('meritList'); ol.innerHTML='';
@@ -224,14 +257,19 @@ function connect(){
     switch(m.t){
       case 'state':
         Object.assign(settings,m.settings); applySettings(); startedAt=m.startedAt;
-        visitors.clear(); order=[]; layout(m.cap); for (const p of m.viewers) addVisitor(p,true); updateCount(); renderMerit(); break;
-      case 'settings': Object.assign(settings,m.settings); applySettings(); if (m.cap!==cap){ layout(m.cap); updateCount(); } break;
-      case 'join': if (m.cap!==cap) layout(m.cap); addVisitor(m.v, m.v.demo && visitors.size>8); updateCount(); break;
-      case 'leave': removeVisitor(m.id); updateCount(); renderMerit(); break;
-      case 'skin': { const v=visitors.get(m.id); if(v){ v.skin=m.skin; v.glow=.8; if(v.state!=='sit'){ v.state='sit'; v.frame=7; } } } break;
-      case 'chat': { const v=visitors.get(m.id); if(v){ if(!v.bubbles) v.bubbles=[]; v.bubbles.push({text:m.text, start:performance.now(), duration:5500}); if(v.bubbles.length>3) v.bubbles.shift(); v.bow=.6; } } break;
-      case 'gift': { const v=visitors.get(m.id); if(v){ v.coins=m.total; giftFx(v,m.tier); } renderMerit(); showGift(m); } break;
-      case 'like': { const v=visitors.get(m.id); if(v) hearts(v,m.n); } break;
+        visitors.clear(); order=[]; layout(m.cap); for (const p of m.viewers) addVisitor(p,true); updateCount(); renderMerit();
+        scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene();
+        souls.clear(); soulOrder=[]; layoutHell(); for (const p of m.viewers) addSoul(p,true); updateCount(); renderBook(); break;
+      case 'settings': Object.assign(settings,m.settings); applySettings(); if (m.cap!==cap){ layout(m.cap); updateCount(); } applyScene(); break;
+      case 'join': if (m.cap!==cap) layout(m.cap); addVisitor(m.v, m.v.demo && visitors.size>8); addSoul(m.v, m.v.demo && souls.size>8); updateCount(); break;
+      case 'leave': removeVisitor(m.id); removeSoul(m.id); updateCount(); renderMerit(); renderBook(); break;
+      case 'skin': { const v=visitors.get(m.id); if(v){ v.skin=m.skin; v.glow=.8; if(v.state!=='sit'){ v.state='sit'; v.frame=7; } } const so=souls.get(m.id); if(so){ so.skin=m.skin; so.glow=.8; if(so.seat && so.state!=='sit' && so.state!=='saved'){ so.state='sit'; so.frame=7; } } } break;
+      case 'chat': { const v=visitors.get(m.id); if(v){ v.bubble={text:m.text, until:performance.now()+6000}; v.bow=.6; } const so=souls.get(m.id); if(so){ if(so.seat && (so.state==='sit' || so.state==='sitting')){ so.bubble={text:m.text, until:performance.now()+6000}; so.bow=1; } } else addSoul({id:m.id,name:m.name,skin:'man',avatar:'',coins:0}, false); } break;
+      case 'gift': { const v=visitors.get(m.id); if(v){ v.coins=m.total; if(scene!=='hell') giftFx(v,m.tier); } renderMerit(); if (scene==='hell'){ salvationById(m.id, m); } else { showGift(m); } } break;
+      case 'like': { const v=visitors.get(m.id); if(v) hearts(v,m.n); bowSoul(m.id, m.n); } break;
+      case 'scene': scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene(); updateCount(); break;
+      case 'verdict': { const vd = VERDICTS[m.verdict]; if (vd) verdictSoul(m.verdict); } break;
+      case 'salvation': salvationById(m.id, { name: m.name }); break;
       case 'tts': queueTTS(m.url); break;
       case 'chant': showChant(m.text); bell(); break;
       case 'bell': bell(true); break;
@@ -260,21 +298,18 @@ function tag(text,x,y,s,style,av,maxW){
   if (av){ ctx.save(); ctx.beginPath(); ctx.arc(x-w/2+pad*.55+aw/2, y, fs*.5, 0, 6.29); ctx.clip(); ctx.drawImage(av, x-w/2+pad*.55+aw/2-fs*.5, y-fs*.5, fs, fs); ctx.restore(); }
   ctx.fillStyle = style==='gold'?'#ffd98a':'#f6e9cf'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x+aw/2, y+1);
 }
-function bubble(text,x,y,s,alpha=1){
-  if (alpha<=0) return;
-  ctx.save();
-  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+function bubble(text,x,y,s){
   const fs=Math.max(18,Math.round(26*s/.4)); ctx.font=`500 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
   let t=text; while (ctx.measureText(t).width>320 && t.length>4) t=t.slice(0,-2); if (t!==text) t=t.trimEnd()+'…';
   const w=ctx.measureText(t).width+fs*1.1, h=fs*1.6;
   ctx.fillStyle='rgba(255,247,230,.95)'; rr(x-w/2,y-h,w,h,fs*.5); ctx.fill();
   ctx.beginPath(); ctx.moveTo(x-8,y); ctx.lineTo(x+8,y); ctx.lineTo(x,y+10); ctx.fill();
   ctx.fillStyle='#3a1a08'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(t,x,y-h/2+1);
-  ctx.restore();
 }
 let last=performance.now();
 function frame(now){
   requestAnimationFrame(frame); const dt=Math.min((now-last)/1000,.05); last=now; const t=now/1000;
+  if (scene === 'hell') { drawHell(now, dt, t); return; }
   ctx.clearRect(0,0,1080,1920);
   if (A.hall.naturalWidth) ctx.drawImage(A.hall,0,0,1080,1920);
   // light: halo pulse behind the Buddha, candle flicker, incense smoke
@@ -309,22 +344,7 @@ function frame(now){
     ctx.restore();
     const ty=v.y-topY-14*ws/.4;
     tag(v.name, v.x, ty, ws, v.skin==='master'||v.coins>=99?'gold':'', avatar(v.avatar), v.state==='sit' ? v.seat?.gap : 0);
-    if (v.bubbles && v.bubbles.length){
-      for (let i=v.bubbles.length-1; i>=0; i--){
-        const b = v.bubbles[i];
-        const elapsed = now - b.start;
-        const p = elapsed / b.duration;
-        if (p >= 1){
-          v.bubbles.splice(i, 1);
-        } else {
-          const floatY = p * 85 * (ws/.4);
-          let alpha = 1;
-          if (p < 0.12) alpha = p / 0.12;
-          else if (p > 0.6) alpha = (1 - p) / 0.4;
-          bubbles.push([b.text, v.x, ty - Math.max(18, 30*ws/.4) - floatY, ws, alpha]);
-        }
-      }
-    }
+    if (v.bubble && now<v.bubble.until) bubbles.push([v.bubble.text, v.x, ty-Math.max(18,30*ws/.4), ws]); else v.bubble=null;
   }
   for (const b of bubbles) bubble(...b);
   // gift icons rising, petals / hearts
@@ -344,6 +364,304 @@ c.save();c.setTransform(c.canvas.width/1080,0,0,c.canvas.height/1920,0,0);c.glob
 const w=c.measureText(s).width+60,x=540-w/2,y=322;c.fillStyle='rgba(40,16,6,.88)';c.beginPath();c.roundRect?c.roundRect(x,y,w,54,27):c.rect(x,y,w,54);c.fill();
 c.lineWidth=2;c.strokeStyle='rgba(226,176,79,.9)';c.stroke();c.fillStyle='#ffd98a';c.textAlign='center';c.textBaseline='middle';c.fillText(s,540,y+28);c.restore();}
 const _k='frame',_o=window[_k];window[_k]=function(t){_o(t);try{_g(t);}catch(e){}};})();
+
+/* ======================= HELL SCENE · Sám Hối Địa Ngục ======================= */
+/* Additive second scene. Pagoda code above is untouched except for the scene
+   branch in frame(), the count branch in updateCount(), and the extra hell
+   updates inside the WebSocket cases. Souls mirror the same server viewers:
+   join/leave/skin/chat/gift/like update both scenes, so switching scenes
+   never loses anyone. Hell capacity is fixed at 48 (6 cols x 8 rows), spaced
+   like the pagoda side with a clear middle walk-in aisle. */
+let scene = 'pagoda';
+const HELL_FLOOR = { yTop: 1150, yBot: 1895, halfTop: 330, halfBot: 470 };
+const HELL_COLS = 6, HELL_ROWS = 8, HELL_CAP = 48;
+const hellSeats = [];
+const souls = new Map();
+let soulOrder = [];
+const hellEmbers = [];
+for (let i = 0; i < 26; i++) hellEmbers.push({ x: Math.random()*1080, y: Math.random()*1920, r: 1.5 + Math.random()*2.6, sp: 24 + Math.random()*46, ph: Math.random()*6.28 });
+
+function layoutHell(){
+  hellSeats.length = 0;
+  for (let r = 0; r < HELL_ROWS; r++){
+    const t = HELL_ROWS === 1 ? .5 : r/(HELL_ROWS-1);
+    const y = HELL_FLOOR.yTop + (HELL_FLOOR.yBot-HELL_FLOOR.yTop)*t;
+    const half = HELL_FLOOR.halfTop + (HELL_FLOOR.halfBot-HELL_FLOOR.halfTop)*t;
+    const scale = .36 + .3*t; // 6 cols: same size as the pagoda side
+    const gap = 2*half/(HELL_COLS-1);
+    const row = [];
+    for (let k = 0; k < HELL_COLS; k++){
+      let u = (k-(HELL_COLS-1)/2)/((HELL_COLS-1)/2);
+      u = Math.sign(u)*(.14 + .86*Math.abs(u)); // centre aisle, same width as pagoda
+      const s = { x: 540 + u*half, y, scale, r, k, gap, tagW: gap, taken: null };
+      row.push(s); hellSeats.push(s);
+    }
+    // name-tag max width = distance to the nearest neighbour in the same row,
+    // so two tags in one row can never overlap (minus 14px safety margin)
+    for (let i = 0; i < row.length; i++){
+      let d = Infinity;
+      if (i > 0) d = Math.min(d, row[i].x - row[i-1].x);
+      if (i < row.length-1) d = Math.min(d, row[i+1].x - row[i].x);
+      if (isFinite(d)) row[i].tagW = d;
+    }
+  }
+  hellSeats.sort((a,b) => (b.r-a.r) || (Math.abs(a.x-540)-Math.abs(b.x-540)));
+}
+function hellFreeSeat(){ return hellSeats.find(s => !s.taken) || null; }
+function reseatHell(){
+  // Seated souls keep their seats; only waiters move up into freed seats.
+  for (const id of soulOrder){
+    const s = souls.get(id); if (!s || s.seat || s.state === 'saved') continue;
+    const seat = hellFreeSeat(); if (!seat) break;
+    s.seat = seat; seat.taken = s;
+    if (s.state === 'wait'){ s.state = 'walk'; s.x = 540; s.y = 2020; s.frame = 0; s.ft = 0; }
+  }
+  updateCount();
+}
+function addSoul(p, instant){
+  if (!hellSeats.length) layoutHell();
+  if (souls.has(p.id)){
+    const s = souls.get(p.id);
+    s.name = p.name; if (p.skin) s.skin = p.skin; s.avatar = p.avatar || s.avatar;
+    if (p.coins !== undefined) s.coins = p.coins;
+    return s;
+  }
+  const seat = hellFreeSeat();
+  const s = { id: p.id, name: p.name, skin: p.skin || 'man', avatar: p.avatar || '', coins: p.coins || 0,
+    seat, state: instant ? (seat ? 'sit' : 'wait') : (seat ? 'walk' : 'wait'),
+    x: instant ? (seat ? seat.x : 540) : 540, y: instant ? (seat ? seat.y : 2020) : 2020,
+    frame: instant ? 7 : 0, ft: 0, sitT: 0, flip: false, fade: instant ? 1 : 0,
+    bubble: null, glow: 0, bow: 0, bowQ: 0, lays: 0, phase: Math.random()*6.28,
+    tremble: 0, trembleAt: 2 + Math.random()*7, savedT: 0, gone: false };
+  if (seat) seat.taken = s;
+  souls.set(p.id, s); soulOrder.push(p.id);
+  updateCount(); return s;
+}
+function removeSoul(id){
+  const s = souls.get(id); if (!s) return;
+  if (s.seat) s.seat.taken = null;
+  souls.delete(id); soulOrder = soulOrder.filter(x => x !== id);
+  reseatHell(); renderBook();
+}
+function renderBook(){
+  const top = [...souls.values()].filter(s => s.lays > 0).sort((a,b) => b.lays - a.lays).slice(0,5);
+  const ol = document.getElementById('hellBookList'); ol.innerHTML = '';
+  if (!top.length){ ol.innerHTML = '<li class="empty">Chưa có</li>'; return; }
+  top.forEach((s,i) => { const li = document.createElement('li'); const a = document.createElement('span'); a.textContent = `${i+1}. ${s.name}`; const b = document.createElement('span'); b.textContent = s.lays + ' lạy'; li.append(a,b); ol.append(li); });
+}
+function hellTag(text, x, y, s, maxW){
+  // Text-only tags (no avatar): keeps the no-overlap math exact. Shrink the
+  // font first, truncate only if still too wide, clamp inside the frame.
+  let fs = Math.max(16, Math.round(28*s/.4));
+  ctx.font = `600 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+  let pad = fs*.5;
+  if (maxW){
+    while (fs > 13 && ctx.measureText(text).width + pad*2 > maxW){ fs -= 1; pad = fs*.5; ctx.font = `600 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`; }
+    let t = text; while (t.length > 2 && ctx.measureText(t).width + pad*2 > maxW) t = t.slice(0,-1); if (t !== text) text = t.trimEnd() + '…';
+  }
+  const w = ctx.measureText(text).width + pad*2, h = fs*1.5;
+  x = Math.max(w/2 + 8, Math.min(1080 - w/2 - 8, x));
+  ctx.fillStyle = 'rgba(34,5,2,.88)'; rr(x-w/2, y-h/2, w, h, h/2); ctx.fill();
+  ctx.lineWidth = 1.5; ctx.strokeStyle = '#ff7a3c'; ctx.stroke();
+  ctx.fillStyle = '#ffd9c4'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y+1);
+}
+function drawChainSoul(v, H, W){
+  const dir = v.x < 540 ? -1 : 1;
+  ctx.save();
+  ctx.strokeStyle = '#15161a'; ctx.lineWidth = Math.max(2, 5*v._ws);
+  ctx.beginPath(); ctx.moveTo(v.x - W*.3, v.y - H*.5); ctx.lineTo(v.x + W*.3, v.y - H*.5); ctx.stroke();
+  ctx.strokeStyle = 'rgba(90,95,105,.9)'; ctx.lineWidth = Math.max(1.5, 3.4*v._ws);
+  ctx.setLineDash([8, 6]);
+  ctx.beginPath(); ctx.moveTo(v.x + dir*W*.26, v.y - H*.46);
+  ctx.quadraticCurveTo(v.x + dir*W*.62, v.y - H*.18, v.x + dir*W*.78, v.y + 2); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#101114'; ctx.beginPath(); ctx.arc(v.x + dir*W*.78, v.y + 3, Math.max(3, 7*v._ws), 0, 6.29); ctx.fill();
+  ctx.restore();
+}
+function hellHearts(v, n){
+  for (let i = 0; i < Math.min(6, n); i++) petals.push({ x: v.x + (Math.random()-.5)*60, y: v.y - 140*(v.seat?.scale || .4), vx: (Math.random()-.5)*20, vy: -(50 + Math.random()*40), t: 0, life: 1.6, s: .08, heart: true });
+}
+function bowSoul(id, n){
+  const s = souls.get(id); if (!s || !s.seat || (s.state !== 'sit' && s.state !== 'sitting')) return;
+  s.bowQ = Math.min(10, s.bowQ + Math.max(1, Math.round(n) || 1));
+}
+const VERDICTS = {
+  'phan-xet': { label: 'phán xét', text: 'sám hối thành tâm — giảm nhẹ tội hình, xích nới một nấc!', lays: 3 },
+  'dinh-toi': { label: 'định tội', text: 'nghiệp chướng còn nặng — giữ nguyên hình phạt, quỳ lạy sám hối tiếp!', lays: 1 },
+  'khai-an': { label: 'khai ân', text: 'một niệm quay đầu — Diêm Vương khai ân, ghi công vào Sổ Sám Hối!', lays: 5 },
+  'giam-an': { label: 'giảm án', text: 'thành tâm hối cải — giảm án, bớt một phần hình phạt!', lays: 2 },
+  'sieu-do': { label: 'siêu độ', text: 'công đức sám hối đủ đầy — cho siêu độ, nhẹ bước luân hồi!', lays: 8 },
+};
+let verdictHide = null;
+function showVerdict(name, key){
+  const vd = VERDICTS[key]; if (!vd) return;
+  document.getElementById('verdictText').textContent = (name || 'Diêm Vương') + ' — ' + vd.text;
+  const el = document.getElementById('verdict'); el.classList.add('show');
+  clearTimeout(verdictHide); verdictHide = setTimeout(() => el.classList.remove('show'), 4600);
+}
+function verdictSoul(key){
+  const vd = VERDICTS[key]; if (!vd) return;
+  const seated = [...souls.values()].filter(s => s.seat && s.state === 'sit');
+  const pool = seated.length ? seated : [...souls.values()].filter(s => s.seat);
+  if (!pool.length){ if (scene === 'hell') showVerdict(null, key); return; }
+  const v = pool[Math.floor(Math.random()*pool.length)];
+  v.bow = 1; v.tremble = 1.4; v.lays += vd.lays; renderBook();
+  if (scene === 'hell') showVerdict(v.name, key);
+}
+let salvationHide = null;
+function showSalvation(name, giftName){
+  document.getElementById('salvationWho').textContent = name;
+  document.getElementById('salvationWhat').textContent = giftName ? `được cứu rỗi nhờ ${giftName} · siêu thoát` : 'được cứu rỗi, siêu thoát';
+  const el = document.getElementById('salvation'); el.classList.add('show');
+  clearTimeout(salvationHide); salvationHide = setTimeout(() => el.classList.remove('show'), 6500);
+}
+function salvationById(id, m){
+  const s = id ? souls.get(id) : null;
+  if (s && s.seat && s.state !== 'saved'){
+    s.state = 'saved'; s.savedT = 0; s.glow = 2.2; s.bow = 0;
+    for (let i = 0; i < 14; i++) petals.push({ x: s.x + (Math.random()-.5)*170*s.seat.scale, y: s.y - 60*s.seat.scale, vx: (Math.random()-.5)*24, vy: -(70 + Math.random()*90), t: 0, life: 2.6 + Math.random(), s: .16 + Math.random()*.14 });
+    if (AC) bell(true);
+  } else {
+    // Gifter not seated (or already saved): a saved spirit rises from the
+    // middle aisle without taking a seat.
+    const g = { id: '__saved_' + Date.now() + '_' + Math.random(), name: (m && m.name) || 'Vong hồn', skin: 'man', avatar: '', coins: 0,
+      seat: null, state: 'saved', x: 540, y: 1500, frame: 7, ft: 0, sitT: 0, flip: false, fade: 1,
+      bubble: null, glow: 2.2, bow: 0, bowQ: 0, lays: 0, phase: 0, tremble: 0, trembleAt: 99, savedT: 0, gone: false, transient: true };
+    souls.set(g.id, g); soulOrder.push(g.id);
+  }
+  if (scene === 'hell') showSalvation((m && m.name) || (s && s.name) || 'Vong hồn', m && m.giftName);
+  updateCount();
+}
+function applyScene(){
+  const hell = scene === 'hell';
+  document.getElementById('guide').style.display = hell ? 'none' : '';
+  document.getElementById('merit').style.display = hell ? 'none' : '';
+  document.getElementById('hellGuide').style.display = hell ? 'block' : 'none';
+  document.getElementById('hellBook').style.display = hell ? 'block' : 'none';
+  document.getElementById('title').textContent = hell ? 'Sám Hối Địa Ngục' : (settings.title || 'Chánh Điện Tịnh Tâm');
+  document.getElementById('subtitle').textContent = hell ? 'Nam Mô Địa Tạng Vương Bồ Tát' : (settings.subtitle || 'Nam Mô A Di Đà Phật');
+}
+function drawHell(now, dt, t){
+  ctx.clearRect(0, 0, 1080, 1920);
+  if (A.hell?.naturalWidth){
+    const sc = Math.max(1080 / A.hell.naturalWidth, 1920 / A.hell.naturalHeight);
+    const dw = A.hell.naturalWidth * sc, dh = A.hell.naturalHeight * sc;
+    ctx.drawImage(A.hell, (1080 - dw)/2, 0, dw, dh);
+  } else { ctx.fillStyle = '#160b06'; ctx.fillRect(0, 0, 1080, 1920); }
+  // floor shade so kneeling souls read against the painting
+  const grd = ctx.createLinearGradient(0, 1920*.34, 0, 1920);
+  grd.addColorStop(0, 'rgba(8,1,1,0)'); grd.addColorStop(.42, 'rgba(8,1,1,.14)');
+  grd.addColorStop(.72, 'rgba(5,1,1,.4)'); grd.addColorStop(1, 'rgba(3,0,0,.62)');
+  ctx.fillStyle = grd; ctx.fillRect(0, 1920*.34, 1080, 1920*.66);
+  // pulsing fire glow around the hall + dark vignette
+  const vg = ctx.createRadialGradient(540, 1920*.42, 80, 540, 1920*.42, 620);
+  vg.addColorStop(0, `rgba(255,70,20,${0.17 + 0.05*Math.sin(t*7.3)})`); vg.addColorStop(1, 'rgba(255,70,20,0)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, 1080, 1920);
+  const vn = ctx.createRadialGradient(540, 1920*.46, 1920*.18, 540, 1920*.46, 1920*.62);
+  vn.addColorStop(0, 'rgba(0,0,0,0)'); vn.addColorStop(.72, 'rgba(2,0,0,.28)'); vn.addColorStop(1, 'rgba(0,0,0,.66)');
+  ctx.fillStyle = vn; ctx.fillRect(0, 0, 1080, 1920);
+  // drifting black smoke
+  ctx.save(); ctx.fillStyle = '#0a0a0c';
+  for (let i = 0; i < 10; i++){ const a = ((t*.05 + i*.1) % 1); ctx.globalAlpha = .16*(1-a); ctx.beginPath(); ctx.arc((i*173 + a*260) % 1080, 1180 - a*420, 26 + a*60, 0, 6.28); ctx.fill(); }
+  ctx.restore();
+
+  const bubbles = [];
+  const list = [...souls.values()].filter(s => s.state !== 'wait').sort((a,b) => a.y - b.y);
+  for (const v of list){
+    const anim = hasAnim(v.skin), s0 = v.seat ? v.seat.scale : .4;
+    if (v.state === 'walk' && v.seat){
+      if (!anim){ v.x = v.seat.x; v.y = v.seat.y; v.state = 'sit'; }
+      else {
+        const depth = (v.y - HELL_FLOOR.yTop)/(HELL_FLOOR.yBot - HELL_FLOOR.yTop);
+        const sp = (150 + 170*Math.max(0, Math.min(1.4, depth)))*dt, dx = v.seat.x - v.x, dy = v.seat.y - v.y;
+        if (Math.abs(dy) > 3){ v.y += Math.max(-sp, Math.min(sp, dy)); v.x += (540 - v.x)*Math.min(1, dt*6); v.flip = false; }
+        else { v.x += Math.max(-sp, Math.min(sp, dx)); v.flip = dx < 0; }
+        v.ft += dt; if (v.ft > .16){ v.ft = 0; v.frame = (v.frame+1)%4; }
+        if (Math.abs(v.x - v.seat.x) < 2 && Math.abs(v.y - v.seat.y) < 3){ v.x = v.seat.x; v.y = v.seat.y; v.state = 'sitting'; v.sitT = 0; v.flip = false; }
+      }
+    } else if (v.state === 'sitting'){ v.sitT += dt; v.frame = 4 + Math.min(3, Math.floor(v.sitT/.22)); if (v.sitT > .9){ v.state = 'sit'; v.frame = 7; } }
+    else if (v.state === 'saved'){
+      v.savedT += dt; v.y -= (55 + 65*v.savedT)*dt; v.glow = 2.2;
+      if (v.savedT > 2.4) v.fade = Math.max(0, 1 - (v.savedT - 2.4)/.9);
+      if (v.savedT > 3.3) v.gone = true;
+    }
+    if (v.state !== 'saved') v.fade = Math.min(1, v.fade + dt*2);
+    v.bow = Math.max(0, v.bow - dt*.4);
+    if (v.bow <= 0 && v.bowQ > 0 && v.state === 'sit'){ v.bowQ--; v.bow = 1; v.lays++; renderBook(); }
+    v.glow = Math.max(0, v.glow - dt*.5);
+    const sc2 = v.state === 'walk' ? (.3 + .42*Math.max(0, Math.min(1, (v.y - HELL_FLOOR.yTop)/(HELL_FLOOR.yBot - HELL_FLOOR.yTop)))) : s0;
+    const s = Math.max(.24, Math.min(.88, sc2));
+    v._ws = s;
+    let shakeX = 0;
+    if (v.state === 'sit'){
+      v.trembleAt -= dt;
+      if (v.trembleAt <= 0){ v.tremble = .7; v.trembleAt = 3 + Math.random()*8; }
+      if (v.tremble > 0){ v.tremble -= dt; shakeX = Math.sin(t*68 + v.phase)*2.2; }
+    }
+    const breathe = v.state === 'sit' ? Math.sin(t*1.1 + v.phase)*2*s : 0;
+    if (v.glow > 0){
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, v.glow*.7);
+      const g = ctx.createRadialGradient(v.x, v.y - 115*s, 10, v.x, v.y - 115*s, 170*s);
+      g.addColorStop(0, 'rgba(255,200,110,.9)'); g.addColorStop(1, 'rgba(255,160,60,0)');
+      ctx.fillStyle = g; ctx.fillRect(v.x - 200*s, v.y - 300*s, 400*s, 340*s); ctx.restore();
+    }
+    if (v.state === 'saved'){
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .55 + .2*Math.sin(t*6);
+      sprite(A.halo, v.x, v.y - 120*s, 1.6*s + v.savedT*.25, .5); ctx.restore();
+    }
+    const bowK = v.state === 'sit' ? Math.sin(Math.min(1, v.bow)*Math.PI)*.13 : 0;
+    ctx.save(); ctx.globalAlpha = v.fade; ctx.translate(v.x + shakeX, v.y);
+    if (bowK) ctx.transform(1, 0, 0, 1 - bowK, 0, 0);
+    let tagH = 268*s, drawnW = 200*s;
+    const grey = 'grayscale(1) brightness(.82)';
+    if (anim){
+      const a = ANIM[v.skin], k = s*1.05*260/a.seatH;
+      if (v.flip) ctx.scale(-1, 1);
+      const src = A['anim_' + v.skin];
+      if (src?.naturalWidth){ ctx.filter = grey; ctx.drawImage(src, v.frame*a.fw, 0, a.fw, a.fh, -a.fw*k/2, -a.fh*k + breathe, a.fw*k, a.fh*k); ctx.filter = 'none'; }
+      tagH = (v.state === 'sit' ? a.seatH : a.fh*.97)*k; drawnW = a.fw*k;
+    } else {
+      const sk = v.skin === 'master' ? 'monk' : v.skin, src = A[sk] || A.man;
+      if (src?.naturalWidth){ ctx.filter = grey; sprite(src, 0, breathe, s*1.05); ctx.filter = 'none'; }
+      tagH = 268*s;
+    }
+    ctx.restore();
+    if (v.state === 'sit') drawChainSoul(v, tagH, drawnW);
+    hellTag(v.name, v.x + shakeX, v.y - tagH - 10*s, s, Math.max(60, (v.seat?.tagW || v.seat?.gap || 120) - 14));
+    if (v.bubble && now < v.bubble.until) bubbles.push([v.bubble.text, v.x, v.y - tagH - 10*s - Math.max(18, 30*s/.4), s]); else v.bubble = null;
+  }
+  for (const b of bubbles) bubble(...b);
+  // petals / hearts (shared array with the pagoda scene)
+  for (let i = petals.length-1; i >= 0; i--){ const p = petals[i]; p.t += dt; if (p.t > p.life){ petals.splice(i,1); continue; } p.x += p.vx*dt + Math.sin(p.t*3 + i)*20*dt; p.y += p.vy*dt;
+    ctx.save(); ctx.globalAlpha = Math.min(1, p.life - p.t); ctx.translate(p.x, p.y);
+    if (p.heart){ ctx.fillStyle = '#ff5a7a'; ctx.font = '34px serif'; ctx.textAlign = 'center'; ctx.fillText('♥', 0, 0); } else { ctx.rotate(Math.sin(p.t*2 + i)*.6); sprite(A.petal, 0, 0, p.s, .5); }
+    ctx.restore(); }
+  // embers + bottom fire row
+  ctx.save(); ctx.fillStyle = '#ffb347';
+  for (const e of hellEmbers){
+    e.y -= e.sp*dt; e.x += Math.sin(t*2 + e.ph)*12*dt;
+    if (e.y < 1920*.3){ e.y = 1910; e.x = Math.random()*1080; }
+    ctx.globalAlpha = .35 + .3*Math.sin(t*5 + e.ph);
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, 6.29); ctx.fill();
+  }
+  ctx.restore();
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 12; i++){
+    const fxPos = 45 + i*88, fh = 54 + 26*Math.sin(t*9 + i*1.7) + 12*Math.sin(t*15 + i);
+    const fg = ctx.createLinearGradient(0, 1920, 0, 1920 - fh*2);
+    fg.addColorStop(0, 'rgba(255,90,20,.5)'); fg.addColorStop(1, 'rgba(255,90,20,0)');
+    ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(fxPos - 30, 1920); ctx.quadraticCurveTo(fxPos, 1920 - fh*2, fxPos + 30, 1920); ctx.fill();
+  }
+  ctx.restore();
+  // remove ascended souls and free their seats
+  let freed = false;
+  for (let i = soulOrder.length-1; i >= 0; i--){
+    const s = souls.get(soulOrder[i]); if (!s) { soulOrder.splice(i,1); continue; }
+    if (s.gone){ if (s.seat) s.seat.taken = null; souls.delete(s.id); soulOrder.splice(i,1); freed = true; }
+  }
+  if (freed){ reseatHell(); renderBook(); }
+}
+
 layout(24); requestAnimationFrame(frame);
 </script>
 </body>
