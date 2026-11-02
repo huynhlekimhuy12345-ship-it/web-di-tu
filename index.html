@@ -291,11 +291,11 @@ document.getElementById('gifts').addEventListener('click', e=>{ const b=e.target
 document.getElementById('nextTrack').addEventListener('click', ()=>{ if(AC) playTrack(trackIdx+1); });
 document.getElementById('mute').addEventListener('click', e=>{ muted=!muted; if(master) master.gain.value=muted?0:.8; e.currentTarget.textContent=muted?'Bật nhạc':'Tắt nhạc'; e.currentTarget.setAttribute('aria-pressed',muted); });
 document.getElementById('leave').addEventListener('click', ()=>{ removeVisitor(me); me=null; gate.hidden=false; document.getElementById('me').hidden=true; for (const id of ['mute','leave','gifts','nextTrack']) document.getElementById(id).hidden=true; for (const m of musicEls){ try{m.el.pause();}catch(e){} } musicEls=[]; if (AC){ AC.close(); AC=null; } clearInterval(mokTimer); clearInterval(bellTimer); renderBoard(); });
-canvas.addEventListener('pointerdown', ()=>{ if(!me||me.state!=='sit') return; const s=SUTRA[Math.floor(Math.random()*SUTRA.length)]; say(me.name,' '+s); me.bow=1; floaters.push({x:me.seat.x,y:me.seat.y-80,vx:0,vy:-70,t:0,life:2,s:.14}); });
+canvas.addEventListener('pointerdown', ()=>{ if(!me||me.state!=='sit') return; const s=SUTRA[Math.floor(Math.random()*SUTRA.length)]; say(me.name,' '+s); me.bow=1; if(!me.bubbles) me.bubbles=[]; me.bubbles.push({text:s, start:performance.now(), duration:5500}); if(me.bubbles.length>3) me.bubbles.shift(); floaters.push({x:me.seat.x,y:me.seat.y-80,vx:0,vy:-70,t:0,life:2,s:.14}); });
 // demo activity: random comments and small gifts from the crowd
 setInterval(()=>{ if (visitors.length<2) return; const v=visitors[Math.floor(Math.random()*visitors.length)]; if (v===me) return;
   if (Math.random()<.3) donate(v, [1,1,5,20][Math.floor(Math.random()*4)], ['petal','petal','incense','lotus'][Math.floor(Math.random()*4)], '');
-  else { say(v.name,' '+SUTRA[Math.floor(Math.random()*SUTRA.length)]); v.bow=1; }
+  else { const s=SUTRA[Math.floor(Math.random()*SUTRA.length)]; say(v.name,' '+s); v.bow=1; if(!v.bubbles) v.bubbles=[]; v.bubbles.push({text:s, start:performance.now(), duration:5500}); if(v.bubbles.length>3) v.bubbles.shift(); }
 }, 4200);
 
 /* ---- render ---- */
@@ -310,6 +310,30 @@ function nameTag(text, x, y, s, isMe){
   ctx.fillStyle='#f1e3c8'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x, y+1);
 }
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function bubble(text, x, y, s, alpha = 1) {
+  if (alpha <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+  const fs = Math.max(16, Math.round(22 * s + 6));
+  ctx.font = `500 ${fs}px "Be Vietnam Pro", system-ui, sans-serif`;
+  let t = text;
+  while (ctx.measureText(t).width > 280 && t.length > 4) t = t.slice(0, -2);
+  if (t !== text) t = t.trimEnd() + '…';
+  const w = ctx.measureText(t).width + fs * 1.1, h = fs * 1.6;
+  ctx.fillStyle = 'rgba(255,247,230,.95)';
+  roundRect(x - w / 2, y - h, w, h, fs * .5);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - 6, y);
+  ctx.lineTo(x + 6, y);
+  ctx.lineTo(x, y + 8);
+  ctx.fill();
+  ctx.fillStyle = '#3a1a08';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(t, x, y - h / 2 + 1);
+  ctx.restore();
+}
 function tick(now){
   requestAnimationFrame(tick); resize();
   const dt=Math.min((now-last)/1000,.05); last=now; const t=now/1000;
@@ -363,6 +387,22 @@ function tick(now){
     } else { drawSprite(A[v.skin]||A.man, 0, breathe, s*1.05, 1); tagH = 268*s; }
     ctx.restore();
     nameTag(v.name, v.x, v.y - tagH - 10*s, s, v.isMe);
+    if (v.bubbles && v.bubbles.length) {
+      for (let i = v.bubbles.length - 1; i >= 0; i--) {
+        const b = v.bubbles[i];
+        const elapsed = now - b.start;
+        const p = elapsed / b.duration;
+        if (p >= 1) {
+          v.bubbles.splice(i, 1);
+        } else {
+          const floatY = p * 75 * s;
+          let alpha = 1;
+          if (p < 0.12) alpha = p / 0.12;
+          else if (p > 0.6) alpha = (1 - p) / 0.4;
+          bubble(b.text, v.x, v.y - tagH - 18 * s - floatY, s, alpha);
+        }
+      }
+    }
   }
   // gift fx
   for (let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.t+=dt; const k=f.t/f.life; if(k>=1){ fx.splice(i,1); continue; }

@@ -134,7 +134,7 @@ const TEACHERS = [ { name:'Thầy Minh Đạo', skin:'monk', x:300, y:1085, s:.3
 
 function addVisitor(p, instant){
   if (visitors.has(p.id)) { Object.assign(visitors.get(p.id), { name:p.name, skin:p.skin, avatar:p.avatar, coins:p.coins }); return; }
-  const v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubble:null, glow:0, bow:0, phase:Math.random()*6.28 };
+  const v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubbles:[], glow:0, bow:0, phase:Math.random()*6.28 };
   visitors.set(p.id, v); order.push(p.id); reseat();
   if (instant || !hasAnim(v.skin) || !v.seat){ v.state='sit'; v.frame=7; v.x=v.tx=v.seat?.x||540; v.y=v.ty=v.seat?.y||1500; v.fade = instant?1:0; }
 }
@@ -229,7 +229,7 @@ function connect(){
       case 'join': if (m.cap!==cap) layout(m.cap); addVisitor(m.v, m.v.demo && visitors.size>8); updateCount(); break;
       case 'leave': removeVisitor(m.id); updateCount(); renderMerit(); break;
       case 'skin': { const v=visitors.get(m.id); if(v){ v.skin=m.skin; v.glow=.8; if(v.state!=='sit'){ v.state='sit'; v.frame=7; } } } break;
-      case 'chat': { const v=visitors.get(m.id); if(v){ v.bubble={text:m.text, until:performance.now()+6000}; v.bow=.6; } } break;
+      case 'chat': { const v=visitors.get(m.id); if(v){ if(!v.bubbles) v.bubbles=[]; v.bubbles.push({text:m.text, start:performance.now(), duration:5500}); if(v.bubbles.length>3) v.bubbles.shift(); v.bow=.6; } } break;
       case 'gift': { const v=visitors.get(m.id); if(v){ v.coins=m.total; giftFx(v,m.tier); } renderMerit(); showGift(m); } break;
       case 'like': { const v=visitors.get(m.id); if(v) hearts(v,m.n); } break;
       case 'tts': queueTTS(m.url); break;
@@ -260,13 +260,17 @@ function tag(text,x,y,s,style,av,maxW){
   if (av){ ctx.save(); ctx.beginPath(); ctx.arc(x-w/2+pad*.55+aw/2, y, fs*.5, 0, 6.29); ctx.clip(); ctx.drawImage(av, x-w/2+pad*.55+aw/2-fs*.5, y-fs*.5, fs, fs); ctx.restore(); }
   ctx.fillStyle = style==='gold'?'#ffd98a':'#f6e9cf'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x+aw/2, y+1);
 }
-function bubble(text,x,y,s){
+function bubble(text,x,y,s,alpha=1){
+  if (alpha<=0) return;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
   const fs=Math.max(18,Math.round(26*s/.4)); ctx.font=`500 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
   let t=text; while (ctx.measureText(t).width>320 && t.length>4) t=t.slice(0,-2); if (t!==text) t=t.trimEnd()+'…';
   const w=ctx.measureText(t).width+fs*1.1, h=fs*1.6;
   ctx.fillStyle='rgba(255,247,230,.95)'; rr(x-w/2,y-h,w,h,fs*.5); ctx.fill();
   ctx.beginPath(); ctx.moveTo(x-8,y); ctx.lineTo(x+8,y); ctx.lineTo(x,y+10); ctx.fill();
   ctx.fillStyle='#3a1a08'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(t,x,y-h/2+1);
+  ctx.restore();
 }
 let last=performance.now();
 function frame(now){
@@ -305,7 +309,22 @@ function frame(now){
     ctx.restore();
     const ty=v.y-topY-14*ws/.4;
     tag(v.name, v.x, ty, ws, v.skin==='master'||v.coins>=99?'gold':'', avatar(v.avatar), v.state==='sit' ? v.seat?.gap : 0);
-    if (v.bubble && now<v.bubble.until) bubbles.push([v.bubble.text, v.x, ty-Math.max(18,30*ws/.4), ws]); else v.bubble=null;
+    if (v.bubbles && v.bubbles.length){
+      for (let i=v.bubbles.length-1; i>=0; i--){
+        const b = v.bubbles[i];
+        const elapsed = now - b.start;
+        const p = elapsed / b.duration;
+        if (p >= 1){
+          v.bubbles.splice(i, 1);
+        } else {
+          const floatY = p * 85 * (ws/.4);
+          let alpha = 1;
+          if (p < 0.12) alpha = p / 0.12;
+          else if (p > 0.6) alpha = (1 - p) / 0.4;
+          bubbles.push([b.text, v.x, ty - Math.max(18, 30*ws/.4) - floatY, ws, alpha]);
+        }
+      }
+    }
   }
   for (const b of bubbles) bubble(...b);
   // gift icons rising, petals / hearts
