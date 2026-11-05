@@ -186,8 +186,7 @@ DEMO.forEach((n,i)=>{ const v = addVisitor(n, SKINS[i%SKINS.length], true); v.co
 let AC=null, master=null, muted=false, mokTimer=null, bellTimer=null, me=null, haloPulse=0;
 /* Music: Gemini-made tracks played in order, crossfaded, ducked under TTS. Bell + mõ stay synthesized. */
 const TRACKS = [
-  { src:'assets/music/music1.mp3', name:'Trăng trên rừng trúc' },
-  { src:'assets/music/music2.mp3', name:'Hơi thở ban mai' },
+  { src:'assets/music/music1.mp3', name:'Trăng trên rừng trúc' }
 ];
 let musicGain=null, musicEls=[], trackIdx=0, duck=1;
 function audioStart(){

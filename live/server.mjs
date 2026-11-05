@@ -28,7 +28,7 @@ const settings = {
   rate: -20,                         // %
   music: true, mo: true, moBpm: 52,
   autoChant: true, chantEveryMin: 3,
-  seatMode: 'auto',                  // auto | 24 | 36 | 64 | 100
+  seatMode: '100',                   // mặc định 100 chỗ ngồi
   joinOnEnter: true,                 // also seat viewers who only enter the room
   gifts: { readAll: true, minDiamonds: 1 },
 };
@@ -58,36 +58,185 @@ function skinFromText(t) {
 const DEFAULT_SKINS = ['man', 'woman', 'woman', 'man', 'granny'];
 const VERDICT_LABELS = { 'phan-xet': 'phán xét', 'dinh-toi': 'định tội', 'khai-an': 'khai ân', 'giam-an': 'giảm án', 'sieu-do': 'siêu độ' };
 
-function pub(v) { return { id: v.id, name: v.name, skin: v.skin, avatar: v.avatar || '', coins: v.coins, demo: !!v.demo }; }
+/* ------------------------------------------------------------- 10 cảnh giới thăng tiến */
+const TIER_NAMES = [
+  'Sơ Tâm Sám Hối',
+  'Quy Y Tam Bảo',
+  'Khai Minh Giác Ngộ',
+  'Thanh Tịnh Thân Tâm',
+  'Tích Phước Tụ Duyên',
+  'Tiêu Tai Tịnh Nghiệp',
+  'Phát Tâm Bồ Đề',
+  'Đắc Đạo Viên Thành',
+  'Giải Thoát Luân Hồi',
+  'Đại Giác Viên Mãn'
+];
+// Mốc hoa/xu tích lũy để thăng cấp:
+// Cấp 1 cần 1 hoa, Cấp 2 cần thêm 2 hoa (tổng 3), Cấp 3 cần thêm 3 hoa (tổng 6)...
+const TIER_THRESHOLDS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55];
+
+const getTierName = lvl => TIER_NAMES[Math.min(10, Math.max(1, lvl)) - 1] || TIER_NAMES[0];
+
+function calcTierFromCoins(coins) {
+  if (!coins || coins <= 0) return 0;
+  let lvl = 1;
+  for (let i = 0; i < TIER_THRESHOLDS.length; i++) {
+    if (coins >= TIER_THRESHOLDS[i]) lvl = i + 1;
+    else break;
+  }
+  return Math.min(10, Math.max(1, lvl));
+}
+
+function getCoinsNeededForNextTier(currentCoins) {
+  const curLvl = calcTierFromCoins(currentCoins);
+  if (curLvl >= 10) return 0;
+  const target = TIER_THRESHOLDS[curLvl];
+  return Math.max(0, target - (currentCoins || 0));
+}
+
+/* ------------------------------------------------------------- merit archive */
+// Lưu trữ công đức vĩnh viễn trong suốt phiên live:
+// Khi một người rời phòng (niết bàn) rồi quay lại, toàn bộ cấp bậc, công đức, số lượt donate đều được khôi phục nguyên vẹn lên bảng xếp hạng!
+const meritArchive = new Map();
+const cleanKey = s => String(s || '').trim().toLowerCase().normalize('NFC');
+
+function saveMeritArchive(v) {
+  if (!v || !v.name) return;
+  const k = cleanKey(v.name);
+  if (!k || k === 'ẩn danh' || k === 'khách') return;
+  const ex = meritArchive.get(k) || {};
+  meritArchive.set(k, {
+    id: v.id,
+    name: v.name,
+    coins: Math.max(v.coins || 0, ex.coins || 0),
+    donateCount: Math.max(v.donateCount || 0, ex.donateCount || 0),
+    likes: Math.max(v.likes || 0, ex.likes || 0),
+    skin: v.skin || ex.skin || 'man',
+    avatar: v.avatar || ex.avatar || '',
+    savedAt: v.savedAt || ex.savedAt || Date.now(),
+    lastAt: Date.now()
+  });
+}
+
+function getArchivedMerit(id, name) {
+  const k = cleanKey(name);
+  if (k && meritArchive.has(k)) return meritArchive.get(k);
+  if (id) {
+    for (const item of meritArchive.values()) {
+      if (item.id === id) return item;
+    }
+  }
+  return null;
+}
+
+function pub(v) {
+  return {
+    id: v.id,
+    name: v.name,
+    skin: v.skin,
+    avatar: v.avatar || '',
+    coins: v.coins || 0,
+    donateCount: v.donateCount || 0,
+    likes: v.likes || 0,
+    savedAt: v.savedAt || 0,
+    demo: !!v.demo
+  };
+}
 function snapshot() { return { t: 'state', settings, scene: currentScene, viewers: [...viewers.values()].map(pub), cap: capacity(), startedAt, tiktok: tiktokState }; }
 
-function seat(id, name, opts = {}) {
-  let v = viewers.get(id);
-  if (v) { v.lastAt = Date.now(); if (opts.avatar) v.avatar = opts.avatar; return { v, isNew: false }; }
-  if (viewers.size >= 100) {                     // full: the longest-quiet non-donor stands up
-    const quiet = [...viewers.values()].filter(x => x.coins === 0).sort((a, b) => a.lastAt - b.lastAt)[0];
-    if (!quiet) return { v: null, isNew: false };
-    viewers.delete(quiet.id); broadcast({ t: 'leave', id: quiet.id });
+function findViewer(id, name) {
+  if (id && viewers.has(id)) return viewers.get(id);
+  const cleanName = cleanKey(name);
+  if (cleanName && cleanName !== 'khách' && cleanName !== 'ẩn danh') {
+    for (const v of viewers.values()) {
+      if (cleanKey(v.name) === cleanName) return v;
+    }
   }
+  return null;
+}
+
+function seat(id, name, opts = {}) {
+  name = String(name || id || 'Khách').slice(0, 18);
+  let v = findViewer(id, name);
+  if (v) {
+    v.lastAt = Date.now();
+    if (opts.avatar) v.avatar = opts.avatar;
+    return { v, isNew: false };
+  }
+  
+  if (!id) id = 'viewer_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+
+  // Khi đã đủ 100 người: đổi người mới vào, người vào lâu nhất (joinedAt cũ nhất) rời đi
+  if (viewers.size >= 100) {
+    const list = [...viewers.values()];
+    // Ưu tiên nhường chỗ từ người chưa donate và đã ở trong phòng lâu nhất
+    const nonDonors = list.filter(x => (x.coins || 0) === 0 && (x.donateCount || 0) === 0).sort((a, b) => a.joinedAt - b.joinedAt);
+    const oldest = nonDonors.length ? nonDonors[0] : list.sort((a, b) => a.joinedAt - b.joinedAt)[0];
+    if (oldest) {
+      saveMeritArchive(oldest);
+      viewers.delete(oldest.id);
+      broadcast({ t: 'leave', id: oldest.id, name: oldest.name });
+      addLog(`🚪 Đủ 100 người: ${oldest.name} rời đi (nhập Niết bàn) để nhường chỗ cho ${name}`);
+    }
+  }
+
+  // Khôi phục công đức từ kho lưu trữ nếu người này từng vào live và donate trước đó!
+  const archived = getArchivedMerit(id, name);
+
   v = {
-    id, name: (name || id).slice(0, 18), skin: opts.skin || DEFAULT_SKINS[viewers.size % DEFAULT_SKINS.length],
-    avatar: opts.avatar || '', coins: 0, joinedAt: Date.now(), lastAt: Date.now(), demo: !!opts.demo
+    id,
+    name: (archived && archived.name) ? archived.name : name,
+    skin: opts.skin || (archived && archived.skin) || DEFAULT_SKINS[viewers.size % DEFAULT_SKINS.length],
+    avatar: opts.avatar || (archived && archived.avatar) || '',
+    coins: archived ? (archived.coins || 0) : 0,
+    donateCount: archived ? (archived.donateCount || 0) : 0,
+    likes: archived ? (archived.likes || 0) : 0,
+    savedAt: archived ? (archived.savedAt || 0) : 0,
+    joinedAt: Date.now(),
+    lastAt: Date.now(),
+    demo: !!opts.demo
   };
   viewers.set(id, v);
   broadcast({ t: 'join', v: pub(v), cap: capacity() });
+  if (archived && (archived.coins > 0 || archived.donateCount > 0)) {
+    const curLvl = calcTierFromCoins(v.coins) || 1;
+    const tierName = getTierName(curLvl);
+    broadcast({
+      t: 'rejoin',
+      id: v.id,
+      name: v.name,
+      avatar: v.avatar || '',
+      coins: v.coins,
+      donateCount: v.donateCount,
+      tier: curLvl,
+      tierName
+    });
+    const line = currentScene === 'hell'
+      ? `Chào mừng đạo hữu ${spoken(v.name)}, bậc ${tierName} đã trở lại sám hối!`
+      : `Chào mừng Phật tử ${spoken(v.name)}, bậc ${tierName} đã trở lại chánh điện!`;
+    say(line, { tag: 'rejoin', id: v.id });
+    addLog(`✨ ${v.name} (Bậc ${tierName}) đã vào lại phiên live!`);
+  }
   return { v, isNew: true };
 }
 
-// Tự động cho người xem rời chánh điện nếu không còn tương tác (sau 3 phút) để nhường chỗ
-const IDLE_TIMEOUT_MS = 180_000; // 3 phút
+// Tự động phát hiện người rời phòng (Inactivity Timeout):
+// Vì TikTok không gửi gói tin "leave" khi người xem lướt qua xem kênh khác,
+// nếu một người xem không có bất kỳ tương tác nào (chat, tym, tặng quà) trong 2.5 phút:
+// → Xác định đã rời phòng, lưu trọn vẹn công đức và cho xuất hồn nhập Niết Bàn!
 setInterval(() => {
   const now = Date.now();
-  for (const [id, v] of viewers.entries()) {
-    if (v.demo) continue; // giữ bot demo
-    if (now - v.lastAt > IDLE_TIMEOUT_MS) {
-      viewers.delete(id);
-      broadcast({ t: 'leave', id });
-      addLog(`👋 ${v.name} đã rời chánh điện`);
+  const INACTIVE_TIMEOUT = 150_000; // 2.5 phút (150 giây)
+  for (const v of viewers.values()) {
+    if (v.demo) continue;
+    if (now - (v.lastAt || v.joinedAt) > INACTIVE_TIMEOUT) {
+      saveMeritArchive(v);
+      viewers.delete(v.id);
+      broadcast({ t: 'leave', id: v.id, name: v.name });
+      const curLvl = calcTierFromCoins(v.coins) || 1;
+      if ((v.coins || 0) > 0 || (v.donateCount || 0) > 0) {
+        addLog(`🚪 ${v.name} (Cấp ${curLvl}) không còn tương tác > 2.5 phút → Rời live, nhập Niết Bàn`);
+      }
     }
   }
 }, 15_000);
@@ -108,14 +257,50 @@ function onGift(id, name, giftName, count, diamonds, avatar) {
   const { v } = seat(id, name, { avatar });
   if (!v) return;
   const coins = Math.max(1, (diamonds || 1) * (count || 1));
+  const oldCoins = v.coins || 0;
+  const oldLvl = calcTierFromCoins(oldCoins);
+
   v.coins += coins;
+  v.donateCount = (v.donateCount || 0) + 1;
+  v.savedAt = v.savedAt || Date.now();
+  saveMeritArchive(v);
+
+  const curLvl = calcTierFromCoins(v.coins);
+  const tierName = getTierName(curLvl);
+  const didLevelUp = curLvl > oldLvl;
+
   const prayer = (v.lastText && Date.now() - v.lastTextAt < 90_000 && v.lastText.length > 6) ? v.lastText : pickPrayer();
-  const tier = coins >= 99 ? 3 : coins >= 10 ? 2 : 1;
-  const line = currentScene === 'hell'
-    ? `Nam mô Địa Tạng Vương Bồ Tát. Linh hồn ${spoken(v.name)} nhờ công đức ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} mà được cứu rỗi, siêu thoát.`
-    : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}. ${prayer}.`;
-  broadcast({ t: 'gift', id, name: v.name, giftName, count, coins, total: v.coins, tier, prayer });
-  if (settings.gifts.readAll || coins >= settings.gifts.minDiamonds) say(line, { tag: 'gift', id });
+
+  let line = '';
+  if (didLevelUp) {
+    line = currentScene === 'hell'
+      ? `Chúc mừng bạn ${spoken(v.name)} nhờ dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} đã phi thăng chứng đắc cảnh giới ${tierName}, công đức vô lượng, siêu thoát luân hồi!`
+      : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}, đắc chứng phẩm vị ${tierName}, công đức vô lượng, phước huệ trang nghiêm!`;
+    addLog(`✨ ${v.name} THĂNG CẤP → [${tierName}] (Tổng ${v.coins} hoa/xu)`);
+  } else {
+    const needed = getCoinsNeededForNextTier(v.coins);
+    line = currentScene === 'hell'
+      ? `Đạo hữu ${spoken(v.name)} thành tâm sám hối dâng ${count > 1 ? count + ' ' : ''}${giftName}, tích lũy thêm công đức lành!`
+      : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm cúng dường ${count > 1 ? count + ' ' : ''}${giftName}, công đức vô lượng!`;
+    addLog(`🌸 ${v.name} dâng ${giftName} (+${coins} hoa/xu). Tổng ${v.coins} hoa (Cần thêm ${needed} hoa để lên [${getTierName(curLvl + 1)}])`);
+  }
+
+  broadcast({
+    t: 'gift',
+    id: v.id,
+    name: v.name,
+    avatar: v.avatar || avatar || '',
+    giftName,
+    count,
+    coins,
+    total: v.coins,
+    donateCount: v.donateCount,
+    tier: curLvl,
+    tierName,
+    levelUp: didLevelUp,
+    prayer
+  });
+  if (settings.gifts.readAll || coins >= settings.gifts.minDiamonds) say(line, { tag: 'gift', id: v.id });
 }
 
 function pickPrayer() {
@@ -130,21 +315,59 @@ const ttsQueue = []; let ttsBusy = false, ttsSeq = 0;
 function esc(s) { return String(s).replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[c])); }
 function say(text, meta = {}) { if (ttsQueue.length >= 15) { addLog('Hàng đợi giọng đọc đầy, bỏ qua 1 câu'); return; } ttsQueue.push({ text: String(text).slice(0, 500), meta }); pumpTTS(); }
 async function pumpTTS() {
-  if (ttsBusy || !ttsQueue.length) return; ttsBusy = true;
+  if (ttsBusy || !ttsQueue.length) return;
+  ttsBusy = true;
   const { text, meta } = ttsQueue.shift();
-  try {
-    const file = `tts_${Date.now()}_${++ttsSeq}.mp3`;
-    const tts = new MsEdgeTTS();
-    await tts.setMetadata(settings.voice, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
-    const { audioStream } = tts.toStream(esc(text), { pitch: `${settings.pitch >= 0 ? '+' : ''}${settings.pitch}Hz`, rate: `${settings.rate >= 0 ? '+' : ''}${settings.rate}%` });
-    const chunks = [];
-    await new Promise((res, rej) => { audioStream.on('data', c => chunks.push(c)); audioStream.on('close', res); audioStream.on('error', rej); });
-    try { tts.close(); } catch { }
-    fs.writeFileSync(path.join(TTS_DIR, file), Buffer.concat(chunks));
-    broadcast({ t: 'tts', url: `/live/tts/${file}`, text, ...meta });
-    const old = fs.readdirSync(TTS_DIR).sort(); while (old.length > 40) { try { fs.unlinkSync(path.join(TTS_DIR, old.shift())); } catch { } }
-  } catch (e) { addLog('TTS lỗi: ' + (e?.message || e)); }
-  ttsBusy = false; setTimeout(pumpTTS, 50);
+  let attempts = 0;
+  let success = false;
+
+  while (attempts < 2 && !success) {
+    attempts++;
+    let tts = null;
+    try {
+      const file = `tts_${Date.now()}_${++ttsSeq}.mp3`;
+      tts = new MsEdgeTTS();
+      await tts.setMetadata(settings.voice, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
+      const { audioStream } = tts.toStream(esc(text), {
+        pitch: `${settings.pitch >= 0 ? '+' : ''}${settings.pitch}Hz`,
+        rate: `${settings.rate >= 0 ? '+' : ''}${settings.rate}%`
+      });
+      const chunks = [];
+      await new Promise((res, rej) => {
+        audioStream.on('data', c => chunks.push(c));
+        audioStream.on('close', res);
+        audioStream.on('error', err => {
+          // Nếu đã nhận được dữ liệu âm thanh tương đối đầy đủ (> 3KB), vẫn tận dụng phát bình thường
+          if (chunks.length > 0 && Buffer.concat(chunks).length > 3000) {
+            res();
+          } else {
+            rej(err);
+          }
+        });
+      });
+      const buf = Buffer.concat(chunks);
+      if (buf.length > 500) {
+        fs.writeFileSync(path.join(TTS_DIR, file), buf);
+        broadcast({ t: 'tts', url: `/live/tts/${file}`, text, ...meta });
+        const old = fs.readdirSync(TTS_DIR).sort();
+        while (old.length > 40) { try { fs.unlinkSync(path.join(TTS_DIR, old.shift())); } catch { } }
+        success = true;
+      }
+    } catch (e) {
+      if (attempts < 2) {
+        // Tự động thử lại sau 400ms nếu mạng chập chờn
+        await new Promise(r => setTimeout(r, 400));
+      } else {
+        addLog('TTS lỗi: ' + (e?.message || e));
+      }
+    } finally {
+      if (tts) {
+        try { tts.close(); } catch { }
+      }
+    }
+  }
+  ttsBusy = false;
+  setTimeout(pumpTTS, 250); // Giãn cách 250ms giữa các câu để máy chủ Microsoft Edge không ngắt kết nối
 }
 
 const CHANTS = [
@@ -174,9 +397,9 @@ async function connectTikTok(uniqueId) {
       uniqueId,
       apiKey: TIKTOOL_API_KEY,
     });
-    const av = u => u?.profilePicture || u?.avatarLargeUrl || '';
-    const nm = u => u?.nickname || u?.uniqueId || 'ẩn danh';
-    const uid = u => u?.uniqueId || u?.id || 'khach';
+    const av = u => u?.profilePicture || u?.avatarLargeUrl || u?.avatarThumb || '';
+    const nm = u => String(u?.nickname || u?.uniqueId || 'ẩn danh').trim() || 'ẩn danh';
+    const uid = u => String(u?.userId || u?.id || u?.secUid || u?.uniqueId || '').trim();
 
     conn.on('chat', d => {
       addLog(`💬 ${nm(d.user)}: ${d.comment}`);
@@ -196,7 +419,14 @@ async function connectTikTok(uniqueId) {
         if (res.isNew) addLog(`🚪 ${nm(d.user)} vào phòng`);
       }
     });
-    conn.on('like', d => broadcast({ t: 'like', id: uid(d.user), n: d.likeCount || 1 }));
+    conn.on('like', d => {
+      const u = d.user;
+      const { v } = seat(uid(u), nm(u), { avatar: av(u) });
+      const n = d.likeCount || 1;
+      v.likes = (v.likes || 0) + n;
+      saveMeritArchive(v);
+      broadcast({ t: 'like', id: v.id, name: v.name, n, totalLikes: v.likes, avatar: v.avatar });
+    });
     conn.on('disconnected', () => {
       tiktokState = { ...tiktokState, status: 'disconnected' };
       broadcast({ t: 'tiktok', ...tiktokState });
@@ -228,7 +458,16 @@ async function disconnectTikTok() {
 }
 
 /* ------------------------------------------------------------- test data */
-const DEMO_NAMES = ['Diệu Hạnh', 'Minh Tâm', 'Thiện Đức', 'Huệ An', 'Tịnh Nhã', 'Quảng Trí', 'Chơn Như', 'Pháp Hỷ', 'Nguyên Thanh', 'Tâm Đăng', 'Diệu Liên', 'Trí Hải', 'Phước Lộc', 'Hạnh Nguyện', 'Như Ý', 'Bảo Châu', 'Thanh Lương', 'Từ Tâm', 'An Lạc', 'Giác Hoa', 'Tuệ Minh', 'Liên Hương', 'Thu Hà', 'Ngọc Lan', 'Đức Anh', 'Hải Đăng', 'Mai Anh', 'Phương Thảo', 'Trung Kiên', 'Quang Huy', 'Bảo Ngọc', 'Diệu Linh'];
+const DEMO_NAMES = [
+  'Diệu Hạnh', 'Minh Tâm', 'Thiện Đức', 'Huệ An', 'Tịnh Nhã', 'Quảng Trí', 'Chơn Như', 'Pháp Hỷ',
+  'Nguyên Thanh', 'Tâm Đăng', 'Diệu Liên', 'Trí Hải', 'Phước Lộc', 'Hạnh Nguyện', 'Như Ý', 'Bảo Châu',
+  'Thanh Lương', 'Từ Tâm', 'An Lạc', 'Giác Hoa', 'Tuệ Minh', 'Liên Hương', 'Thu Hà', 'Ngọc Lan',
+  'Đức Anh', 'Hải Đăng', 'Mai Anh', 'Phương Thảo', 'Trung Kiên', 'Quang Huy', 'Bảo Ngọc', 'Diệu Linh',
+  'Minh An', 'Diệu Âm', 'Thanh Tịnh', 'Phúc Lâm', 'Trí Dũng', 'Vạn Hạnh', 'Diệu Tâm', 'Quảng Đạo',
+  'Bảo Trâm', 'Thiện Nhân', 'Tâm Bình', 'Hồng Phúc', 'Khánh An', 'Thanh Trúc', 'Diệu Thảo', 'Bảo An',
+  'Tâm Nguyên', 'Tường Vy', 'Huệ Quang', 'Trí Huệ', 'Như Ngọc', 'Minh Triết', 'Đức Thiện', 'Quỳnh Anh',
+  'Thanh Nhã', 'Nguyên Khang', 'Tuệ Lâm', 'Diệu Trang', 'Phước Thiện', 'Minh Khang', 'Hồng Ân', 'Tâm Đức'
+];
 function fillDemo(n) {
   const have = [...viewers.values()].filter(v => v.demo).length;
   for (let i = have; i < n && viewers.size < 100; i++) {
@@ -245,6 +484,26 @@ function onControl(m) {
     case 'disconnect': disconnectTikTok(); addLog('Đã ngắt kết nối TikTok'); break;
     case 'chat': { const n = String(m.name || 'Khách').slice(0, 18); onChat('sim_' + n, n, String(m.text || 'Nam mô A Di Đà Phật').slice(0, 120)); break; }
     case 'gift': { const n = String(m.name || 'Khách').slice(0, 18); onGift('sim_' + n, n, String(m.gift || 'Hoa hồng').slice(0, 30), clamp(m.count, 1, 99), clamp(m.diamonds, 1, 50000)); break; }
+    case 'like': {
+      const n = String(m.name || 'Khách').slice(0, 18);
+      const { v } = seat('sim_' + n, n);
+      const count = clamp(+m.count || 1, 1, 100);
+      v.likes = (v.likes || 0) + count;
+      saveMeritArchive(v);
+      broadcast({ t: 'like', id: v.id, name: v.name, n: count, totalLikes: v.likes, avatar: v.avatar });
+      break;
+    }
+    case 'leave': {
+      const n = String(m.name || '').slice(0, 18);
+      const v = findViewer(m.id, n);
+      if (v) {
+        saveMeritArchive(v);
+        viewers.delete(v.id);
+        broadcast({ t: 'leave', id: v.id, name: v.name });
+        addLog(`🚪 ${v.name} rời phiên live (nhập Niết bàn)`);
+      }
+      break;
+    }
     case 'fill': fillDemo(clamp(m.n, 1, 100)); addLog(`Đổ người mẫu: ${viewers.size} người`); break;
     case 'clear': clearSeats(); break;
     case 'bell': broadcast({ t: 'bell' }); break;
@@ -257,7 +516,45 @@ function onControl(m) {
     case 'bots': setBots(!!m.on, +m.n || 12, m.pace); break;
     case 'scene': { const s = m.scene === 'hell' ? 'hell' : 'pagoda'; currentScene = s; broadcast({ t: 'scene', scene: s }); addLog(s === 'hell' ? 'Chuyển overlay sang Sám Hối Địa Ngục' : 'Chuyển overlay sang Chánh Điện Tịnh Tâm'); break; }
     case 'verdict': { const label = VERDICT_LABELS[m.verdict]; if (!label) break; broadcast({ t: 'verdict', verdict: m.verdict, label }); addLog(`⚖️ Phán quyết: ${label}`); break; }
-    case 'salvation': { const n = String(m.name || 'Khách').slice(0, 18); const found = [...viewers.values()].find(v => v.name.toLowerCase() === n.toLowerCase()); broadcast({ t: 'salvation', id: found ? found.id : null, name: found ? found.name : n }); addLog(found ? `✨ ${found.name} được cứu rỗi (thử)` : `✨ Linh hồn ${n} được cứu rỗi (thử)`); break; }
+    case 'salvation': {
+      const n = String(m.name || 'Khách').slice(0, 18);
+      let found = [...viewers.values()].find(v => v.name.toLowerCase() === n.toLowerCase());
+      if (!found) {
+        const res = seat(null, n);
+        found = res.v;
+      }
+      const who = found ? found.name : n;
+      let curLvl = 1;
+      if (found) {
+        const curLvl0 = calcTierFromCoins(found.coins || 0);
+        // Tăng hoa vừa đủ để thăng đúng 1 cấp
+        const nextTarget = TIER_THRESHOLDS[Math.min(9, curLvl0)];
+        const needed = Math.max(1, nextTarget - (found.coins || 0));
+        found.coins = (found.coins || 0) + needed;
+        found.donateCount = (found.donateCount || 0) + 1;
+        found.savedAt = found.savedAt || Date.now();
+        saveMeritArchive(found);
+        curLvl = calcTierFromCoins(found.coins);
+      }
+      const tierName = getTierName(curLvl);
+      broadcast({
+        t: 'salvation',
+        id: found ? found.id : null,
+        name: who,
+        coins: 10,
+        total: found ? found.coins : 10,
+        donateCount: found ? found.donateCount : 1,
+        tier: curLvl,
+        tierName,
+        levelUp: true
+      });
+      const line = currentScene === 'hell'
+        ? `Chúc mừng bạn ${spoken(who)} đã phi thăng chứng đắc cảnh giới ${tierName}, công đức vô lượng, tiêu trừ tiền khiên nghiệp chướng, siêu thoát luân hồi!`
+        : `Chúc mừng đạo hữu ${spoken(who)} đã đắc chứng phẩm vị ${tierName}, công đức vô lượng, phước huệ trang nghiêm!`;
+      say(line, { tag: 'salvation' });
+      addLog(found ? `✨ ${found.name} phi thăng đắc cảnh giới [${tierName}] (Tổng ${found.coins} hoa/xu)` : `✨ Linh hồn ${n} phi thăng đắc cảnh giới [${tierName}]`);
+      break;
+    }
   }
 }
 
@@ -280,13 +577,21 @@ function setBots(on, n, pace) {
   clearInterval(botTimer); botTimer = null;
   if (on) {
     n = clamp(n, 1, 100);
-    for (let i = 0; i < n; i++) seat('bot_' + i, DEMO_NAMES[(i + 7) % DEMO_NAMES.length] + ' ·bot', { demo: true });
+    for (let i = 0; i < n; i++) {
+      const baseName = DEMO_NAMES[(i + 7) % DEMO_NAMES.length];
+      const suffix = i >= DEMO_NAMES.length ? ' ' + (Math.floor(i / DEMO_NAMES.length) + 1) : '';
+      seat('bot_' + i, baseName + suffix, { demo: true });
+    }
     const every = { slow: 4000, mid: 1800, fast: 700 }[pace] || 1800;
     botTimer = setInterval(() => {
       const ids = [...viewers.keys()].filter(id => id.startsWith('bot_')); if (!ids.length) return;
       const id = ids[Math.floor(Math.random() * ids.length)], v = viewers.get(id), r = Math.random();
       if (r < .62) onChat(id, v.name, BOT_LINES[Math.floor(Math.random() * BOT_LINES.length)]);
-      else if (r < .9) broadcast({ t: 'like', id, n: 1 + Math.floor(Math.random() * 4) });
+      else if (r < .9) {
+        const count = 1 + Math.floor(Math.random() * 4);
+        v.likes = (v.likes || 0) + count;
+        broadcast({ t: 'like', id, name: v.name, n: count, totalLikes: v.likes, avatar: v.avatar });
+      }
       else if (r < .985) onGift(id, v.name, 'Hoa hồng', 1 + Math.floor(Math.random() * 3), 1);
       else onGift(id, v.name, 'Đèn hoa sen', 1, 99);
     }, every);

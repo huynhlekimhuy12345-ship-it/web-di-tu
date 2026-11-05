@@ -3,84 +3,430 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bảng điều khiển · Chánh Điện Tịnh Tâm</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<title>Bảng Điều Khiển · Chánh Điện & Địa Ngục</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: three columns of cards (connection · interaction · sound/scene) over a status bar; collapses to one column on narrow windows. */
 :root{
-  --bg:#140b07; --card:#1f120b; --card2:#2a180e; --fg:#f3e5cb; --muted:#b39a78; --line:#4a2e1a;
-  --gold:#e2b04f; --red:#8f2a1a; --green:#2f7a4a; --display:"Noto Serif",Georgia,serif; --body:"Be Vietnam Pro",system-ui,sans-serif;
-  color-scheme:dark;
+  --display: "Noto Serif", Georgia, serif;
+  --body: "Be Vietnam Pro", system-ui, sans-serif;
+  color-scheme: dark;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--body);padding:18px max(16px,env(safe-area-inset-right)) 30px max(16px,env(safe-area-inset-left))}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;margin-bottom:14px}
-h1{font-family:var(--display);font-size:24px;margin:0;color:var(--gold)}
-.status{display:flex;gap:10px;flex-wrap:wrap}
-.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;font-variant-numeric:tabular-nums}
-.chip.ok{border-color:var(--green);color:#9fe0b4}.chip.bad{border-color:#a33;color:#f3a3a3}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;align-items:start}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
-.card h2{margin:0;font:600 15px var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--gold)}
-.hint{color:var(--muted);font-size:12px}
-label{display:grid;gap:4px;font-size:12px;color:var(--muted)}
-input,select,textarea{font:inherit;color:var(--fg);background:#0f0805;border:1px solid var(--line);border-radius:9px;padding:8px 10px;width:100%;min-width:0}
-textarea{resize:vertical;min-height:60px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.row>*{flex:1 1 0;min-width:0}
-.row.tight>*{flex:0 0 auto}
-button{font:600 13px var(--body);color:var(--fg);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;cursor:pointer}
-button:hover{border-color:var(--gold)}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
-button.primary{background:var(--green);border-color:#3f9a60}
-button.gold{background:#6b4a14;border-color:var(--gold)}
-button.red{background:var(--red);border-color:#b84a33}
-.check{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--fg)}
-.check input{width:auto}
-#people{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px}
-#people table{width:100%;border-collapse:collapse;font-size:13px}
-#people td{padding:5px 8px;border-bottom:1px solid #2e1c10}
-#people td:last-child{text-align:right;color:var(--gold);font-variant-numeric:tabular-nums}
-#log{height:220px;overflow:auto;background:#0b0604;border:1px solid var(--line);border-radius:10px;padding:8px;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* ================= THEME MẶC ĐỊNH / CHÁNH ĐIỆN (MÀU VÀNG KIM) ================= */
+body, body.theme-pagoda {
+  --bg: #140b05;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #2a1608 0%, #140b05 75%);
+  --card: #1f1209;
+  --card2: #2c190d;
+  --fg: #fbf3e4;
+  --muted: #b89c78;
+  --line: #52351a;
+  --theme-color: #ffd700;
+  --theme-accent: #e2b04f;
+  --theme-glow: rgba(255, 215, 0, 0.45);
+  --btn-theme: linear-gradient(135deg, #704712, #3d2306);
+  --btn-theme-hover: linear-gradient(135deg, #8a5717, #523009);
+  --green: #2f7a4a;
+  --red: #8f2a1a;
+  --gold: #ffd700;
+}
+
+/* ================= THEME ĐỊA NGỤC (MÀU ĐỎ RỰC LỬA) ================= */
+body.theme-hell {
+  --bg: #130302;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #350804 0%, #130302 75%);
+  --card: #1f0604;
+  --card2: #2d0906;
+  --fg: #fff0eb;
+  --muted: #c2887a;
+  --line: #701c12;
+  --theme-color: #ff4d2d;
+  --theme-accent: #ff6a42;
+  --theme-glow: rgba(255, 77, 45, 0.55);
+  --btn-theme: linear-gradient(135deg, #8c1d10, #450904);
+  --btn-theme-hover: linear-gradient(135deg, #a82414, #570e07);
+  --green: #2f7a4a;
+  --red: #c93018;
+  --gold: #ff6a42;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--fg);
+  font: 14px/1.45 var(--body);
+  padding: 16px max(16px, env(safe-area-inset-right)) 30px max(16px, env(safe-area-inset-left));
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.4s ease;
+}
+h1 {
+  font-family: var(--display);
+  font-size: 24px;
+  margin: 0;
+  color: var(--theme-color);
+  text-shadow: 0 0 14px var(--theme-glow);
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+.status { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.4s ease, color 0.4s ease;
+}
+.chip.ok { border-color: var(--green); color: #9fe0b4; }
+.chip.bad { border-color: #a33; color: #f3a3a3; }
+.chip.chip-pagoda { border-color: #ffd700; color: #ffd700; background: rgba(255,215,0,0.12); font-weight: 600; }
+.chip.chip-hell { border-color: #ff4d2d; color: #ff6a42; background: rgba(255,77,45,0.15); font-weight: 600; }
+
+/* ================= 2 TABS CHUYỂN CẢNH TO BẢN ================= */
+.scene-switch-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.scene-tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 2px solid var(--line);
+  background: var(--card);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+.scene-tab .tab-main { display: flex; align-items: center; gap: 14px; }
+.scene-tab .tab-icon { font-size: 32px; line-height: 1; }
+.scene-tab .tab-title { font-family: var(--display); font-size: 18px; font-weight: 700; letter-spacing: 0.04em; color: var(--fg); }
+.scene-tab .tab-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.scene-tab .active-badge {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Tab Chánh điện khi active */
+.scene-tab.pagoda.active {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(140, 91, 22, 0.55), rgba(77, 47, 9, 0.85));
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.35);
+}
+.scene-tab.pagoda.active .tab-title { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+.scene-tab.pagoda.active .active-badge {
+  display: block;
+  background: #ffd700;
+  color: #2b1704;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Tab Địa ngục khi active */
+.scene-tab.hell.active {
+  border-color: #ff4d2d;
+  background: linear-gradient(135deg, rgba(168, 36, 20, 0.55), rgba(82, 16, 8, 0.85));
+  box-shadow: 0 0 20px rgba(255, 77, 45, 0.45);
+}
+.scene-tab.hell.active .tab-title { color: #ff6a42; text-shadow: 0 0 10px rgba(255, 77, 45, 0.5); }
+.scene-tab.hell.active .active-badge {
+  display: block;
+  background: #ff4d2d;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 77, 45, 0.6);
+}
+
+/* ================= 2 NÚT CHUYỂN CẢNH PILL (CHÁNH ĐIỆN / ĐỊA NGỤC) ================= */
+.scene-pills {
+  display: flex;
+  gap: 12px;
+  margin: 6px 0 16px;
+}
+.scene-pill {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  border: 1.5px solid var(--line);
+  background: var(--card2);
+  color: var(--muted);
+  text-align: center;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.scene-pill:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+/* Nút Chánh điện khi active */
+body.theme-pagoda .scene-pill.pagoda,
+.scene-pill.pagoda.active {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(140, 91, 22, 0.85), rgba(77, 47, 9, 0.98));
+  color: #fffdf5;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* Nút Địa ngục khi active */
+body.theme-hell .scene-pill.hell,
+.scene-pill.hell.active {
+  border-color: #ff4d2d;
+  background: linear-gradient(135deg, rgba(196, 36, 16, 0.9), rgba(92, 16, 7, 0.98));
+  color: #fff5f2;
+  box-shadow: 0 0 22px rgba(255, 77, 45, 0.65);
+}
+
+/* ================= DẢI PHÂN CÁCH 2 ĐOẠN ================= */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 18px 0 14px;
+}
+.section-divider .divider-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
+  opacity: 0.6;
+}
+.section-divider .divider-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--theme-color);
+  text-shadow: 0 0 10px var(--theme-glow);
+  white-space: nowrap;
+}
+.section-divider .tag {
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================= GRID & CARDS ================= */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  border-color: var(--theme-accent);
+}
+.card h2 {
+  margin: 0;
+  font: 600 15px var(--body);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--theme-color);
+  transition: color 0.4s ease;
+}
+.hint { color: var(--muted); font-size: 12px; }
+label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+input, select, textarea {
+  font: inherit;
+  color: var(--fg);
+  background: #0d0604;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 10px;
+  width: 100%;
+  min-width: 0;
+  transition: border-color 0.3s ease;
+}
+textarea { resize: vertical; min-height: 60px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+.row > * { flex: 1 1 0; min-width: 0; }
+.row.tight > * { flex: 0 0 auto; }
+button {
+  font: 600 13px var(--body);
+  color: var(--fg);
+  background: var(--card2);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+button:hover { border-color: var(--theme-color); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 1px;
+}
+button.primary { background: var(--green); border-color: #3f9a60; }
+button.gold {
+  background: var(--btn-theme);
+  border-color: var(--theme-color);
+  color: #fff;
+  font-weight: 700;
+}
+button.gold:hover {
+  background: var(--btn-theme-hover);
+  box-shadow: 0 0 12px var(--theme-glow);
+}
+button.red { background: var(--red); border-color: #b84a33; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--fg); }
+.check input { width: auto; }
+
+#people { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+#people table { width: 100%; border-collapse: collapse; font-size: 13px; }
+#people td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+#people td:last-child { text-align: right; color: var(--theme-color); font-variant-numeric: tabular-nums; }
+#log {
+  height: 200px;
+  overflow: auto;
+  background: #090302;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  font: 12px/1.5 ui-monospace, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  .scene-switch-bar { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
-<body>
+<body class="theme-pagoda">
+
 <header>
-  <h1>Bảng điều khiển · Chánh Điện Tịnh Tâm</h1>
+  <h1>Bảng Điều Khiển · Chánh Điện & Địa Ngục</h1>
   <div class="status">
     <span class="chip" id="srv">Server: …</span>
     <span class="chip" id="tt">TikTok: chưa kết nối</span>
     <span class="chip" id="cnt">0 người</span>
-    <span class="chip" id="sceneChip">Cảnh: Chánh điện</span>
+    <span class="chip chip-pagoda" id="sceneChip">🏛️ Cảnh: Chánh điện</span>
   </div>
 </header>
 
-<div class="grid">
+<!-- ================= 2 TABS CHUYỂN ĐOẠN / CẢNH ================= -->
+<div class="scene-switch-bar">
+  <button id="btnScenePagoda" class="scene-tab pagoda active" type="button">
+    <div class="tab-main">
+      <div class="tab-icon">🏛️</div>
+      <div>
+        <div class="tab-title">ĐOẠN 1: CHÁNH ĐIỆN TỊNH TÂM</div>
+        <div class="tab-sub">Thiền định · Niệm Phật · Màu Vàng Kim</div>
+      </div>
+    </div>
+    <div class="active-badge">Đang chạy ✨</div>
+  </button>
+  <button id="btnSceneHell" class="scene-tab hell" type="button">
+    <div class="tab-main">
+      <div class="tab-icon">🔥</div>
+      <div>
+        <div class="tab-title">ĐOẠN 2: SÁM HỐI ĐỊA NGỤC</div>
+        <div class="tab-sub">Phán xét · Phi thăng sám hối · Màu Đỏ Rực</div>
+      </div>
+    </div>
+    <div class="active-badge">Đang chạy 🔥</div>
+  </button>
+</div>
+
+<!-- ==================== ĐOẠN 1: KHU VỰC CHÁNH ĐIỆN ==================== -->
+<div class="section-divider pagoda-divider">
+  <div class="divider-line"></div>
+  <div class="divider-title">
+    <span>🏛️</span>
+    <span>ĐOẠN 1 · KHU VỰC CHÁNH ĐIỆN & HỆ THỐNG</span>
+    <span class="tag">Màu Vàng Kim</span>
+  </div>
+  <div class="divider-line"></div>
+</div>
+
+<div class="grid section-pagoda">
+  <!-- Card 1: Kết nối TikTok LIVE -->
   <section class="card">
-    <h2>1 · Kết nối TikTok LIVE</h2>
+    <h2>1 · Kết Nối TikTok LIVE</h2>
     <label for="uid">Username kênh đang live</label>
-    <div class="row"><input id="uid" placeholder="@tenkenhcuaban" autocomplete="off"><button class="primary" id="btnConnect">Kết nối</button><button id="btnDisconnect">Ngắt</button></div>
-    <p class="hint">Chỉ đọc sự kiện công khai của phòng live (bình luận, quà, tim). Không cần mật khẩu hay cookie TikTok. Phải bật LIVE trước rồi mới kết nối.</p>
-    <button class="gold" id="btnOverlay">Mở màn hình overlay 9:16</button>
-    <p class="hint">Trong TikTok LIVE Studio: Add source → Window capture → chọn cửa sổ overlay. Bấm "bật âm thanh" một lần trong cửa sổ đó.</p>
-    <h2>Trong sân chùa</h2>
-    <div id="people"><table><tbody id="peopleBody"><tr><td class="hint">Chưa có ai</td><td></td></tr></tbody></table></div>
+    <div class="row">
+      <input id="uid" placeholder="@tenkenhcuaban" autocomplete="off">
+      <button class="primary" id="btnConnect">Kết nối</button>
+      <button id="btnDisconnect">Ngắt</button>
+    </div>
+    <p class="hint">Chỉ đọc sự kiện công khai (bình luận, quà, tim). Không cần mật khẩu. Bật LIVE trên TikTok trước rồi mới kết nối.</p>
+    <button class="gold" id="btnOverlay">Mở màn hình overlay 9:16 (OBS)</button>
+    <p class="hint">Trong OBS / TikTok LIVE Studio: Add Source → Window/Browser Capture → chọn overlay. Bấm "Bật âm thanh" 1 lần.</p>
+    <h2>Trong sân chùa / Chánh điện</h2>
+    <div id="people">
+      <table><tbody id="peopleBody"><tr><td class="hint">Chưa có ai</td><td></td></tr></tbody></table>
+    </div>
   </section>
 
+  <!-- Card 2: Thử tương tác & Mô phỏng -->
   <section class="card">
-    <h2>2 · Thử tương tác</h2>
+    <h2>2 · Thử Tương Tác & Phật Tử</h2>
     <label for="simName">Tên người xem</label>
     <input id="simName" value="Minh An">
     <label for="simText">Bình luận / lời nguyện</label>
     <input id="simText" value="Nam mô A Di Đà Phật, cầu gia đình bình an">
-    <div class="row"><button id="btnChat">Gửi bình luận</button></div>
+    <div class="row">
+      <button id="btnChat">Gửi bình luận (Vào lại live)</button>
+      <button id="btnLeave" class="red">Rời live (Niết bàn)</button>
+    </div>
     <div class="row">
       <button data-gift="Hoa hồng" data-dia="1">Hoa hồng · 1</button>
       <button data-gift="Đèn hoa sen" data-dia="30">Hoa sen · 30</button>
       <button data-gift="Chuông vàng" data-dia="199">Chuông · 199</button>
     </div>
-    <p class="hint">Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> làm bình luận để đổi hình.</p>
+    <p class="hint">Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> trong bình luận để đổi hình tướng.</p>
     <h2>Đổ người mẫu</h2>
-    <div class="row"><button data-fill="15">15</button><button data-fill="36">36</button><button data-fill="64">64</button><button data-fill="100">100</button></div>
+    <div class="row">
+      <button data-fill="15">15</button>
+      <button data-fill="36">36</button>
+      <button data-fill="64">64</button>
+      <button data-fill="100">100</button>
+    </div>
     <button class="red" id="btnClear">Làm trống toàn bộ bồ đoàn</button>
     <h2>Bot tương tác mô phỏng</h2>
     <div class="row">
@@ -88,63 +434,96 @@ button.red{background:var(--red);border-color:#b84a33}
       <label>Nhịp<select id="botPace"><option value="slow">Chậm</option><option value="mid" selected>Vừa</option><option value="fast">Nhanh</option></select></label>
       <button id="btnBots">Bật bot</button>
     </div>
-    <p class="hint">Bot chỉ chạy trên màn hình của anh, không phải người xem TikTok thật.</p>
+    <p class="hint">Bot mô phỏng tên người thật tự nhiên (không có chữ ·bot), giúp phòng live nhộn nhịp.</p>
   </section>
 
+  <!-- Card 3: Âm thanh & Tụng kinh -->
   <section class="card">
-    <h2>3 · Giọng đọc · Nhạc · Chuông mõ</h2>
+    <h2>3 · Giọng Đọc · Chuông Mõ · Tụng Kinh</h2>
     <div class="row">
-      <label>Giọng<select id="voice"><option value="vi-VN-NamMinhNeural">Nam Minh (nam)</option><option value="vi-VN-HoaiMyNeural">Hoài My (nữ)</option></select></label>
+      <label>Giọng<select id="voice"><option value="vi-VN-NamMinhNeural">Nam Minh (nam trầm ấm)</option><option value="vi-VN-HoaiMyNeural">Hoài My (nữ thanh thoát)</option></select></label>
       <label>Độ trầm (Hz)<input id="pitch" type="number" step="1" value="-18"></label>
       <label>Tốc độ (%)<input id="rate" type="number" step="1" value="-20"></label>
     </div>
     <label for="sayText">Đọc thử / phát thông báo</label>
     <textarea id="sayText">Nam mô Bổn Sư Thích Ca Mâu Ni Phật. Nguyện cầu cho tất cả chư vị Phật tử thân tâm thường an lạc, vạn sự cát tường.</textarea>
-    <div class="row"><button class="primary" id="btnSay">Phát lên live</button><button id="btnChant">Đọc kinh định kỳ ngay</button></div>
+    <div class="row">
+      <button class="primary" id="btnSay">Phát lên live</button>
+      <button id="btnChant">Đọc kinh định kỳ ngay</button>
+    </div>
     <div class="row tight">
-      <label class="check"><input type="checkbox" id="music" checked> Nhạc nền</label>
+      <label class="check"><input type="checkbox" id="music" checked> Nhạc thiền</label>
       <label class="check"><input type="checkbox" id="mo" checked> Tiếng mõ</label>
-      <label class="check"><input type="checkbox" id="autoChant" checked> Đọc kinh tự động</label>
+      <label class="check"><input type="checkbox" id="autoChant" checked> Tụng kinh tự động</label>
     </div>
     <div class="row">
       <label>Nhịp mõ (BPM)<input id="moBpm" type="number" min="20" max="120" value="52"></label>
       <label>Đọc kinh mỗi (phút)<input id="chantEveryMin" type="number" min="1" max="60" value="3"></label>
     </div>
-    <div class="row"><button id="btnBell">🔔 Thỉnh chuông</button><button id="btnMo">Gõ mõ</button></div>
-    <h2>Cảnh</h2>
+    <div class="row">
+      <button id="btnBell">🔔 Thỉnh chuông</button>
+      <button id="btnMo">Gõ mõ</button>
+    </div>
+    <h2>Thiết lập Chánh Điện</h2>
     <label>Tên thiền đường<input id="title" value="Chánh Điện Tịnh Tâm"></label>
     <label>Dòng phụ<input id="subtitle" value="Nam Mô A Di Đà Phật"></label>
     <div class="row">
-      <label>Số chỗ ngồi<select id="seatMode"><option value="auto">Tự mở rộng 24 → 100</option><option value="24">24</option><option value="36">36</option><option value="64">64</option><option value="100">100</option></select></label>
+      <label>Số chỗ ngồi<select id="seatMode"><option value="100" selected>100 chỗ (Khuyên dùng)</option><option value="auto">Tự mở rộng 24 → 100</option><option value="64">64 chỗ</option><option value="36">36 chỗ</option><option value="24">24 chỗ</option></select></label>
     </div>
     <label class="check"><input type="checkbox" id="joinOnEnter"> Người vào phòng cũng được ngồi (không cần bình luận)</label>
   </section>
+</div>
 
+<!-- ==================== ĐOẠN 2: SÁM HỐI ĐỊA NGỤC ==================== -->
+<div class="section-divider hell-divider" style="margin-top:26px">
+  <div class="divider-line"></div>
+  <div class="divider-title">
+    <span>🔥</span>
+    <span>ĐOẠN 2 · KHU VỰC PHÁN QUYẾT & SÁM HỐI ĐỊA NGỤC</span>
+    <span class="tag">Màu Đỏ Rực</span>
+  </div>
+  <div class="divider-line"></div>
+</div>
+
+<div class="grid section-hell">
+  <!-- Card 4: 5 Lệnh Phán Quyết Diêm La -->
   <section class="card">
-    <h2>4 · Sám Hối Địa Ngục</h2>
-    <p class="hint">Chuyển overlay sang cảnh địa ngục, phán quyết và thử donate cứu rỗi. Bấm nút phán quyết hoặc donate sẽ tự chuyển overlay sang Địa ngục trước.</p>
-    <div class="row">
-      <button id="btnScenePagoda">Chánh điện</button>
-      <button id="btnSceneHell" class="gold">Địa ngục</button>
+    <div class="scene-pills">
+      <button type="button" class="scene-pill pagoda active" id="btnScenePagoda2">Chánh điện</button>
+      <button type="button" class="scene-pill hell" id="btnSceneHell2">Địa ngục</button>
     </div>
-    <h2>Lệnh phán quyết</h2>
+    <h2>Lệnh Phán Quyết Diêm La</h2>
+    <p class="hint">Bấm lệnh để thị uy phán xét linh hồn trên phiên live. Hệ thống sẽ tự động phát âm thanh chuông lệnh và hiện sớ phán quyết.</p>
     <div class="row">
-      <button data-verdict="phan-xet">Phán xét</button>
-      <button data-verdict="dinh-toi">Định tội</button>
-      <button data-verdict="khai-an">Khai ân</button>
-      <button data-verdict="giam-an">Giảm án</button>
-      <button data-verdict="sieu-do">Siêu độ</button>
+      <button data-verdict="phan-xet" class="gold">⚖️ Phán xét</button>
+      <button data-verdict="dinh-toi" class="gold">📜 Định tội</button>
+      <button data-verdict="khai-an" class="gold">✨ Khai ân</button>
+      <button data-verdict="giam-an" class="gold">🌿 Giảm án</button>
+      <button data-verdict="sieu-do" class="gold">🕊️ Siêu độ</button>
     </div>
-    <div class="row"><button id="btnSalvation" class="gold">Donate sám hối (thử)</button></div>
-    <p class="hint">Donate thử dùng tên ở mục "Thử tương tác". Vong hồn được chọn sẽ phát sáng, thoát xích và bay lên siêu thoát, nhường chỗ cho người mới.</p>
+    <p class="hint">Mỗi lệnh phán quyết đều kèm hiệu ứng chuông ngân và lời chiếu chỉ linh ứng trang nghiêm.</p>
+  </section>
+
+  <!-- Card 5: Donate Sám Hối & Thăng Cấp Phi Thăng -->
+  <section class="card">
+    <h2>Donate Sám Hối & Thăng Cấp Đài Sen (Cấp 1 – 10)</h2>
+    <p class="hint">Thử nghiệm quy trình cứu rỗi: Khi người xem donate, họ sẽ lập tức phi thăng lên đài sen ngự trên không trung, giải phóng chỗ quỳ cho người mới.</p>
+    <div class="row">
+      <button id="btnSalvation" class="gold">✨ Donate Sám Hối (+1 Cấp)</button>
+      <button data-gift="Đèn hoa sen" data-dia="300" class="gold">🪷 Dâng Sen (+1 Cấp, +300 c.đức)</button>
+      <button data-gift="Đại hồng chung" data-dia="1200" class="gold">🔔 Đại Hồng Chung (+1 Cấp, +1200 c.đức)</button>
+    </div>
+    <p class="hint"><b>10 Cảnh Giới Thăng Tiến (Theo số hoa tích lũy):</b> 1. Sơ Tâm Sám Hối (1 hoa) · 2. Quy Y Tam Bảo (3 hoa) · 3. Khai Minh Giác Ngộ (6 hoa) · 4. Thanh Tịnh Thân Tâm (10 hoa) · 5. Tích Phước Tụ Duyên (15 hoa) · 6. Tiêu Tai Tịnh Nghiệp (21 hoa) · 7. Phát Tâm Bồ Đề (28 hoa) · 8. Đắc Đạo Viên Thành (36 hoa) · 9. Giải Thoát Luân Hồi (45 hoa) · 10. Đại Giác Viên Mãn (55 hoa).</p>
   </section>
 </div>
 
-<section class="card" style="margin-top:16px">
-  <h2>Nhật ký</h2>
+<!-- ==================== NHẬT KÝ ==================== -->
+<section class="card" style="margin-top:20px">
+  <h2>Nhật Ký Hoạt Động Hệ Thống</h2>
   <div id="log" aria-live="polite"></div>
 </section>
-<footer class="hint" style="margin-top:14px;text-align:center">Chánh Điện Online · mã nguồn mở MIT · thực hiện bởi Kent Juno</footer>
+
+<footer class="hint" style="margin-top:16px;text-align:center">Chánh Điện & Sám Hối Địa Ngục Online · Phiên bản 2 Đoạn Chuyên Nghiệp</footer>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -166,6 +545,30 @@ function setTT(st){
   const el=$('tt'); el.className='chip ' + (st.status==='connected'?'ok':st.status==='error'?'bad':'');
   el.textContent = st.status==='connected' ? `TikTok: @${st.uniqueId} ✓` : st.status==='connecting' ? `TikTok: đang kết nối @${st.uniqueId}…` : st.status==='error' ? 'TikTok: lỗi kết nối' : 'TikTok: chưa kết nối';
 }
+
+/* ================= CHUYỂN GIAO DIỆN CHÁNH ĐIỆN (VÀNG) ↔ ĐỊA NGỤC (ĐỎ) ================= */
+function setSceneUI(s){
+  const isHell = s === 'hell';
+  document.body.classList.remove('theme-pagoda', 'theme-hell');
+  document.body.classList.add(isHell ? 'theme-hell' : 'theme-pagoda');
+
+  const el = $('sceneChip');
+  if (el) {
+    el.textContent = isHell ? '🔥 Cảnh: Địa ngục' : '🏛️ Cảnh: Chánh điện';
+    el.className = 'chip ' + (isHell ? 'chip-hell' : 'chip-pagoda');
+  }
+
+  const btnP = $('btnScenePagoda');
+  const btnH = $('btnSceneHell');
+  if (btnP) btnP.classList.toggle('active', !isHell);
+  if (btnH) btnH.classList.toggle('active', isHell);
+
+  const btnP2 = $('btnScenePagoda2');
+  const btnH2 = $('btnSceneHell2');
+  if (btnP2) btnP2.classList.toggle('active', !isHell);
+  if (btnH2) btnH2.classList.toggle('active', isHell);
+}
+
 function connect(){
   ws = new WebSocket(`ws://${location.host}/ws?role=control`);
   ws.onopen = () => { $('srv').textContent='Server: đang chạy'; $('srv').className='chip ok'; };
@@ -190,6 +593,7 @@ $('uid').onkeydown = e => { if (e.key==='Enter') send('connect', { uniqueId: $('
 $('btnDisconnect').onclick = () => send('disconnect');
 $('btnOverlay').onclick = () => window.open('/live/overlay.html', 'overlay916', 'width=540,height=960');
 $('btnChat').onclick = () => send('chat', { name: $('simName').value, text: $('simText').value });
+$('btnLeave').onclick = () => send('leave', { name: $('simName').value });
 document.querySelectorAll('[data-gift]').forEach(b => b.onclick = () => send('gift', { name: $('simName').value, gift: b.dataset.gift, diamonds: +b.dataset.dia, count: 1 }));
 document.querySelectorAll('[data-fill]').forEach(b => b.onclick = () => send('fill', { n: +b.dataset.fill }));
 $('btnClear').onclick = () => send('clear');
@@ -198,11 +602,25 @@ $('btnSay').onclick = () => send('say', { text: $('sayText').value });
 $('btnChant').onclick = () => send('chant');
 $('btnBell').onclick = () => send('bell');
 $('btnMo').onclick = () => send('mo');
-function setSceneUI(s){ const el=$('sceneChip'); if (el) el.textContent = s==='hell' ? 'Cảnh: Địa ngục' : 'Cảnh: Chánh điện'; }
-$('btnScenePagoda').onclick = () => send('scene', { scene: 'pagoda' });
-$('btnSceneHell').onclick = () => send('scene', { scene: 'hell' });
-document.querySelectorAll('[data-verdict]').forEach(b => b.onclick = () => { send('scene', { scene: 'hell' }); send('verdict', { verdict: b.dataset.verdict }); });
-$('btnSalvation').onclick = () => { send('scene', { scene: 'hell' }); send('salvation', { name: $('simName').value }); };
+
+/* Bấm chuyển cảnh Chánh Điện ↔ Địa Ngục */
+const switchScene = scene => {
+  setSceneUI(scene);
+  send('scene', { scene });
+};
+$('btnScenePagoda').onclick = () => switchScene('pagoda');
+$('btnSceneHell').onclick = () => switchScene('hell');
+if ($('btnScenePagoda2')) $('btnScenePagoda2').onclick = () => switchScene('pagoda');
+if ($('btnSceneHell2')) $('btnSceneHell2').onclick = () => switchScene('hell');
+
+document.querySelectorAll('[data-verdict]').forEach(b => b.onclick = () => {
+  send('scene', { scene: 'hell' });
+  setSceneUI('hell');
+  send('verdict', { verdict: b.dataset.verdict });
+});
+$('btnSalvation').onclick = () => {
+  send('salvation', { name: $('simName').value });
+};
 for (const k of SETTING_IDS) $(k).addEventListener('change', () => send('settings', { settings: readSettings() }));
 </script>
 </body>

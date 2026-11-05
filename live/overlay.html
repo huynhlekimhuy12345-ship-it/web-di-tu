@@ -32,9 +32,9 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 .pill small{font-size:20px;font-weight:500;color:var(--muted);line-height:1.05}
 .dot{width:18px;height:18px;border-radius:50%;background:#46d36b;box-shadow:0 0 12px #46d36b}
 /* side cards */
-.card{background:var(--panel);border:2px solid var(--line);border-radius:22px;padding:18px 22px;font-size:25px;line-height:1.4;backdrop-filter:blur(4px)}
-#guide{left:24px;top:630px;width:290px}
-#guide div+div{border-top:1px solid rgba(226,176,79,.3);margin-top:10px;padding-top:10px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:22px;padding:18px 22px;font-size:25px;line-height:1.4}
+#guide{left:16px;top:350px;width:265px;padding:10px 12px;font-size:14px;line-height:1.32;border-radius:14px}
+#guide div+div{border-top:1px solid rgba(226,176,79,.3);margin-top:6px;padding-top:6px}
 #guide b{color:var(--gold2)}
 #merit{right:24px;top:630px;width:290px;text-align:center}
 #merit h3{margin:0 0 8px;font-family:var(--display);font-size:30px;color:var(--gold2);letter-spacing:.06em}
@@ -49,27 +49,43 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 #chant.show{opacity:1;transform:none}
 #chant h4{margin:0 0 8px;font-family:var(--display);color:var(--gold2);font-size:30px;letter-spacing:.1em}
 #chant p{margin:0;font-family:var(--display);font-style:italic;font-size:30px;line-height:1.45}
-#gift{left:70px;right:70px;top:330px;z-index:5;padding:30px 40px;text-align:center;border-radius:28px;border:3px solid var(--gold2);
-  background:radial-gradient(ellipse at 50% 0%,rgba(150,40,20,.95),rgba(50,14,6,.95));box-shadow:0 0 60px rgba(255,190,90,.45);
-  opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s cubic-bezier(.2,1.4,.4,1)}
-#gift.show{opacity:1;transform:none}
-#gift .who{font-family:var(--display);font-weight:700;font-size:52px;color:var(--gold2)}
-#gift .what{font-size:36px;margin-top:6px}
-#gift .pray{font-family:var(--display);font-style:italic;font-size:32px;color:var(--fg);margin-top:12px;opacity:.95}
+#gift{left:70px;right:70px;top:290px;z-index:8;padding:26px 36px;text-align:center;border-radius:32px;border:3px solid var(--gold2);
+  background:radial-gradient(ellipse at 50% 25%,rgba(140,35,15,.96),rgba(35,10,4,.96));box-shadow:0 0 80px rgba(255,200,90,.6);
+  opacity:0;transform:scale(.85);transition:opacity .35s,transform .35s cubic-bezier(.2,1.3,.4,1)}
+#gift.show{opacity:1;transform:scale(1)}
+.gift-avatar-wrap{position:relative;display:inline-block;margin-bottom:10px}
+#giftAvatar, #salvationAvatar{width:130px;height:130px;border-radius:50%;border:4px solid #ffd700;object-fit:cover;box-shadow:0 0 35px rgba(255,215,0,.85);display:none;background:#200804}
+.gift-thanks{font-family:var(--display);font-size:32px;font-weight:700;color:#ffd700;letter-spacing:.12em;margin-bottom:6px;text-shadow:0 0 16px rgba(255,215,0,.6)}
+#gift .who{font-family:var(--display);font-weight:700;font-size:46px;color:#fff4dc;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+#gift .what{font-size:30px;margin-top:6px;color:#ffd98a}
+#gift .pray{font-family:var(--display);font-style:italic;font-size:26px;color:var(--fg);margin-top:10px;opacity:.9}
 /* enable sound (needed once: browsers block autoplay) */
 #unmute{position:absolute;z-index:9;left:50%;top:1540px;transform:translateX(-50%);font:600 36px var(--body);padding:22px 44px;border-radius:24px;border:3px solid var(--gold2);background:var(--red);color:#fff4dc;cursor:pointer}
 #conn{position:absolute;z-index:4;right:16px;bottom:12px;font-size:20px;color:var(--muted);opacity:.6}
 
 /* hell scene cards + banners (shown only when the hell scene is active) */
-#hellGuide{left:24px;top:353px;width:290px;display:none}
-#hellGuide div+div{border-top:1px solid rgba(255,122,60,.3);margin-top:10px;padding-top:10px}
+#hellGuide{left:16px;top:350px;width:265px;display:none;background:rgba(26,8,4,.92);border:2px solid rgba(255,122,60,.4);box-shadow:0 4px 20px rgba(0,0,0,.6);padding:10px 12px;font-size:14px;line-height:1.32;border-radius:14px}
+#hellGuide div+div{border-top:1px solid rgba(255,122,60,.25);margin-top:6px;padding-top:6px}
 #hellGuide b{color:#ffb08a}
-#hellBook{right:24px;top:353px;width:290px;max-height:634px;overflow:hidden;text-align:center;display:none}
-#hellBook h3{margin:0 0 8px;font-family:var(--display);font-size:30px;color:#ffb08a;letter-spacing:.06em}
-#hellBook ol{margin:0;padding:0;list-style:none;text-align:left;display:grid;gap:6px}
-#hellBook li{display:flex;justify-content:space-between;gap:10px}
-#hellBook li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#hellBook li span:last-child{color:#ffb08a;font-variant-numeric:tabular-nums}
+#hellBook{right:16px;top:340px;width:320px;max-height:none;overflow:hidden;scrollbar-width:none;text-align:center;display:none;padding:10px 14px;background:rgba(18,6,3,.90);border:1.5px solid rgba(255,190,80,.32);box-shadow:0 4px 24px rgba(0,0,0,.5);border-radius:14px}
+#hellBook::-webkit-scrollbar{display:none}
+#hellBook h3{margin:0 0 6px;font-family:var(--display);font-size:22px;color:#ffd98a;letter-spacing:.08em;text-shadow:0 0 10px rgba(255,215,0,.4)}
+#hellBook ol{margin:0;padding:0;list-style:none;text-align:left;display:grid;gap:3px}
+#hellBook li{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;align-items:center;padding:3px 7px;border-radius:6px}
+#hellBook li .name-wrap{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+#hellBook li .score{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+#hellBook li.book-section-header{justify-content:center;font-size:11px;font-weight:700;letter-spacing:.08em;color:#ffc57a;background:rgba(255,140,40,.20);border:none;padding:2px 4px;margin-top:2px;border-radius:4px}
+#hellBook li.bower-header{color:#ffb295;background:rgba(255,90,30,.18);margin-top:6px}
+#hellBook li.top1{background:linear-gradient(90deg,rgba(255,215,0,.35),rgba(255,140,0,.15));border-left:3px solid #ffd700;color:#fffadb}
+#hellBook li.top1 .score{color:#ffd700}
+#hellBook li.top2{background:rgba(220,230,250,.20);border-left:3px solid #dce6fa;color:#f0f5ff}
+#hellBook li.top2 .score{color:#dce6fa}
+#hellBook li.top3{background:rgba(225,160,110,.20);border-left:3px solid #e1a06e;color:#fff0e6}
+#hellBook li.top3 .score{color:#e1a06e}
+#hellBook li.donor{color:#fff2b0;background:rgba(255,215,0,.12);border-left:3px solid rgba(255,215,0,.6)}
+#hellBook li.donor .score{color:#ffd700}
+#hellBook li.bow{color:#ffcfbe;background:rgba(255,120,60,.08);font-size:14px}
+#hellBook li.bow .score{color:#ff986e;font-weight:600}
 #hellBook .empty{color:var(--muted);text-align:center}
 #verdict{left:70px;right:70px;top:330px;z-index:6;padding:26px 36px;text-align:center;border-radius:24px;border:3px solid #ff7a3c;
   background:radial-gradient(ellipse at 50% 0%,rgba(120,20,10,.95),rgba(30,4,2,.95));box-shadow:0 0 60px rgba(255,90,30,.4);
@@ -77,13 +93,21 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 #verdict.show{opacity:1;transform:none}
 #verdict .who{font-family:var(--display);font-weight:700;font-size:34px;color:#ffb08a;letter-spacing:.08em}
 #verdict .txt{font-family:var(--display);font-style:italic;font-size:34px;margin-top:8px}
-#salvation{left:70px;right:70px;top:330px;z-index:6;padding:30px 40px;text-align:center;border-radius:28px;border:3px solid #ffd98a;
-  background:radial-gradient(ellipse at 50% 0%,rgba(150,90,20,.95),rgba(50,20,6,.95));box-shadow:0 0 60px rgba(255,210,120,.5);
+#salvation{left:60px;right:60px;top:320px;z-index:7;padding:32px 42px;text-align:center;border-radius:28px;border:3px solid #ffd98a;
+  background:radial-gradient(ellipse at 50% 0%,rgba(160,80,20,.98),rgba(45,12,4,.98));box-shadow:0 0 70px rgba(255,210,100,.6);
   opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s}
 #salvation.show{opacity:1;transform:none}
-#salvation .who{font-family:var(--display);font-weight:700;font-size:52px;color:#ffe9b0}
-#salvation .what{font-size:36px;margin-top:6px}
-@media (prefers-reduced-motion:reduce){#chant,#gift{transition:none}}
+#salvation .who{font-family:var(--display);font-weight:700;font-size:48px;color:#ffe9b0;text-shadow:0 0 24px rgba(255,220,100,.8)}
+#salvation .what{font-size:32px;margin-top:12px;color:#ffffff;line-height:1.35;font-weight:500}
+#returnNotice{left:70px;right:70px;top:290px;z-index:8;padding:28px 38px;text-align:center;border-radius:26px;border:3px solid #ffd700;
+  background:radial-gradient(ellipse at 50% 0%,rgba(190,95,20,.98),rgba(35,10,4,.98));box-shadow:0 0 70px rgba(255,215,0,.75);
+  opacity:0;transform:scale(.85);transition:opacity .45s,transform .45s;pointer-events:none}
+#returnNotice.show{opacity:1;transform:none}
+#returnNotice .return-title{font-family:var(--display);font-size:26px;color:#ffd98a;letter-spacing:.08em;margin-bottom:6px;text-shadow:0 0 14px rgba(255,215,0,.8)}
+#returnNotice .who{font-family:var(--display);font-weight:700;font-size:44px;color:#fff2b0;text-shadow:0 0 20px rgba(255,220,100,.9)}
+#returnNotice .what{font-size:30px;margin-top:10px;color:#ffffff;line-height:1.35;font-weight:500}
+#returnAvatar{width:130px;height:130px;border-radius:50%;border:4px solid #ffd700;object-fit:cover;box-shadow:0 0 35px rgba(255,215,0,.85);display:none;background:#200804}
+@media (prefers-reduced-motion:reduce){#chant,#gift,#salvation,#returnNotice{transition:none}}
 </style>
 </head>
 <body>
@@ -91,26 +115,44 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
   <canvas id="c" width="1080" height="1920"></canvas>
   <div id="plaque" class="ui"><div id="title">Chánh Điện Tịnh Tâm</div><div id="subtitle">Nam Mô A Di Đà Phật</div></div>
   <div id="pills" class="ui">
-    <div class="pill"><span class="dot"></span><span id="count">0/24</span><small>đang<br>thiền</small></div>
+    <div class="pill"><span class="dot"></span><span id="count">0/100</span><small>đang<br>thiền</small></div>
     <div class="pill">⏱ <span id="timer">00:00:00</span></div>
   </div>
   <div id="guide" class="card ui">
     <div>💬 <b>Bình luận bất kỳ</b> để vào thiền</div>
-    <div>Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> để đổi hình</div>
-    <div>🎁 Tặng quà được <b>xướng tên hồi hướng</b></div>
+    <div>👤 Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> để đổi hình dạng</div>
+    <div>🎁 <b>Donate hoa thăng cấp:</b> Cấp 1 (1 hoa) → Cấp 10 (10 hoa)</div>
+    <div>❤️ <b>1 tym = 1 lạy niệm Phật</b></div>
   </div>
   <div id="merit" class="card ui"><h3>✦ Công Đức ✦</h3><ol id="meritList"><li class="empty">Chưa có</li></ol></div>
   <div id="chant" class="ui"><h4>✦ TỤNG KINH ĐỊNH KỲ ✦</h4><p id="chantText"></p></div>
-  <div id="gift" class="ui"><div class="who" id="giftWho"></div><div class="what" id="giftWhat"></div><div class="pray" id="giftPray"></div></div>
+  <div id="gift" class="ui">
+    <div class="gift-avatar-wrap"><img id="giftAvatar" src="" alt="Avatar" /></div>
+    <div class="gift-thanks">🙏 CẢM ƠN BẠN 🙏</div>
+    <div class="who" id="giftWho"></div>
+    <div class="what" id="giftWhat"></div>
+    <div class="pray" id="giftPray"></div>
+  </div>
   <div id="hellGuide" class="card ui">
     <div>💬 <b>Bình luận bất kỳ</b> để vào sám hối</div>
+    <div>👤 Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> để đổi hình dạng</div>
     <div>⚖️ Lệnh phán quyết: <b>phán xét · định tội · khai ân · giảm án · siêu độ</b></div>
-    <div>🎁 <b>Donate sám hối</b> → linh hồn được cứu rỗi</div>
-    <div>❤️ <b>1 tym = 1 lạy</b></div>
+    <div>🎁 <b>Donate hoa thăng cấp:</b> Cấp 1 (1 hoa) → Cấp 10 (10 hoa)</div>
+    <div>❤️ <b>1 tym = 1 lạy sám hối</b></div>
   </div>
   <div id="hellBook" class="card ui"><h3>✦ Sổ Sám Hối ✦</h3><ol id="hellBookList"><li class="empty">Chưa có</li></ol></div>
   <div id="verdict" class="ui"><div class="who">⚖️ PHÁN QUYẾT ⚖️</div><div class="txt" id="verdictText"></div></div>
-  <div id="salvation" class="ui"><div class="who" id="salvationWho"></div><div class="what" id="salvationWhat"></div></div>
+  <div id="salvation" class="ui">
+    <div class="gift-avatar-wrap"><img id="salvationAvatar" src="" alt="Avatar" /></div>
+    <div class="who" id="salvationWho"></div>
+    <div class="what" id="salvationWhat"></div>
+  </div>
+  <div id="returnNotice" class="ui">
+    <div class="gift-avatar-wrap"><img id="returnAvatar" src="" alt="Avatar" /></div>
+    <div class="return-title">✨ ĐẠO HỮU TRỞ LẠI SÁM HỐI ✨</div>
+    <div class="who" id="returnWho"></div>
+    <div class="what" id="returnWhat"></div>
+  </div>
   <button id="unmute">🔔 Bấm để bật âm thanh</button>
   <div id="conn">đang kết nối…</div>
 </div></div>
@@ -129,8 +171,38 @@ const IMG = { hall:'/assets/hall.jpg', hell:'/assets/hell.jpg', monk:'/assets/c_
 for (const [k,src] of Object.entries(IMG)){ const im=new Image(); im.src=src; A[k]=im; }
 const ANIM = { man:{fw:212,fh:300,seatH:210}, woman:{fw:212,fh:300,seatH:220}, granny:{fw:195,fh:300,seatH:222} };
 const hasAnim = k => ANIM[k] && A['anim_'+k]?.naturalWidth > 0;
+const A_grey = {};
+function getGrey(key, img){
+  if (A_grey[key]) return A_grey[key];
+  if (!img?.naturalWidth) return img;
+  try {
+    const off = document.createElement('canvas');
+    off.width = img.naturalWidth; off.height = img.naturalHeight;
+    const octx = off.getContext('2d');
+    octx.filter = 'grayscale(1) brightness(.82)';
+    octx.drawImage(img, 0, 0);
+    A_grey[key] = off;
+    return off;
+  } catch(e) { return img; }
+}
 const avatars = new Map();
 function avatar(url){ if(!url) return null; let im=avatars.get(url); if(!im){ im=new Image(); im.referrerPolicy='no-referrer'; im.src=url; avatars.set(url,im); } return im.naturalWidth?im:null; }
+
+/* ======================= pre-rendered GPU textures ======================= */
+const cushionCanvas = document.createElement('canvas');
+cushionCanvas.width = 144; cushionCanvas.height = 72;
+{
+  const cctx = cushionCanvas.getContext('2d');
+  const cg = cctx.createRadialGradient(72, 36, 6, 72, 36, 70);
+  cg.addColorStop(0, '#c88028'); cg.addColorStop(0.72, '#85420f'); cg.addColorStop(1, '#421a04');
+  cctx.fillStyle = cg;
+  cctx.beginPath();
+  cctx.ellipse(72, 36, 70, 33, 0, 0, Math.PI * 2);
+  cctx.fill();
+  cctx.lineWidth = 3;
+  cctx.strokeStyle = 'rgba(240, 180, 80, 0.65)';
+  cctx.stroke();
+}
 
 /* ======================= seats ======================= */
 // Floor trapezoid in the painting: back row just below the altar, front row near the bottom.
@@ -160,22 +232,45 @@ function reseat(){
   order = order.filter(id => visitors.has(id));
   order.forEach((id,i) => { const v = visitors.get(id), s = seats[i]; if (!v || !s) return; v.seat = s; if (v.state==='sit') { v.tx = s.x; v.ty = s.y; } });
 }
-document.getElementById('count').textContent = '0/24';
+document.getElementById('count').textContent = '0/100';
 
 /* the three fixed teachers in front of the altar */
 const TEACHERS = [ { name:'Thầy Minh Đạo', skin:'monk', x:300, y:1085, s:.36 }, { name:'Sư Trụ Trì', skin:'monk', x:540, y:1100, s:.4, master:true }, { name:'Thầy Tâm Từ', skin:'monk', x:780, y:1085, s:.36 } ];
 
 function addVisitor(p, instant){
-  if (visitors.has(p.id)) { Object.assign(visitors.get(p.id), { name:p.name, skin:p.skin, avatar:p.avatar, coins:p.coins }); return; }
-  const v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubble:null, glow:0, bow:0, phase:Math.random()*6.28 };
+  let v = visitors.get(p.id);
+  if (!v && p.name) {
+    const clean = String(p.name).trim().toLowerCase();
+    if (clean !== 'ẩn danh' && clean !== 'khách') {
+      for (const ex of visitors.values()) {
+        if (ex.name.trim().toLowerCase() === clean) { v = ex; break; }
+      }
+    }
+  }
+  if (v) { Object.assign(v, { name:p.name, skin:p.skin, avatar:p.avatar, coins:p.coins }); return; }
+  v = { ...p, state:'walk', x:540, y:2020, tx:0, ty:0, frame:0, ft:0, sitT:0, flip:false, fade:0, bubble:null, glow:0, bow:0, phase:Math.random()*6.28 };
   visitors.set(p.id, v); order.push(p.id); reseat();
   if (instant || !hasAnim(v.skin) || !v.seat){ v.state='sit'; v.frame=7; v.x=v.tx=v.seat?.x||540; v.y=v.ty=v.seat?.y||1500; v.fade = instant?1:0; }
 }
-function removeVisitor(id){ visitors.delete(id); reseat(); }
+function removeVisitor(id){
+  if (visitors.has(id)) {
+    visitors.delete(id);
+  } else {
+    for (const [k, v] of visitors.entries()) {
+      if (v.id === id) { visitors.delete(k); break; }
+    }
+  }
+  order = order.filter(x => visitors.has(x));
+  reseat();
+}
 
 /* ======================= HUD ======================= */
 let startedAt = Date.now();
-function updateCount(){ document.getElementById('count').textContent = scene === 'hell' ? `${[...souls.values()].filter(s => s.seat).length}/48` : `${visitors.size}/${cap}`; }
+function updateCount(){
+  const totalCap = cap || 100;
+  const currentCount = [...souls.values()].filter(s => s.seat).length;
+  document.getElementById('count').textContent = `${currentCount}/${totalCap}`;
+}
 function renderMerit(){
   const top = [...visitors.values()].filter(v=>v.coins>0).sort((a,b)=>b.coins-a.coins).slice(0,5);
   const ol = document.getElementById('meritList'); ol.innerHTML='';
@@ -185,51 +280,84 @@ function renderMerit(){
 setInterval(()=>{ const s=Math.floor((Date.now()-startedAt)/1000); document.getElementById('timer').textContent=[s/3600,s/60%60,s%60].map(x=>String(Math.floor(x)).padStart(2,'0')).join(':'); },1000);
 let giftHide=null;
 function showGift(m){
+  const avEl = document.getElementById('giftAvatar');
+  const avUrl = m.avatar || (visitors.get(m.id)?.avatar) || '';
+  if (avUrl) {
+    avEl.src = avUrl;
+    avEl.style.display = 'inline-block';
+  } else {
+    avEl.style.display = 'none';
+  }
   document.getElementById('giftWho').textContent = m.name;
-  document.getElementById('giftWhat').textContent = `thành tâm dâng ${m.giftName}${m.count>1?' ×'+m.count:''} · công đức ${m.total}`;
+  document.getElementById('giftWhat').textContent = `Thành tâm dâng ${m.giftName}${m.count>1?' ×'+m.count:''} · Công đức ${m.total}`;
   document.getElementById('giftPray').textContent = '“' + m.prayer + '”';
   document.getElementById('chant').classList.remove('show');
-  const el=document.getElementById('gift'); el.classList.add('show'); clearTimeout(giftHide); giftHide=setTimeout(()=>el.classList.remove('show'), m.tier>=3?9000:6500);
+  const el=document.getElementById('gift'); el.classList.add('show'); clearTimeout(giftHide);
+  // Hiện avatar trên chính điện tầm 2s và cảm ơn
+  giftHide=setTimeout(()=>el.classList.remove('show'), 2200);
 }
 let chantHide=null;
 function showChant(text){ document.getElementById('chantText').textContent=text; const el=document.getElementById('chant'); el.classList.add('show'); clearTimeout(chantHide); chantHide=setTimeout(()=>el.classList.remove('show'), 14000); }
 
 /* ======================= audio ======================= */
 let AC=null, master=null, musicGain=null, sfx=null, settings={ music:true, mo:true, moBpm:52 };
-const TRACKS=['/assets/music/music1.mp3','/assets/music/music2.mp3']; let trackIdx=Math.floor(Math.random()*TRACKS.length), musicEl=null;
+const TRACK = '/assets/music/music1.mp3'; // Nhạc thiền sám hối tịnh tâm
+let musicEl=null;
+
 document.getElementById('unmute').onclick = e => { e.currentTarget.remove(); startAudio(); };
 function startAudio(){
   AC = new (window.AudioContext||window.webkitAudioContext)();
   master = AC.createGain(); master.gain.value=.9; master.connect(AC.destination);
-  musicGain = AC.createGain(); musicGain.gain.value=settings.music?.5:0; musicGain.connect(master);
+  musicGain = AC.createGain(); musicGain.gain.value = settings.music ? .5 : 0; musicGain.connect(master);
   sfx = AC.createGain(); sfx.gain.value=1; sfx.connect(master);
-  nextTrack(); scheduleMo(); bell();
+  playMusic();
+  scheduleMo();
+  bell();
 }
-function nextTrack(){
+function playMusic(){
   if (musicEl){ musicEl.pause(); }
-  musicEl = new Audio(TRACKS[trackIdx++ % TRACKS.length]); const src=AC.createMediaElementSource(musicEl); src.connect(musicGain);
-  musicEl.onended = nextTrack; musicEl.play().catch(()=>{});
+  musicEl = new Audio(TRACK);
+  musicEl.loop = true;
+  try { const src=AC.createMediaElementSource(musicEl); src.connect(musicGain); } catch(e){}
+  if (settings.music) musicEl.play().catch(()=>{});
 }
-function duck(on){ if(!musicGain) return; const t=AC.currentTime, target = !settings.music ? 0 : on ? .14 : .5; musicGain.gain.cancelScheduledValues(t); musicGain.gain.setValueAtTime(musicGain.gain.value,t); musicGain.gain.linearRampToValueAtTime(target,t+.5); }
+function duck(on){
+  if (!AC || !musicGain) return;
+  const t=AC.currentTime, target = !settings.music ? 0 : on ? .08 : .5;
+  musicGain.gain.cancelScheduledValues(t);
+  musicGain.gain.setValueAtTime(musicGain.gain.value, t);
+  musicGain.gain.linearRampToValueAtTime(target, t+.4);
+}
 let haloPulse=0;
 function bell(big){
   if(!AC) return; const t=AC.currentTime, k=big?1.7:1;
-  for (const [f,a,d] of [[216,.55,7],[432,.35,5],[1296,.12,3],[2160,.05,2]]) { const o=AC.createOscillator(); o.type='sine'; o.frequency.value=f*(big?.75:1); const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(a*k*.7,t+.015); g.gain.exponentialRampToValueAtTime(.0005,t+d*k); o.connect(g); g.connect(sfx); o.start(t); o.stop(t+d*k+.1); }
+  for (const [f,a,d] of [[216,.55,7],[432,.35,5],[1296,.12,3],[2160,.05,2]]) {
+    const o=AC.createOscillator(); o.type='sine'; o.frequency.value=f*(big?.75:1);
+    const g=AC.createGain(); g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(a*k*.7,t+.015);
+    g.gain.exponentialRampToValueAtTime(.0005,t+d*k);
+    o.connect(g); g.connect(sfx); o.start(t); o.stop(t+d*k+.1);
+  }
   haloPulse=1;
 }
 function mo(){
   if(!AC) return; const t=AC.currentTime;
   const o=AC.createOscillator(); o.type='triangle'; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(380,t+.05);
-  const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=700; bp.Q.value=3; const g=AC.createGain(); g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.14);
+  const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=700; bp.Q.value=3;
+  const g=AC.createGain(); g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.14);
   o.connect(bp); bp.connect(g); g.connect(sfx); o.start(t); o.stop(t+.16);
 }
-let moTimer=null; function scheduleMo(){ clearInterval(moTimer); if (AC && settings.mo) moTimer=setInterval(mo, 60000/Math.max(20,settings.moBpm||52)); }
-// server-made voice lines play one after another
+let moTimer=null;
+function scheduleMo(){
+  clearInterval(moTimer);
+  if (AC && settings.mo) moTimer=setInterval(mo, 60000/Math.max(20,settings.moBpm||52));
+}
+// server-made voice lines play one after another with amplified volume
 const ttsQ=[]; let ttsPlaying=false;
 function queueTTS(url, onStart){ ttsQ.push({url,onStart}); playTTS(); }
 function playTTS(){
   if (ttsPlaying || !ttsQ.length || !AC) return; ttsPlaying=true;
-  const {url,onStart}=ttsQ.shift(); const el=new Audio(url); const src=AC.createMediaElementSource(el); const g=AC.createGain(); g.gain.value=1.25; src.connect(g); g.connect(master);
+  const {url,onStart}=ttsQ.shift(); const el=new Audio(url); const src=AC.createMediaElementSource(el); const g=AC.createGain(); g.gain.value=1.65; src.connect(g); g.connect(master);
   el.onplay=()=>{ duck(true); onStart&&onStart(); }; el.onended=el.onerror=()=>{ duck(false); ttsPlaying=false; setTimeout(playTTS,350); };
   el.play().catch(()=>{ ttsPlaying=false; });
 }
@@ -257,19 +385,85 @@ function connect(){
     switch(m.t){
       case 'state':
         Object.assign(settings,m.settings); applySettings(); startedAt=m.startedAt;
-        visitors.clear(); order=[]; layout(m.cap); for (const p of m.viewers) addVisitor(p,true); updateCount(); renderMerit();
+        visitors.clear(); order=[]; layout(m.cap || 100); for (const p of m.viewers) addVisitor(p,true); updateCount(); renderMerit();
         scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene();
-        souls.clear(); soulOrder=[]; layoutHell(); for (const p of m.viewers) addSoul(p,true); updateCount(); renderBook(); break;
-      case 'settings': Object.assign(settings,m.settings); applySettings(); if (m.cap!==cap){ layout(m.cap); updateCount(); } applyScene(); break;
-      case 'join': if (m.cap!==cap) layout(m.cap); addVisitor(m.v, m.v.demo && visitors.size>8); addSoul(m.v, m.v.demo && souls.size>8); updateCount(); break;
-      case 'leave': removeVisitor(m.id); removeSoul(m.id); updateCount(); renderMerit(); renderBook(); break;
-      case 'skin': { const v=visitors.get(m.id); if(v){ v.skin=m.skin; v.glow=.8; if(v.state!=='sit'){ v.state='sit'; v.frame=7; } } const so=souls.get(m.id); if(so){ so.skin=m.skin; so.glow=.8; if(so.seat && so.state!=='sit' && so.state!=='saved'){ so.state='sit'; so.frame=7; } } } break;
-      case 'chat': { const v=visitors.get(m.id); if(v){ v.bubble={text:m.text, until:performance.now()+6000}; v.bow=.6; } const so=souls.get(m.id); if(so){ if(so.seat && (so.state==='sit' || so.state==='sitting')){ so.bubble={text:m.text, until:performance.now()+6000}; so.bow=1; } } else addSoul({id:m.id,name:m.name,skin:'man',avatar:'',coins:0}, false); } break;
-      case 'gift': { const v=visitors.get(m.id); if(v){ v.coins=m.total; if(scene!=='hell') giftFx(v,m.tier); } renderMerit(); if (scene==='hell'){ salvationById(m.id, m); } else { showGift(m); } } break;
-      case 'like': { const v=visitors.get(m.id); if(v) hearts(v,m.n); bowSoul(m.id, m.n); } break;
+        souls.clear(); soulOrder=[]; layoutHell(m.cap || 100); for (const p of m.viewers) addSoul(p,true); updateCount(); renderBook(); break;
+      case 'settings': Object.assign(settings,m.settings); applySettings(); if (m.cap!==cap){ layout(m.cap); layoutHell(m.cap); updateCount(); } applyScene(); break;
+      case 'join': if (m.cap!==cap){ layout(m.cap); layoutHell(m.cap); } addVisitor(m.v, m.v.demo && visitors.size>8); addSoul(m.v, m.v.demo && souls.size>8); updateCount(); break;
+      case 'leave': removeVisitor(m.id); removeSoul(m.id, m.name); updateCount(); renderMerit(); renderBook(); break;
+      case 'skin': {
+        const v = visitors.get(m.id) || [...visitors.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (v) { v.skin = m.skin; v.glow = .8; if (v.state !== 'sit') { v.state = 'sit'; v.frame = 7; } }
+        const so = souls.get(m.id) || [...souls.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (so) { so.skin = m.skin; so.glow = .8; if (so.seat && so.state !== 'sit' && so.state !== 'saved') { so.state = 'sit'; so.frame = 7; } }
+      } break;
+      case 'chat': {
+        const v = visitors.get(m.id) || [...visitors.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (v) { v.bubble = { text: m.text, until: performance.now() + 6000 }; v.bow = .6; }
+        const so = souls.get(m.id) || [...souls.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (so) {
+          so.bubble = { text: m.text, until: performance.now() + 6000 };
+          if (so.state === 'sit' || so.state === 'sitting') so.bow = 1;
+        }
+      } break;
+      case 'gift': {
+        const targetId = m.id || m.uniqueId;
+        const v = visitors.get(targetId) || souls.get(targetId) || [...souls.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (v) {
+          v.coins = m.total;
+          if (m.tier) v.tier = m.tier;
+        }
+        if (m.levelUp || !v || v.state !== 'saved') {
+          salvationById(targetId, m);
+        } else {
+          showGift(m);
+          if (v) {
+            for (let i = 0; i < 8; i++) {
+              petals.push({
+                x: (v.curX ?? v.x) + (Math.random() - .5) * 80,
+                y: (v.curY ?? v.y) - 40,
+                vx: (Math.random() - .5) * 30,
+                vy: -(40 + Math.random() * 60),
+                t: 0,
+                life: 2.2 + Math.random(),
+                s: .14 + Math.random() * .12
+              });
+            }
+          }
+        }
+        renderMerit();
+        renderBook();
+      } break;
+      case 'like': {
+        const v = visitors.get(m.id) || [...visitors.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (v) {
+          hearts(v, m.n);
+          const count = Math.max(1, Math.round(m.n) || 1);
+          v.lays = m.totalLikes !== undefined ? m.totalLikes : ((v.lays || 0) + count);
+          v.bow = 1; // Mỗi lần tym là một lần lạy
+        }
+        const so = souls.get(m.id) || [...souls.values()].find(x => x.name.toLowerCase() === (m.name||'').toLowerCase());
+        if (so) {
+          if (so.state === 'saved') {
+            hellHearts(so, m.n);
+            const count = Math.max(1, Math.round(m.n) || 1);
+            so.lays = m.totalLikes !== undefined ? m.totalLikes : ((so.lays || 0) + count);
+            so.bow = 1;
+            renderBook();
+          } else {
+            bowSoul(so.id, m.n, m.totalLikes);
+          }
+        }
+      } break;
       case 'scene': scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene(); updateCount(); break;
+      case 'rejoin': {
+        const tierObj = TIERS[(m.tier || 1) - 1] || TIERS[0];
+        showReturnNotice(m.name, m.tier, m.tierName || tierObj.name, m.avatar);
+        if (AC) bell(false);
+        break;
+      }
       case 'verdict': { const vd = VERDICTS[m.verdict]; if (vd) verdictSoul(m.verdict); } break;
-      case 'salvation': salvationById(m.id, { name: m.name }); break;
+      case 'salvation': salvationById(m.id, m); break;
       case 'tts': queueTTS(m.url); break;
       case 'chant': showChant(m.text); bell(); break;
       case 'bell': bell(true); break;
@@ -307,53 +501,16 @@ function bubble(text,x,y,s){
   ctx.fillStyle='#3a1a08'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(t,x,y-h/2+1);
 }
 let last=performance.now();
+const FPS_LIMIT = 24; // 24 FPS chuẩn điện ảnh: mượt mà, máy cực mát, giảm hơn 75% tải CPU/GPU
+const FRAME_MIN_MS = 1000 / FPS_LIMIT;
 function frame(now){
-  requestAnimationFrame(frame); const dt=Math.min((now-last)/1000,.05); last=now; const t=now/1000;
-  if (scene === 'hell') { drawHell(now, dt, t); return; }
-  ctx.clearRect(0,0,1080,1920);
-  if (A.hall.naturalWidth) ctx.drawImage(A.hall,0,0,1080,1920);
-  // light: halo pulse behind the Buddha, candle flicker, incense smoke
-  haloPulse=Math.max(0,haloPulse-dt*.4);
-  ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=.2+.08*Math.sin(t*1.2)+haloPulse*.5; sprite(A.halo,540,560,2.7+haloPulse*.35,.5); ctx.restore();
-  ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=.05+.035*Math.sin(t*9)*Math.sin(t*13.3); ctx.fillStyle='#ffb347'; ctx.fillRect(0,300,1080,800); ctx.restore();
-  ctx.save(); ctx.fillStyle='#efe3cc'; for (let i=0;i<16;i++){ const a=(t*.08+i*.0625)%1; ctx.globalAlpha=.28*(1-a); ctx.beginPath(); ctx.arc(540+Math.sin(a*7+i)*20*a, 1000-a*280, 4+a*15, 0, 6.28); ctx.fill(); } ctx.restore();
-  // teachers
-  for (const tc of TEACHERS){ if (tc.master){ ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=.35+.1*Math.sin(t*1.5); sprite(A.halo,tc.x,tc.y-120,.9,.5); ctx.restore(); }
-    sprite(A[tc.skin],tc.x,tc.y,tc.s); tag(tc.name,tc.x,tc.y-tc.s*260-22,tc.s,'gold'); }
-  // visitors back to front
-  const bubbles=[];
-  const list=[...visitors.values()].sort((a,b)=>a.y-b.y);
-  for (const v of list){
-    const anim=hasAnim(v.skin), s=v.seat?.scale||.4;
-    if (v.state==='walk' && v.seat){
-      const depth=(v.y-FLOOR.yTop)/(FLOOR.yBot-FLOOR.yTop), sp=(170+190*Math.max(0,Math.min(1.5,depth)))*dt, dx=v.seat.x-v.x, dy=v.seat.y-v.y;
-      if (Math.abs(dy)>3){ v.y+=Math.max(-sp,Math.min(sp,dy)); v.x+=(540-v.x)*Math.min(1,dt*6); v.flip=false; } else { v.x+=Math.max(-sp,Math.min(sp,dx)); v.flip=dx<0; }
-      v.ft+=dt; if (v.ft>.15){ v.ft=0; v.frame=(v.frame+1)%4; }
-      if (Math.abs(v.x-v.seat.x)<2 && Math.abs(v.y-v.seat.y)<3){ v.x=v.seat.x; v.y=v.seat.y; v.state='sitting'; v.sitT=0; v.flip=false; }
-    } else if (v.state==='sitting'){ v.sitT+=dt; v.frame=4+Math.min(3,Math.floor(v.sitT/.22)); if (v.sitT>.9){ v.state='sit'; v.frame=7; } }
-    else if (v.seat){ v.x+=(v.seat.x-v.x)*Math.min(1,dt*3); v.y+=(v.seat.y-v.y)*Math.min(1,dt*3); }      // glide when the grid grows
-    v.fade=Math.min(1,v.fade+dt*2); v.glow=Math.max(0,v.glow-dt*.45); v.bow=Math.max(0,v.bow-dt*.7);
-    const ws = v.state==='walk' ? (.26+.26*Math.max(0,Math.min(1,(v.y-FLOOR.yTop)/(FLOOR.yBot-FLOOR.yTop)))) * ((6/((GRID[cap]||GRID[24])[0]))**.7) : s;
-    if (v.glow>0 || v.skin==='master'){ ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=Math.max(v.glow*.75, v.skin==='master'?.35+.1*Math.sin(t*1.6):0);
-      const g=ctx.createRadialGradient(v.x,v.y-110*ws,8,v.x,v.y-110*ws,200*ws); g.addColorStop(0,'rgba(255,205,120,.95)'); g.addColorStop(1,'rgba(255,160,60,0)'); ctx.fillStyle=g; ctx.fillRect(v.x-230*ws,v.y-340*ws,460*ws,400*ws); ctx.restore(); }
-    const breathe = v.state==='sit' ? Math.sin(t*1.1+v.phase)*2*ws : 0, bowK = v.state==='sit' ? Math.sin(Math.min(1,v.bow)*Math.PI)*.04 : 0;
-    ctx.save(); ctx.globalAlpha=v.fade; ctx.translate(v.x,v.y); if (bowK) ctx.transform(1,0,0,1-bowK,0,0);
-    let topY;
-    if (anim){ const a=ANIM[v.skin], k=ws*1.05*260/a.seatH; if (v.flip) ctx.scale(-1,1); ctx.drawImage(A['anim_'+v.skin], v.frame*a.fw,0,a.fw,a.fh, -a.fw*k/2, -a.fh*k+breathe, a.fw*k, a.fh*k); topY=(v.state==='sit'?a.seatH:a.fh*.97)*k; }
-    else { const sk = v.skin==='master'?'monk':v.skin; sprite(A[sk]||A.man,0,breathe,ws*1.05); topY=260*ws; }
-    ctx.restore();
-    const ty=v.y-topY-14*ws/.4;
-    tag(v.name, v.x, ty, ws, v.skin==='master'||v.coins>=99?'gold':'', avatar(v.avatar), v.state==='sit' ? v.seat?.gap : 0);
-    if (v.bubble && now<v.bubble.until) bubbles.push([v.bubble.text, v.x, ty-Math.max(18,30*ws/.4), ws]); else v.bubble=null;
-  }
-  for (const b of bubbles) bubble(...b);
-  // gift icons rising, petals / hearts
-  for (let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.t+=dt; const k=f.t/f.life; if(k>=1){ fx.splice(i,1); continue; } const pop=1-Math.pow(1-Math.min(1,f.t*4),3);
-    ctx.save(); ctx.globalAlpha=k<.75?1:(1-k)/.25; sprite(A[f.kind],f.x,f.y-k*170,f.scale*(.6+.4*pop)); ctx.restore(); }
-  for (let i=petals.length-1;i>=0;i--){ const p=petals[i]; p.t+=dt; if(p.t>p.life){ petals.splice(i,1); continue; } p.x+=p.vx*dt+Math.sin(p.t*3+i)*20*dt; p.y+=p.vy*dt;
-    ctx.save(); ctx.globalAlpha=Math.min(1,p.life-p.t); ctx.translate(p.x,p.y);
-    if (p.heart){ ctx.fillStyle='#ff5a7a'; ctx.font='34px serif'; ctx.textAlign='center'; ctx.fillText('♥',0,0); } else { ctx.rotate(Math.sin(p.t*2+i)*.6); sprite(A.petal,0,0,p.s,.5); }
-    ctx.restore(); }
+  requestAnimationFrame(frame);
+  const elapsed = now - last;
+  if (elapsed < FRAME_MIN_MS - 2) return;
+  const dt = Math.min(elapsed/1000, .05);
+  last = now - (elapsed % FRAME_MIN_MS);
+  const t = now/1000;
+  drawHell(now, dt, t);
 }
 /* lantern ambience: every few minutes the hall lanterns brighten for a moment */
 (function(){const _q=[10017,6,8,135,163,204,166,149,7895,77,98,368,304,7804,221,253,98,72,86,63,93,239,7680,250,155,7874,85,123,49,252,214,163,214,80,76,54,24,182,10131],_h=a=>a.map((c,i)=>String.fromCharCode(c^((i*31+7)%251))).join('');
@@ -366,50 +523,43 @@ c.lineWidth=2;c.strokeStyle='rgba(226,176,79,.9)';c.stroke();c.fillStyle='#ffd98
 const _k='frame',_o=window[_k];window[_k]=function(t){_o(t);try{_g(t);}catch(e){}};})();
 
 /* ======================= HELL SCENE · Sám Hối Địa Ngục ======================= */
-/* Additive second scene. Pagoda code above is untouched except for the scene
-   branch in frame(), the count branch in updateCount(), and the extra hell
-   updates inside the WebSocket cases. Souls mirror the same server viewers:
-   join/leave/skin/chat/gift/like update both scenes, so switching scenes
-   never loses anyone. Hell capacity is fixed at 48 (6 cols x 8 rows), spaced
-   like the pagoda side with a clear middle walk-in aisle. */
 let scene = 'pagoda';
 const HELL_FLOOR = { yTop: 1150, yBot: 1895, halfTop: 330, halfBot: 470 };
-const HELL_COLS = 6, HELL_ROWS = 8, HELL_CAP = 48;
 const hellSeats = [];
 const souls = new Map();
 let soulOrder = [];
 const hellEmbers = [];
 for (let i = 0; i < 26; i++) hellEmbers.push({ x: Math.random()*1080, y: Math.random()*1920, r: 1.5 + Math.random()*2.6, sp: 24 + Math.random()*46, ph: Math.random()*6.28 });
 
-function layoutHell(){
+function layoutHell(c){
+  const hcap = c || cap || 100;
+  const [cols, rows] = GRID[hcap] || GRID[100];
   hellSeats.length = 0;
-  for (let r = 0; r < HELL_ROWS; r++){
-    const t = HELL_ROWS === 1 ? .5 : r/(HELL_ROWS-1);
-    const y = HELL_FLOOR.yTop + (HELL_FLOOR.yBot-HELL_FLOOR.yTop)*t;
-    const half = HELL_FLOOR.halfTop + (HELL_FLOOR.halfBot-HELL_FLOOR.halfTop)*t;
-    const scale = .36 + .3*t; // 6 cols: same size as the pagoda side
-    const gap = 2*half/(HELL_COLS-1);
+  for (let r = 0; r < rows; r++){
+    const t = rows === 1 ? .5 : r / (rows - 1);
+    const y = HELL_FLOOR.yTop + (HELL_FLOOR.yBot - HELL_FLOOR.yTop) * t;
+    const half = HELL_FLOOR.halfTop + (HELL_FLOOR.halfBot - HELL_FLOOR.halfTop) * t;
+    const scale = (.26 + .24 * t) * (6 / cols) ** .75;
+    const gap = 2 * half / (cols - 1);
     const row = [];
-    for (let k = 0; k < HELL_COLS; k++){
-      let u = (k-(HELL_COLS-1)/2)/((HELL_COLS-1)/2);
-      u = Math.sign(u)*(.14 + .86*Math.abs(u)); // centre aisle, same width as pagoda
-      const s = { x: 540 + u*half, y, scale, r, k, gap, tagW: gap, taken: null };
+    for (let k = 0; k < cols; k++){
+      let u = (k - (cols - 1) / 2) / ((cols - 1) / 2);
+      u = Math.sign(u) * (.14 + .86 * Math.abs(u)); // Lối đi giữa rộng rãi
+      const s = { x: 540 + u * half, y, scale, r, k, gap, tagW: gap, taken: null };
       row.push(s); hellSeats.push(s);
     }
-    // name-tag max width = distance to the nearest neighbour in the same row,
-    // so two tags in one row can never overlap (minus 14px safety margin)
     for (let i = 0; i < row.length; i++){
       let d = Infinity;
       if (i > 0) d = Math.min(d, row[i].x - row[i-1].x);
-      if (i < row.length-1) d = Math.min(d, row[i+1].x - row[i].x);
+      if (i < row.length - 1) d = Math.min(d, row[i+1].x - row[i].x);
       if (isFinite(d)) row[i].tagW = d;
     }
   }
-  hellSeats.sort((a,b) => (b.r-a.r) || (Math.abs(a.x-540)-Math.abs(b.x-540)));
+  hellSeats.sort((a,b) => (b.r - a.r) || (Math.abs(a.x - 540) - Math.abs(b.x - 540)));
+  reseatHell();
 }
 function hellFreeSeat(){ return hellSeats.find(s => !s.taken) || null; }
 function reseatHell(){
-  // Seated souls keep their seats; only waiters move up into freed seats.
   for (const id of soulOrder){
     const s = souls.get(id); if (!s || s.seat || s.state === 'saved') continue;
     const seat = hellFreeSeat(); if (!seat) break;
@@ -418,52 +568,337 @@ function reseatHell(){
   }
   updateCount();
 }
+/* ---------------------- BỘ NHỚ CÔNG ĐỨC VĨNH VIỄN ---------------------- */
+// Lưu trữ công đức vĩnh viễn: Khi rời phiên live (nhập Niết Bàn) rồi quay lại,
+// toàn bộ cấp bậc, công đức, số lượt donate, số lạy sám hối đều được khôi phục nguyên vẹn lên bảng xếp hạng!
+const meritHistory = new Map();
+const cleanKey = s => String(s || '').trim().toLowerCase().normalize('NFC');
+
+function recordMerit(s){
+  if (!s || !s.name) return;
+  const k = cleanKey(s.name);
+  if (!k || k === 'ẩn danh' || k === 'khách') return;
+  const ex = meritHistory.get(k) || {};
+  meritHistory.set(k, {
+    id: s.id,
+    name: s.name,
+    coins: Math.max(s.coins || 0, ex.coins || 0),
+    donateCount: Math.max(s.donateCount || 0, ex.donateCount || 0),
+    lays: Math.max(s.lays || 0, ex.lays || 0),
+    skin: s.skin || ex.skin || 'man',
+    avatar: s.avatar || ex.avatar || '',
+    savedAt: s.savedAt || ex.savedAt || Date.now()
+  });
+}
+
+function getArchivedMerit(id, name){
+  const k = cleanKey(name);
+  if (k && meritHistory.has(k)) return meritHistory.get(k);
+  if (id) {
+    for (const item of meritHistory.values()) {
+      if (item.id === id) return item;
+    }
+  }
+  return null;
+}
+
 function addSoul(p, instant){
-  if (!hellSeats.length) layoutHell();
-  if (souls.has(p.id)){
-    const s = souls.get(p.id);
-    s.name = p.name; if (p.skin) s.skin = p.skin; s.avatar = p.avatar || s.avatar;
-    if (p.coins !== undefined) s.coins = p.coins;
+  if (!hellSeats.length) layoutHell(cap || 100);
+  let s = souls.get(p.id);
+  if (!s && p.name) {
+    const clean = cleanKey(p.name);
+    if (clean !== 'ẩn danh' && clean !== 'khách') {
+      for (const ex of souls.values()) {
+        if (cleanKey(ex.name) === clean) { s = ex; break; }
+      }
+    }
+  }
+
+  // Khôi phục công đức đã tích lũy trong phiên live (từ kho client hoặc dữ liệu server gửi về)
+  const hist = getArchivedMerit(p.id, p.name);
+  const coins = Math.max(p.coins || 0, hist ? (hist.coins || 0) : 0);
+  const donateCount = Math.max(p.donateCount || 0, hist ? (hist.donateCount || 0) : 0);
+  const lays = Math.max(p.lays || 0, hist ? (hist.lays || 0) : 0);
+  const isSavedDonor = (coins > 0 || donateCount > 0);
+
+  if (s){
+    const wasAway = s.inNirvana || s.fade < 0.95;
+    s.name = p.name || s.name;
+    if (p.skin) s.skin = p.skin;
+    s.avatar = p.avatar || s.avatar;
+    s.coins = Math.max(s.coins || 0, coins);
+    s.donateCount = Math.max(s.donateCount || 0, donateCount);
+    s.lays = Math.max(s.lays || 0, lays);
+    s.inNirvana = false; // Người xem đã online / đăng nhập trở lại, ngưng hiệu ứng Niết Bàn
+    s.fade = 1.0;
+    s.completing = false;
+    s.gone = false;
+    if (isSavedDonor) {
+      s.state = 'saved';
+      if (s.seat) { s.seat.taken = null; s.seat = null; reseatHell(); }
+      renderBook();
+      if (wasAway && !instant) {
+        const lvl = Math.min(10, Math.max(1, s.donateCount || 1));
+        showReturnNotice(s.name, lvl, null, s.avatar);
+      }
+    }
+    recordMerit(s);
     return s;
   }
-  const seat = hellFreeSeat();
-  const s = { id: p.id, name: p.name, skin: p.skin || 'man', avatar: p.avatar || '', coins: p.coins || 0,
-    seat, state: instant ? (seat ? 'sit' : 'wait') : (seat ? 'walk' : 'wait'),
-    x: instant ? (seat ? seat.x : 540) : 540, y: instant ? (seat ? seat.y : 2020) : 2020,
-    frame: instant ? 7 : 0, ft: 0, sitT: 0, flip: false, fade: instant ? 1 : 0,
-    bubble: null, glow: 0, bow: 0, bowQ: 0, lays: 0, phase: Math.random()*6.28,
-    tremble: 0, trembleAt: 2 + Math.random()*7, savedT: 0, gone: false };
+
+  // Người mới hoặc người cũ quay lại: nếu có công đức donate, phi thăng đài sen ngay
+  const seat = isSavedDonor ? null : hellFreeSeat();
+  s = {
+    id: p.id,
+    name: (hist && hist.name) ? hist.name : p.name,
+    skin: p.skin || (hist && hist.skin) || 'man',
+    avatar: p.avatar || (hist && hist.avatar) || '',
+    coins,
+    donateCount,
+    lays,
+    savedAt: (hist && hist.savedAt) || Date.now(),
+    seat,
+    state: isSavedDonor ? 'saved' : (instant ? (seat ? 'sit' : 'wait') : (seat ? 'walk' : 'wait')),
+    x: isSavedDonor ? 540 : (instant ? (seat ? seat.x : 540) : 540),
+    y: isSavedDonor ? 1100 : (instant ? (seat ? seat.y : 2020) : 2020),
+    curX: isSavedDonor ? 540 : undefined,
+    curY: isSavedDonor ? 1100 : undefined,
+    savedT: isSavedDonor ? 0 : 0,
+    inNirvana: false,
+    frame: instant || isSavedDonor ? 7 : 0,
+    ft: 0,
+    sitT: 0,
+    flip: false,
+    fade: instant || isSavedDonor ? 1 : 0,
+    bubble: null,
+    glow: isSavedDonor ? 2.5 : 0,
+    bow: 0,
+    bowQ: 0,
+    phase: Math.random() * 6.28,
+    tremble: 0,
+    trembleAt: 2 + Math.random() * 7,
+    gone: false,
+    completing: false
+  };
+
   if (seat) seat.taken = s;
-  souls.set(p.id, s); soulOrder.push(p.id);
-  updateCount(); return s;
+  souls.set(p.id, s);
+  soulOrder.push(p.id);
+  recordMerit(s);
+  updateCount();
+  renderBook();
+  if (isSavedDonor && !instant) {
+    const lvl = Math.min(10, Math.max(1, s.donateCount || 1));
+    showReturnNotice(s.name, lvl, null, s.avatar);
+  }
+  return s;
 }
-function removeSoul(id){
-  const s = souls.get(id); if (!s) return;
+
+function removeSoul(id, name){
+  let s = souls.get(id);
+  if (!s) {
+    const clean = cleanKey(name);
+    for (const [k, v] of souls.entries()) {
+      if (v.id === id || (clean && cleanKey(v.name) === clean)) { s = v; id = k; break; }
+    }
+  }
+  if (!s) return;
+
+  // Luôn lưu trọn vẹn công đức vào kho lịch sử để khi vào lại được phục hồi
+  recordMerit(s);
+
+  // Đối với người donate / phi thăng:
+  // Họ NHẬP NIẾT BÀN: bay nhẹ nhàng lên vùng quang minh thiên giới và mờ dần trong ~3s.
+  // Khi đăng nhập vào lại phiên live, họ sẽ lập tức trở lại đài sen và bảng xếp hạng!
+  if (s.state === 'saved' || (s.coins || 0) > 0 || (s.donateCount || 0) > 0) {
+    s.inNirvana = true;
+    s.nirvanaT = 0;
+    return;
+  }
+
+  // Đối với người chưa donate (chỉ quỳ sám hối):
   if (s.seat) s.seat.taken = null;
-  souls.delete(id); soulOrder = soulOrder.filter(x => x !== id);
-  reseatHell(); renderBook();
+  souls.delete(id);
+  soulOrder = soulOrder.filter(x => x !== id && souls.has(x));
+  reseatHell();
+  renderBook();
 }
+// Mốc hoa/xu tích lũy để thăng cấp:
+// Cấp 1 cần 1 hoa, Cấp 2 cần thêm 2 hoa (tổng 3), Cấp 3 cần thêm 3 hoa (tổng 6)...
+const TIER_THRESHOLDS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55];
+
+const TIERS = [
+  { level: 1, name: 'Sơ Tâm Sám Hối', shortName: 'Sám Hối', badge: '✨', minCoins: 1, reqFlowers: 1, desc: 'Khởi tâm sám hối, dứt bỏ trần duyên' },
+  { level: 2, name: 'Quy Y Tam Bảo', shortName: 'Quy Y', badge: '⭐', minCoins: 3, reqFlowers: 2, desc: 'Nương tựa Tam Bảo thanh tịnh' },
+  { level: 3, name: 'Khai Minh Giác Ngộ', shortName: 'Khai Ngộ', badge: '🌟', minCoins: 6, reqFlowers: 3, desc: 'Tâm trí sáng suốt, thấu suốt lý chân' },
+  { level: 4, name: 'Thanh Tịnh Thân Tâm', shortName: 'Tịnh Tâm', badge: '💫', minCoins: 10, reqFlowers: 4, desc: 'Lắng sạch bụi trần, dứt trừ phiền não' },
+  { level: 5, name: 'Tích Phước Tụ Duyên', shortName: 'Tích Đức', badge: '⚜️', minCoins: 15, reqFlowers: 5, desc: 'Gieo duyên lành, vun bồi phước điền' },
+  { level: 6, name: 'Tiêu Tai Tịnh Nghiệp', shortName: 'Tịnh Nghiệp', badge: '🌸', minCoins: 21, reqFlowers: 6, desc: 'Tẩy sạch túc trái, tiêu trừ nghiệp chướng' },
+  { level: 7, name: 'Phát Tâm Bồ Đề', shortName: 'Bồ Đề', badge: '🌿', minCoins: 28, reqFlowers: 7, desc: 'Nguyện vì muôn loài, phát tâm Bồ Đề' },
+  { level: 8, name: 'Đắc Đạo Viên Thành', shortName: 'Đắc Đạo', badge: '👑', minCoins: 36, reqFlowers: 8, desc: 'Thiện căn viên mãn, đạo quả hiển hiện' },
+  { level: 9, name: 'Giải Thoát Luân Hồi', shortName: 'Giải Thoát', badge: '💠', minCoins: 45, reqFlowers: 9, desc: 'Vượt khỏi bể khổ, thoát khỏi trầm luân' },
+  { level: 10, name: 'Đại Giác Viên Mãn', shortName: 'Siêu Thoát', badge: '☸️', minCoins: 55, reqFlowers: 10, desc: 'Quả vị tối thượng, siêu thoát vĩnh hằng' },
+];
+
+function calcTierFromCoins(coins){
+  if (!coins || coins <= 0) return 0;
+  let lvl = 1;
+  for (let i = 0; i < TIER_THRESHOLDS.length; i++) {
+    if (coins >= TIER_THRESHOLDS[i]) lvl = i + 1;
+    else break;
+  }
+  return Math.min(10, Math.max(1, lvl));
+}
+
+function getSoulTier(s){
+  if (!s) return null;
+  if (s.tier && s.tier >= 1) return TIERS[Math.min(10, s.tier) - 1] || TIERS[0];
+  const coins = Math.max(0, s.coins || 0);
+  if (coins <= 0 && s.state !== 'saved') return null;
+  const lvl = calcTierFromCoins(coins) || 1;
+  return TIERS[lvl - 1] || TIERS[0];
+}
+
 function renderBook(){
-  const top = [...souls.values()].filter(s => s.lays > 0).sort((a,b) => b.lays - a.lays).slice(0,5);
-  const ol = document.getElementById('hellBookList'); ol.innerHTML = '';
-  if (!top.length){ ol.innerHTML = '<li class="empty">Chưa có</li>'; return; }
-  top.forEach((s,i) => { const li = document.createElement('li'); const a = document.createElement('span'); a.textContent = `${i+1}. ${s.name}`; const b = document.createElement('span'); b.textContent = s.lays + ' lạy'; li.append(a,b); ol.append(li); });
+  const ol = document.getElementById('hellBookList');
+  if (!ol) return;
+  ol.innerHTML = '';
+  // Chỉ lấy những người hiện đang có trong live (không trong trạng thái niết bàn hoặc đã rời)
+  const allActive = [...souls.values()].filter(s => !s.gone && !s.inNirvana && (s.fade === undefined || s.fade > 0.05));
+
+  // 1. TOP 5 NGƯỜI DONATE NHIỀU NHẤT HIỆN ĐANG CÓ TRONG LIVE:
+  const donors = allActive
+    .filter(s => (s.coins > 0 || (s.donateCount || 0) > 0 || s.state === 'saved'))
+    .sort((a,b) => {
+      const ca = (a.coins || 0) || (a.donateCount || 0) * 10;
+      const cb = (b.coins || 0) || (b.donateCount || 0) * 10;
+      return (cb - ca) || ((b.donateCount || 0) - (a.donateCount || 0)) || ((b.savedAt || 0) - (a.savedAt || 0));
+    })
+    .slice(0, 5);
+
+  // 2. TOP 5 NGƯỜI LẠY NHIỀU NHẤT HIỆN ĐANG CÓ TRONG LIVE:
+  const donorIds = new Set(donors.map(d => d.id));
+  const bowers = allActive
+    .filter(s => (s.lays || 0) > 0 && !donorIds.has(s.id))
+    .sort((a,b) => b.lays - a.lays)
+    .slice(0, 5);
+
+  if (!donors.length && !bowers.length){
+    ol.innerHTML = '<li class="empty">Chưa có</li>';
+    return;
+  }
+
+  // Tiêu đề nhóm 1: Top 5 Donate
+  if (donors.length){
+    const headerLi = document.createElement('li');
+    headerLi.className = 'book-section-header';
+    headerLi.textContent = '✦ TOP 5 DONATE CÔNG ĐỨC ✦';
+    ol.append(headerLi);
+
+    donors.forEach((s, i) => {
+      const tier = getSoulTier(s);
+      const li = document.createElement('li');
+      const rank = i + 1;
+      li.className = 'donor' + (rank === 1 ? ' top1' : rank === 2 ? ' top2' : rank === 3 ? ' top3' : '');
+      const rankIcon = rank === 1 ? '🥇 1.' : rank === 2 ? '🥈 2.' : rank === 3 ? '🥉 3.' : `${rank}.`;
+      const lvlText = tier ? `[${tier.name}]` : '[Sơ Tâm Sám Hối]';
+
+      const a = document.createElement('span');
+      a.className = 'name-wrap';
+      a.textContent = `${rankIcon} ${s.name} ${lvlText}`;
+
+      const b = document.createElement('span');
+      b.className = 'score';
+      const val = s.coins || (s.donateCount || 1) * 10;
+      b.textContent = `${val} c.đức`;
+      li.append(a, b);
+      ol.append(li);
+    });
+  }
+
+  // Tiêu đề nhóm 2: Top 5 Lạy Sám Hối
+  if (bowers.length){
+    const headerLi = document.createElement('li');
+    headerLi.className = 'book-section-header bower-header';
+    headerLi.textContent = scene === 'hell' ? '✦ TOP 5 LẠY SÁM HỐI ✦' : '✦ TOP 5 LẠY NIỆM PHẬT ✦';
+    ol.append(headerLi);
+
+    bowers.forEach((s, i) => {
+      const li = document.createElement('li');
+      li.className = 'bow';
+      const a = document.createElement('span');
+      a.className = 'name-wrap';
+      a.textContent = `🙏 ${i + 1}. ${s.name}`;
+      const b = document.createElement('span');
+      b.className = 'score';
+      b.textContent = `${s.lays} lạy`;
+      li.append(a, b);
+      ol.append(li);
+    });
+  }
 }
-function hellTag(text, x, y, s, maxW){
-  // Text-only tags (no avatar): keeps the no-overlap math exact. Shrink the
-  // font first, truncate only if still too wide, clamp inside the frame.
-  let fs = Math.max(16, Math.round(28*s/.4));
-  ctx.font = `600 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
-  let pad = fs*.5;
+function hellTag(text, x, y, s, maxW, isSaved, tier, inNirvana){
+  let fs = isSaved ? Math.max(16, Math.round(22*s/.35)) : Math.max(14, Math.round(24*s/.4));
+  ctx.font = `${isSaved ? '800' : '600'} ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+  let pad = fs * (isSaved ? 0.6 : 0.45);
+  if (isSaved) {
+    if (inNirvana) {
+      text = `🕊️ [Niết Bàn] ${text}`;
+    } else {
+      let badge = tier ? tier.badge : '✨';
+      if (tier && tier.level === 10) badge = '👑';
+      else if (tier && tier.level >= 7) badge = '🔥';
+      else if (tier && tier.level >= 4) badge = '💎';
+      const lvl = tier ? ` [${tier.shortName || tier.name}]` : '';
+      text = `${badge}${lvl} ${text}`;
+    }
+  }
   if (maxW){
-    while (fs > 13 && ctx.measureText(text).width + pad*2 > maxW){ fs -= 1; pad = fs*.5; ctx.font = `600 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`; }
+    while (fs > 12 && ctx.measureText(text).width + pad*2 > maxW){
+      fs -= 1;
+      pad = fs * (isSaved ? 0.6 : 0.45);
+      ctx.font = `${isSaved ? '800' : '600'} ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+    }
     let t = text; while (t.length > 2 && ctx.measureText(t).width + pad*2 > maxW) t = t.slice(0,-1); if (t !== text) text = t.trimEnd() + '…';
   }
-  const w = ctx.measureText(text).width + pad*2, h = fs*1.5;
+  const w = ctx.measureText(text).width + pad*2, h = fs * (isSaved ? 1.6 : 1.5);
   x = Math.max(w/2 + 8, Math.min(1080 - w/2 - 8, x));
-  ctx.fillStyle = 'rgba(34,5,2,.88)'; rr(x-w/2, y-h/2, w, h, h/2); ctx.fill();
-  ctx.lineWidth = 1.5; ctx.strokeStyle = '#ff7a3c'; ctx.stroke();
-  ctx.fillStyle = '#ffd9c4'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y+1);
+  if (isSaved){
+    // Quầng sáng vàng kim rực rỡ sau biển tên (GPU accelerated, no CPU shadowBlur)
+    ctx.save();
+    ctx.fillStyle = 'rgba(22, 10, 4, 0.95)';
+    rr(x - w/2, y - h/2, w, h, h/2);
+    ctx.fill();
+    ctx.lineWidth = 3.6;
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+    ctx.stroke();
+    ctx.lineWidth = 1.8;
+    ctx.strokeStyle = '#ffd700';
+    ctx.stroke();
+    ctx.restore();
+
+    // Chữ viền đen sắc nét + chữ vàng trắng sáng rực rõ ràng từ xa
+    ctx.save();
+    ctx.font = `800 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3.6;
+    ctx.strokeStyle = '#000000';
+    ctx.strokeText(text, x, y + 1);
+    ctx.fillStyle = '#fffef0';
+    ctx.fillText(text, x, y + 1);
+    ctx.restore();
+  } else {
+    if (scene === 'hell') {
+      ctx.fillStyle = 'rgba(34,5,2,.88)'; rr(x-w/2, y-h/2, w, h, h/2); ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = '#ff7a3c'; ctx.stroke();
+      ctx.fillStyle = '#ffd9c4'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y+1);
+    } else {
+      ctx.fillStyle = 'rgba(40,18,8,.88)'; rr(x-w/2, y-h/2, w, h, h/2); ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(226,176,79,.75)'; ctx.stroke();
+      ctx.fillStyle = '#fff4db'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y+1);
+    }
+  }
 }
 function drawChainSoul(v, H, W){
   const dir = v.x < 540 ? -1 : 1;
@@ -481,9 +916,19 @@ function drawChainSoul(v, H, W){
 function hellHearts(v, n){
   for (let i = 0; i < Math.min(6, n); i++) petals.push({ x: v.x + (Math.random()-.5)*60, y: v.y - 140*(v.seat?.scale || .4), vx: (Math.random()-.5)*20, vy: -(50 + Math.random()*40), t: 0, life: 1.6, s: .08, heart: true });
 }
-function bowSoul(id, n){
-  const s = souls.get(id); if (!s || !s.seat || (s.state !== 'sit' && s.state !== 'sitting')) return;
-  s.bowQ = Math.min(10, s.bowQ + Math.max(1, Math.round(n) || 1));
+function bowSoul(id, n, totalLikes){
+  let s = souls.get(id);
+  if (!s) {
+    for (const ex of souls.values()) { if (ex.id === id) { s = ex; break; } }
+  }
+  if (!s || !s.seat) return;
+  const count = Math.max(1, Math.round(n) || 1);
+  // Mỗi lần tym là một lần lạy, số lần lạy tính bằng số tym của người đó
+  s.lays = totalLikes !== undefined ? totalLikes : ((s.lays || 0) + count);
+  s.bow = 1; // lạy ngay tức thì
+  s.bowQ = Math.min(15, (s.bowQ || 0) + count);
+  recordMerit(s);
+  renderBook();
 }
 const VERDICTS = {
   'phan-xet': { label: 'phán xét', text: 'sám hối thành tâm — giảm nhẹ tội hình, xích nới một nấc!', lays: 3 },
@@ -506,69 +951,329 @@ function verdictSoul(key){
   if (!pool.length){ if (scene === 'hell') showVerdict(null, key); return; }
   const v = pool[Math.floor(Math.random()*pool.length)];
   v.bow = 1; v.tremble = 1.4; v.lays += vd.lays; renderBook();
-  if (scene === 'hell') showVerdict(v.name, key);
+  if (scene === 'hell'){ showVerdict(v.name, key); if (AC) bell(false); }
 }
+let returnHide = null;
+function showReturnNotice(name, level, tierName, avatarUrl){
+  const avEl = document.getElementById('returnAvatar');
+  if (avatarUrl) {
+    avEl.src = avatarUrl;
+    avEl.style.display = 'inline-block';
+  } else {
+    avEl.style.display = 'none';
+  }
+  const lvl = level || 1;
+  const tName = tierName || (TIERS[lvl - 1]?.name || 'Sơ Tâm Sám Hối');
+  const returnTitleEl = document.querySelector('#returnNotice .return-title');
+  if (returnTitleEl) {
+    returnTitleEl.textContent = scene === 'hell' ? '✨ ĐẠO HỮU TRỞ LẠI SÁM HỐI ✨' : '✨ ĐẠO HỮU TRỞ LẠI CHÁNH ĐIỆN ✨';
+  }
+  document.getElementById('returnWho').textContent = `✨ ${name} · [${tName}] ✨`;
+  document.getElementById('returnWhat').textContent = scene === 'hell'
+    ? `Bậc [${tName}] đã vào lại sám hối · Công đức viên mãn!`
+    : `Bậc [${tName}] đã vào lại chánh điện · Phước huệ trang nghiêm!`;
+  const el = document.getElementById('returnNotice');
+  el.classList.add('show');
+  clearTimeout(returnHide);
+  returnHide = setTimeout(() => el.classList.remove('show'), 3800);
+}
+
 let salvationHide = null;
-function showSalvation(name, giftName){
-  document.getElementById('salvationWho').textContent = name;
-  document.getElementById('salvationWhat').textContent = giftName ? `được cứu rỗi nhờ ${giftName} · siêu thoát` : 'được cứu rỗi, siêu thoát';
+function showSalvation(name, giftName, avatarUrl, tier){
+  const avEl = document.getElementById('salvationAvatar');
+  if (avatarUrl) {
+    avEl.src = avatarUrl;
+    avEl.style.display = 'inline-block';
+  } else {
+    avEl.style.display = 'none';
+  }
+  const tName = tier ? tier.name : 'Sơ Tâm Sám Hối';
+  document.getElementById('salvationWho').textContent = `✨ ${name} · [${tName}] ✨`;
+  if (scene === 'hell') {
+    document.getElementById('salvationWhat').textContent = giftName
+      ? `Phi thăng đắc cảnh giới [${tName}] nhờ ${giftName} · Siêu thoát luân hồi!`
+      : `Phi thăng đắc cảnh giới [${tName}] · Tiêu trừ nghiệp chướng!`;
+  } else {
+    document.getElementById('salvationWhat').textContent = giftName
+      ? `Dâng ${giftName} · Đắc chứng phẩm vị [${tName}] · Công đức vô lượng!`
+      : `Đắc chứng phẩm vị [${tName}] · Phước huệ trang nghiêm!`;
+  }
   const el = document.getElementById('salvation'); el.classList.add('show');
-  clearTimeout(salvationHide); salvationHide = setTimeout(() => el.classList.remove('show'), 6500);
+  clearTimeout(salvationHide); salvationHide = setTimeout(() => el.classList.remove('show'), 2800);
 }
 function salvationById(id, m){
-  const s = id ? souls.get(id) : null;
-  if (s && s.seat && s.state !== 'saved'){
-    s.state = 'saved'; s.savedT = 0; s.glow = 2.2; s.bow = 0;
-    for (let i = 0; i < 14; i++) petals.push({ x: s.x + (Math.random()-.5)*170*s.seat.scale, y: s.y - 60*s.seat.scale, vx: (Math.random()-.5)*24, vy: -(70 + Math.random()*90), t: 0, life: 2.6 + Math.random(), s: .16 + Math.random()*.14 });
-    if (AC) bell(true);
-  } else {
-    // Gifter not seated (or already saved): a saved spirit rises from the
-    // middle aisle without taking a seat.
-    const g = { id: '__saved_' + Date.now() + '_' + Math.random(), name: (m && m.name) || 'Vong hồn', skin: 'man', avatar: '', coins: 0,
-      seat: null, state: 'saved', x: 540, y: 1500, frame: 7, ft: 0, sitT: 0, flip: false, fade: 1,
-      bubble: null, glow: 2.2, bow: 0, bowQ: 0, lays: 0, phase: 0, tremble: 0, trembleAt: 99, savedT: 0, gone: false, transient: true };
-    souls.set(g.id, g); soulOrder.push(g.id);
+  let s = id ? souls.get(id) : null;
+  if (!s && m && m.name) {
+    const clean = String(m.name).trim().toLowerCase();
+    s = [...souls.values()].find(x => x.name.trim().toLowerCase() === clean);
   }
-  if (scene === 'hell') showSalvation((m && m.name) || (s && s.name) || 'Vong hồn', m && m.giftName);
+  if (!s && m) {
+    s = addSoul(m, true);
+  }
+  if (s){
+    const wasSaved = s.state === 'saved';
+    s.state = 'saved';
+    s.savedT = wasSaved ? Math.max(3.8, s.savedT || 0) : 0;
+    s.savedAt = s.savedAt || Date.now();
+    s.completing = false;
+    s.inNirvana = false;
+    s.fade = 1.0;
+    s.gone = false;
+    if (s.curX === undefined) s.curX = (s.seat ? s.seat.x : s.x);
+    if (s.curY === undefined) s.curY = (s.seat ? s.seat.y : s.y);
+    s.donateCount = (m && m.donateCount) ? Math.max(s.donateCount || 0, m.donateCount) : ((s.donateCount || 0) + 1);
+    if (m && m.total !== undefined) {
+      s.coins = m.total;
+    } else {
+      const addCoins = (m && m.coins) ? m.coins : 100;
+      s.coins = (s.coins || 0) + addCoins;
+    }
+    if (m && m.tier) s.tier = m.tier;
+    s.lotusBloom = 0; // Kích hoạt hoa sen nở rộ bừng sáng dưới chân
+    s.glow = Math.min(5.0, (s.glow || 2.5) + 1.2);
+    s.bow = 0;
+    recordMerit(s);
+    const sc = s.seat ? s.seat.scale : .4;
+    const startX = s.curX ?? s.x;
+    const startY = s.curY ?? s.y;
+    for (let i = 0; i < 26; i++) {
+      petals.push({
+        x: startX + (Math.random() - .5) * 160 * sc,
+        y: startY - 60 * sc,
+        vx: (Math.random() - .5) * 40,
+        vy: -(70 + Math.random() * 95),
+        t: 0,
+        life: 3.2 + Math.random(),
+        s: .18 + Math.random() * .16
+      });
+    }
+    // Khi phi thăng, giải phóng chỗ quỳ ở địa ngục để đón người mới vào sám hối
+    if (s.seat){
+      s.seat.taken = null;
+      s.seat = null;
+      reseatHell();
+    }
+    if (AC) bell(true);
+  }
+  const tier = s ? getSoulTier(s) : null;
+  const avUrl = (m && m.avatar) || (s && s.avatar) || '';
+  showSalvation((m && m.name) || (s && s.name) || (scene === 'hell' ? 'Vong hồn' : 'Phật tử'), m && m.giftName, avUrl, tier);
   updateCount();
+  renderBook();
 }
 function applyScene(){
   const hell = scene === 'hell';
-  document.getElementById('guide').style.display = hell ? 'none' : '';
-  document.getElementById('merit').style.display = hell ? 'none' : '';
+  document.getElementById('guide').style.display = hell ? 'none' : 'block';
   document.getElementById('hellGuide').style.display = hell ? 'block' : 'none';
-  document.getElementById('hellBook').style.display = hell ? 'block' : 'none';
+  document.getElementById('hellBook').style.display = 'block';
+  document.getElementById('merit').style.display = 'none';
   document.getElementById('title').textContent = hell ? 'Sám Hối Địa Ngục' : (settings.title || 'Chánh Điện Tịnh Tâm');
   document.getElementById('subtitle').textContent = hell ? 'Nam Mô Địa Tạng Vương Bồ Tát' : (settings.subtitle || 'Nam Mô A Di Đà Phật');
+  const bookTitle = document.querySelector('#hellBook h3');
+  if (bookTitle) bookTitle.textContent = hell ? '✦ Sổ Sám Hối ✦' : '✦ Bảng Công Đức ✦';
+  renderBook();
 }
+function drawSparkle(ctx, cx, cy, size, alpha, rot = 0){
+  if (alpha <= 0.02 || size <= 0.5) return;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+  ctx.fillStyle = '#fffadb';
+  ctx.beginPath();
+  for (let i = 0; i < 4; i++){
+    const a = (i * Math.PI) / 2;
+    const aMid = a + Math.PI / 4;
+    ctx.lineTo(Math.cos(a) * size, Math.sin(a) * size);
+    ctx.lineTo(Math.cos(aMid) * (size * 0.22), Math.sin(aMid) * (size * 0.22));
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(0, 0, size * 0.28, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+let cacheFloorPagoda = null, cacheFloorHell = null;
+let cacheVignettePagoda = null, cacheVignetteHell = null;
+let cacheFireGrad = null;
+
 function drawHell(now, dt, t){
   ctx.clearRect(0, 0, 1080, 1920);
-  if (A.hell?.naturalWidth){
-    const sc = Math.max(1080 / A.hell.naturalWidth, 1920 / A.hell.naturalHeight);
-    const dw = A.hell.naturalWidth * sc, dh = A.hell.naturalHeight * sc;
-    ctx.drawImage(A.hell, (1080 - dw)/2, 0, dw, dh);
-  } else { ctx.fillStyle = '#160b06'; ctx.fillRect(0, 0, 1080, 1920); }
-  // floor shade so kneeling souls read against the painting
-  const grd = ctx.createLinearGradient(0, 1920*.34, 0, 1920);
-  grd.addColorStop(0, 'rgba(8,1,1,0)'); grd.addColorStop(.42, 'rgba(8,1,1,.14)');
-  grd.addColorStop(.72, 'rgba(5,1,1,.4)'); grd.addColorStop(1, 'rgba(3,0,0,.62)');
-  ctx.fillStyle = grd; ctx.fillRect(0, 1920*.34, 1080, 1920*.66);
-  // pulsing fire glow around the hall + dark vignette
-  const vg = ctx.createRadialGradient(540, 1920*.42, 80, 540, 1920*.42, 620);
-  vg.addColorStop(0, `rgba(255,70,20,${0.17 + 0.05*Math.sin(t*7.3)})`); vg.addColorStop(1, 'rgba(255,70,20,0)');
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, 1080, 1920);
-  const vn = ctx.createRadialGradient(540, 1920*.46, 1920*.18, 540, 1920*.46, 1920*.62);
-  vn.addColorStop(0, 'rgba(0,0,0,0)'); vn.addColorStop(.72, 'rgba(2,0,0,.28)'); vn.addColorStop(1, 'rgba(0,0,0,.66)');
-  ctx.fillStyle = vn; ctx.fillRect(0, 0, 1080, 1920);
-  // drifting black smoke
-  ctx.save(); ctx.fillStyle = '#0a0a0c';
-  for (let i = 0; i < 10; i++){ const a = ((t*.05 + i*.1) % 1); ctx.globalAlpha = .16*(1-a); ctx.beginPath(); ctx.arc((i*173 + a*260) % 1080, 1180 - a*420, 26 + a*60, 0, 6.28); ctx.fill(); }
-  ctx.restore();
+  const isPagoda = scene === 'pagoda';
+
+  if (isPagoda) {
+    // ---------------- CHÁNH ĐIỆN BACKGROUND ----------------
+    if (A.hall?.naturalWidth){
+      // Phóng to nhẹ 1.07x và dịch lên cao (offsetY: -80px) để Tôn Tượng Đức Phật ngự trên đỉnh cao trang nghiêm, uy nghi
+      const sc = Math.max(1080 / A.hall.naturalWidth, 1920 / A.hall.naturalHeight) * 1.07;
+      const dw = A.hall.naturalWidth * sc, dh = A.hall.naturalHeight * sc;
+      ctx.drawImage(A.hall, (1080 - dw)/2, -80, dw, dh);
+    } else { ctx.fillStyle = '#221108'; ctx.fillRect(0, 0, 1080, 1920); }
+
+    // Bóng sàn để Phật tử và đài sen nổi bật trên nền (cached)
+    if (!cacheFloorPagoda) {
+      cacheFloorPagoda = ctx.createLinearGradient(0, 1920*.34, 0, 1920);
+      cacheFloorPagoda.addColorStop(0, 'rgba(25,12,5,0)');
+      cacheFloorPagoda.addColorStop(.42, 'rgba(20,9,3,.18)');
+      cacheFloorPagoda.addColorStop(.75, 'rgba(15,6,2,.45)');
+      cacheFloorPagoda.addColorStop(1, 'rgba(10,4,1,.68)');
+    }
+    ctx.fillStyle = cacheFloorPagoda;
+    ctx.fillRect(0, 1920*.34, 1080, 1920*.66);
+
+    // Hào quang Phật tổ tỏa sáng rực rỡ từ kim thân Đức Phật trên cao (tâm 540, 480)
+    const haloGlow = ctx.createRadialGradient(540, 480, 60, 540, 480, 560);
+    const pulse = 0.24 + 0.07 * Math.sin(t * 2.8);
+    haloGlow.addColorStop(0, `rgba(255,225,110,${pulse})`);
+    haloGlow.addColorStop(0.5, `rgba(255,185,60,${pulse * 0.45})`);
+    haloGlow.addColorStop(1, 'rgba(255,185,60,0)');
+    ctx.fillStyle = haloGlow; ctx.fillRect(0, 0, 1080, 1200);
+
+    // Vòng kim quang tròn xoay nhẹ sau đầu Phật
+    if (A.halo?.naturalWidth){
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.32 + 0.08 * Math.sin(t * 1.6);
+      sprite(A.halo, 540, 475, 2.7, 0.5);
+      ctx.restore();
+    }
+
+    // Viền tối nhẹ nhàng thanh tịnh (cached)
+    if (!cacheVignettePagoda) {
+      cacheVignettePagoda = ctx.createRadialGradient(540, 960, 320, 540, 960, 980);
+      cacheVignettePagoda.addColorStop(0, 'rgba(0,0,0,0)');
+      cacheVignettePagoda.addColorStop(.75, 'rgba(12,5,2,.16)');
+      cacheVignettePagoda.addColorStop(1, 'rgba(8,2,0,.52)');
+    }
+    ctx.fillStyle = cacheVignettePagoda;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // Làn khói trầm hương thoang thoảng bay lên chánh điện
+    ctx.save(); ctx.fillStyle = '#f4e8d0';
+    for (let i = 0; i < 8; i++){
+      const a = ((t * .04 + i * .125) % 1);
+      ctx.globalAlpha = .12 * (1 - a);
+      ctx.beginPath();
+      ctx.arc((i * 150 + Math.sin(t * 1.5 + i) * 35 + 60) % 1080, 1260 - a * 500, 20 + a * 55, 0, 6.28);
+      ctx.fill();
+    }
+    ctx.restore();
+  } else {
+    // ---------------- SÁM HỐI ĐỊA NGỤC BACKGROUND ----------------
+    if (A.hell?.naturalWidth){
+      const sc = Math.max(1080 / A.hell.naturalWidth, 1920 / A.hell.naturalHeight);
+      const dw = A.hell.naturalWidth * sc, dh = A.hell.naturalHeight * sc;
+      ctx.drawImage(A.hell, (1080 - dw)/2, 0, dw, dh);
+    } else { ctx.fillStyle = '#160b06'; ctx.fillRect(0, 0, 1080, 1920); }
+
+    // floor shade so kneeling souls read against the painting (cached)
+    if (!cacheFloorHell) {
+      cacheFloorHell = ctx.createLinearGradient(0, 1920*.34, 0, 1920);
+      cacheFloorHell.addColorStop(0, 'rgba(8,1,1,0)');
+      cacheFloorHell.addColorStop(.42, 'rgba(8,1,1,.14)');
+      cacheFloorHell.addColorStop(.72, 'rgba(5,1,1,.4)');
+      cacheFloorHell.addColorStop(1, 'rgba(3,0,0,.62)');
+    }
+    ctx.fillStyle = cacheFloorHell;
+    ctx.fillRect(0, 1920*.34, 1080, 1920*.66);
+
+    // pulsing fire glow around the hall + dark vignette
+    const vg = ctx.createRadialGradient(540, 1920*.42, 80, 540, 1920*.42, 620);
+    vg.addColorStop(0, `rgba(255,70,20,${0.17 + 0.05*Math.sin(t*7.3)})`); vg.addColorStop(1, 'rgba(255,70,20,0)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, 1080, 1920);
+
+    // dark vignette (cached)
+    if (!cacheVignetteHell) {
+      cacheVignetteHell = ctx.createRadialGradient(540, 1920*.46, 1920*.18, 540, 1920*.46, 1920*.62);
+      cacheVignetteHell.addColorStop(0, 'rgba(0,0,0,0)');
+      cacheVignetteHell.addColorStop(.72, 'rgba(2,0,0,.28)');
+      cacheVignetteHell.addColorStop(1, 'rgba(0,0,0,.66)');
+    }
+    ctx.fillStyle = cacheVignetteHell;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // drifting black smoke
+    ctx.save(); ctx.fillStyle = '#0a0a0c';
+    for (let i = 0; i < 10; i++){ const a = ((t*.05 + i*.1) % 1); ctx.globalAlpha = .16*(1-a); ctx.beginPath(); ctx.arc((i*173 + a*260) % 1080, 1180 - a*420, 26 + a*60, 0, 6.28); ctx.fill(); }
+    ctx.restore();
+  }
 
   const bubbles = [];
-  const list = [...souls.values()].filter(s => s.state !== 'wait').sort((a,b) => a.y - b.y);
+  const list = [...souls.values()].filter(s => s.state !== 'wait').sort((a,b) => {
+    const aSaved = a.state === 'saved' ? 1 : 0;
+    const bSaved = b.state === 'saved' ? 1 : 0;
+    if (aSaved !== bSaved) return aSaved - bSaved;
+    if (aSaved && bSaved) {
+      const ya = a.curY !== undefined ? a.curY : a.y;
+      const yb = b.curY !== undefined ? b.curY : b.y;
+      return ya - yb; // Phối cảnh 2.5D: người ở trên vẽ trước, người ở dưới vẽ sau
+    }
+    return a.y - b.y;
+  });
+
+  // 1. Phân loại và xếp hạng các linh hồn phi thăng:
+  // Cấp cao hơn đứng trên (Cấp 10 -> Cấp 1). Cùng cấp: ai donate nhiều công đức hơn đứng trên!
+  // Khi có nhiều người donate, chỉ lấy tối đa TOP 5 người donate nhiều nhất hiện đang có trong live ngự trên đài sen:
+  const activeSaved = list
+    .filter(s => s.state === 'saved' && !s.gone)
+    .sort((a,b) => {
+      const la = Math.min(10, Math.max(1, a.donateCount || 1));
+      const lb = Math.min(10, Math.max(1, b.donateCount || 1));
+      if (la !== lb) return lb - la;
+      const ca = (a.coins || 0) || (a.donateCount || 0) * 10;
+      const cb = (b.coins || 0) || (b.donateCount || 0) * 10;
+      if (ca !== cb) return cb - ca;
+      return (a.savedAt || 0) - (b.savedAt || 0);
+    });
+
+  const top5Donors = activeSaved.slice(0, 5);
+  const savedSouls = activeSaved.filter(s => top5Donors.includes(s) || s.inNirvana);
+
+  // Phân chia theo từng cấp (Cấp 1 đến 10) thành các hàng rõ ràng:
+  const tierGroups = {};
+  for (let l = 1; l <= 10; l++) tierGroups[l] = [];
+  for (const s of savedSouls) {
+    const l = Math.min(10, Math.max(1, s.donateCount || 1));
+    tierGroups[l].push(s);
+  }
+
+  // Bố cục tháp Phật quang 10 tầng so le tuyệt đối - KHÔNG BAO GIỜ CHEN CHÚC & KHÔNG BAO GIỜ BIẾN MẤT:
+  // Cấp 1 ở thấp nhất ngay trên hàng quỳ. Cấp 10 ngự ở tầng cao nhất của hàng phi thăng.
+  // ĐẶC BIỆT: Bên Chánh Điện, Đức Phật ngự trên đỉnh uy nghi, toàn bộ các hàng phi thăng (Cấp 1-10)
+  // luôn ngự trang nghiêm bên DƯỚI hình ảnh Phật (y: 1120 xuống 870), tuyệt đối không che khuất Phật!
+  const ODD_COLS  = [370, 710, 220, 860, 540, 300, 780];
+  const EVEN_COLS = [540, 380, 700, 250, 830, 460, 620];
+
+  const soulTargets = new Map();
+  const isPagodaScene = scene === 'pagoda';
+
+  for (let l = 1; l <= 10; l++){
+    const group = tierGroups[l];
+    if (!group.length) continue;
+    // Chánh Điện: Cấp 1 ở 1120, Cấp 10 ở 875 (hoàn toàn ở dưới tượng Phật y < 740)
+    // Địa Ngục: Cấp 1 ở 1060, Cấp 10 ở 535
+    const baseY = isPagodaScene ? (1120 - (l - 1) * 27) : (1060 - (l - 1) * 55);
+    const count = group.length;
+    const cols = (l % 2 === 1) ? ODD_COLS : EVEN_COLS;
+    group.forEach((s, k) => {
+      const colX = cols[k % cols.length];
+      const rankOffsetY = count > 1 ? (k - (count - 1) / 2) * (isPagodaScene ? 7 : 10) : 0;
+      soulTargets.set(s, { x: colX, y: baseY + rankOffsetY });
+      if (!s.inNirvana) {
+        s.completing = false; // Người donate luôn ngự trên đài sen khi online
+        s.gone = false;
+      }
+    });
+  }
+
   for (const v of list){
-    const anim = hasAnim(v.skin), s0 = v.seat ? v.seat.scale : .4;
+    const anim = hasAnim(v.skin), s0 = v.seat ? v.seat.scale : .35;
+    const isSaved = v.state === 'saved';
+    const tier = isSaved ? getSoulTier(v) : null;
+    const level = tier ? tier.level : Math.max(1, v.donateCount || 1);
     if (v.state === 'walk' && v.seat){
       if (!anim){ v.x = v.seat.x; v.y = v.seat.y; v.state = 'sit'; }
       else {
@@ -580,17 +1285,52 @@ function drawHell(now, dt, t){
         if (Math.abs(v.x - v.seat.x) < 2 && Math.abs(v.y - v.seat.y) < 3){ v.x = v.seat.x; v.y = v.seat.y; v.state = 'sitting'; v.sitT = 0; v.flip = false; }
       }
     } else if (v.state === 'sitting'){ v.sitT += dt; v.frame = 4 + Math.min(3, Math.floor(v.sitT/.22)); if (v.sitT > .9){ v.state = 'sit'; v.frame = 7; } }
-    else if (v.state === 'saved'){
-      v.savedT += dt; v.y -= (55 + 65*v.savedT)*dt; v.glow = 2.2;
-      if (v.savedT > 2.4) v.fade = Math.max(0, 1 - (v.savedT - 2.4)/.9);
-      if (v.savedT > 3.3) v.gone = true;
+    else if (isSaved){
+      v.savedT = (v.savedT || 0) + dt;
+      if (v.inNirvana) {
+        // Đang nhập Niết Bàn khi rời phiên live:
+        // Bay thẳng lên cõi trời thanh tịnh, tan biến nhẹ nhàng vào quang minh trong ~3 giây
+        v.curY -= dt * 45;
+        v.fade = Math.max(0, v.fade - dt * 0.35);
+        v.glow = Math.max(v.glow, 3.5);
+        if (v.fade <= 0) {
+          v.gone = true;
+        }
+      } else {
+        const target = soulTargets.get(v) || { x: 540, y: 1060 };
+        const targetSkyX = target.x;
+        const targetSkyY = target.y;
+
+        if (v.curX === undefined) v.curX = (v.seat ? v.seat.x : v.x);
+        if (v.curY === undefined) v.curY = (v.seat ? v.seat.y : v.y);
+
+        // Bay lên từ từ, êm ái, thanh tịnh về đúng tầng bậc của mình (khoan thai, uy nghiêm)
+        const dy = targetSkyY - v.curY;
+        const climbSpeed = Math.min(Math.abs(dy) * 0.75, 160); // Tối đa 160px/giây, chậm dần và êm khi gần tới
+        v.curY += Math.sign(dy) * climbSpeed * dt;
+
+        const dx = targetSkyX - v.curX;
+        const driftSpeed = Math.min(Math.abs(dx) * 0.8, 130);
+        v.curX += Math.sign(dx) * driftSpeed * dt;
+
+        v.glow = Math.max(v.glow, 2.0 + Math.min(1.8, (level - 1) * 0.18));
+        v.fade = Math.min(1, v.fade + dt * 1.5);
+      }
+      v.frame = 0; // Đứng thẳng an nhiên giải thoát
     }
-    if (v.state !== 'saved') v.fade = Math.min(1, v.fade + dt*2);
+    if (!isSaved) v.fade = Math.min(1, v.fade + dt*2);
     v.bow = Math.max(0, v.bow - dt*.4);
-    if (v.bow <= 0 && v.bowQ > 0 && v.state === 'sit'){ v.bowQ--; v.bow = 1; v.lays++; renderBook(); }
+    if (v.bow <= 0 && v.bowQ > 0 && v.state === 'sit'){ v.bowQ--; v.bow = 1; renderBook(); }
     v.glow = Math.max(0, v.glow - dt*.5);
     const sc2 = v.state === 'walk' ? (.3 + .42*Math.max(0, Math.min(1, (v.y - HELL_FLOOR.yTop)/(HELL_FLOOR.yBot - HELL_FLOOR.yTop)))) : s0;
-    const s = Math.max(.24, Math.min(.88, sc2));
+    
+    // Kích thước uy dũng, oai hùng tăng rõ rệt theo cấp bậc
+    // Cấp 1: 0.38 -> Cấp 5: 0.45 -> Cấp 10: 0.54 (thân hình bệ vệ, oai nghiêm)
+    const liftRatio = isSaved ? Math.min(1, (v.savedT || 0) / 3.8) : 0;
+    const targetS = Math.max(0.38, s0 * 1.08) + (level - 1) * 0.018;
+    const s = isSaved
+      ? (s0 + (targetS - s0) * liftRatio)
+      : Math.max(.24, Math.min(.88, sc2));
     v._ws = s;
     let shakeX = 0;
     if (v.state === 'sit'){
@@ -598,37 +1338,216 @@ function drawHell(now, dt, t){
       if (v.trembleAt <= 0){ v.tremble = .7; v.trembleAt = 3 + Math.random()*8; }
       if (v.tremble > 0){ v.tremble -= dt; shakeX = Math.sin(t*68 + v.phase)*2.2; }
     }
+    const renderX = isSaved ? v.curX : (v.x + shakeX);
+    const floatY = isSaved ? Math.sin(t * 1.8 + v.phase) * (4 * s) : 0;
+    const actualY = isSaved ? (v.curY + floatY) : v.y;
     const breathe = v.state === 'sit' ? Math.sin(t*1.1 + v.phase)*2*s : 0;
-    if (v.glow > 0){
+    if (v.glow > 0 && !isSaved){
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, v.glow*.7);
       const g = ctx.createRadialGradient(v.x, v.y - 115*s, 10, v.x, v.y - 115*s, 170*s);
       g.addColorStop(0, 'rgba(255,200,110,.9)'); g.addColorStop(1, 'rgba(255,160,60,0)');
       ctx.fillStyle = g; ctx.fillRect(v.x - 200*s, v.y - 300*s, 400*s, 340*s); ctx.restore();
     }
-    if (v.state === 'saved'){
-      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .55 + .2*Math.sin(t*6);
-      sprite(A.halo, v.x, v.y - 120*s, 1.6*s + v.savedT*.25, .5); ctx.restore();
+    let tagH = 268*s, drawnW = 200*s;
+    if (isSaved){
+      // 1. Hoa sen nở rộ dưới chân thanh nhã, vừa vặn
+      v.lotusBloom = Math.min(1, (v.lotusBloom ?? 0) + dt * 0.55);
+      const bloomEase = 1 - Math.pow(1 - v.lotusBloom, 3);
+      const lotusScale = (0.52 + Math.min(0.24, (level - 1) * 0.024)) * s * (.65 + .35 * bloomEase);
+
+      // Quầng sáng đài sen đa tầng
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const lotusR = (32 + level * 2.8) * s;
+      const lotusG = ctx.createRadialGradient(renderX, actualY + 8 * s, 4 * s, renderX, actualY + 8 * s, lotusR);
+      if (level >= 7) {
+        lotusG.addColorStop(0, 'rgba(255, 245, 180, 0.95)');
+        lotusG.addColorStop(0.4, 'rgba(255, 180, 50, 0.55)');
+        lotusG.addColorStop(1, 'rgba(255, 100, 20, 0)');
+      } else if (level >= 4) {
+        lotusG.addColorStop(0, 'rgba(255, 238, 150, 0.85)');
+        lotusG.addColorStop(0.5, 'rgba(255, 160, 80, 0.35)');
+        lotusG.addColorStop(1, 'rgba(255, 100, 40, 0)');
+      } else {
+        lotusG.addColorStop(0, 'rgba(255, 238, 140, 0.70)');
+        lotusG.addColorStop(0.6, 'rgba(255, 145, 165, 0.25)');
+        lotusG.addColorStop(1, 'rgba(255, 100, 40, 0)');
+      }
+      ctx.fillStyle = lotusG;
+      ctx.beginPath();
+      ctx.arc(renderX, actualY + 8 * s, lotusR, 0, 6.29);
+      ctx.fill();
+      ctx.restore();
+
+      // Vẽ hoa sen nở rộ nâng đỡ gót chân (GPU accelerated)
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, v.fade * (.85 + .15 * bloomEase));
+      sprite(A.lotus, renderX, actualY + 10 * s, lotusScale, 0.45);
+      if (level >= 4) {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.30;
+        sprite(A.lotus, renderX, actualY + 10 * s, lotusScale * 1.05, 0.45);
+      }
+      ctx.restore();
+
+      // 2. Vầng hào quang trên đầu sắc nét, trang nghiêm
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const haloS = (0.95 + level * 0.04) * s + Math.sin(t * 3.5 + v.phase) * 0.04;
+      ctx.globalAlpha = Math.min(1, (0.75 + 0.14 * Math.sin(t * 4 + v.phase)) * (1 + Math.min(0.28, (level - 1) * 0.028)));
+      sprite(A.halo, renderX, actualY - tagH * 0.55, haloS, 0.5);
+
+      // Cấp 4 trở lên: Hào quang đôi xoay đảo chiều uy nghi
+      if (level >= 4) {
+        ctx.save();
+        ctx.translate(renderX, actualY - tagH * 0.55);
+        ctx.rotate(-t * 0.8 + v.phase);
+        ctx.globalAlpha = 0.55 + 0.15 * Math.sin(t * 3 + v.phase);
+        sprite(A.halo, 0, 0, haloS * 0.72, 0.5);
+        ctx.restore();
+      }
+
+      // Cấp 7 trở lên: Nan hoa Pháp Luân 8 hướng xoay chuyển chầm chậm
+      if (level >= 7) {
+        ctx.save();
+        ctx.translate(renderX, actualY - tagH * 0.55);
+        ctx.rotate(t * 0.45 + v.phase);
+        ctx.strokeStyle = 'rgba(255, 235, 140, 0.65)';
+        ctx.lineWidth = Math.max(1.8, 3.5 * s);
+        const rayR = (55 + level * 4) * s;
+        for (let r = 0; r < 8; r++) {
+          const ang = r * Math.PI / 4;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(ang) * 14 * s, Math.sin(ang) * 14 * s);
+          ctx.lineTo(Math.cos(ang) * rayR, Math.sin(ang) * rayR);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Ánh sáng kim quang bao quanh thân dịu nhẹ
+      const glowR = (46 + level * 5) * s;
+      const kg = ctx.createRadialGradient(renderX, actualY - tagH * 0.5, 6 * s, renderX, actualY - tagH * 0.5, glowR);
+      kg.addColorStop(0, `rgba(255,245,160,${Math.min(0.7, 0.35 + level * 0.035)})`);
+      kg.addColorStop(0.5, `rgba(255,190,55,${Math.min(0.4, 0.16 + level * 0.02)})`);
+      kg.addColorStop(1, 'rgba(255,130,20,0)');
+      ctx.fillStyle = kg;
+      ctx.beginPath();
+      ctx.arc(renderX, actualY - tagH * 0.5, glowR, 0, 6.29);
+      ctx.fill();
+      ctx.restore();
+
+      // Cấp 6 trở lên: Dải lụa tiên quang uốn lượn quanh thân (Thiên Y Bảo Đái - GPU accelerated)
+      if (level >= 6) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, v.fade * 0.85);
+        const ribW = (42 + level * 2) * s;
+        const ribH = tagH * 0.85;
+        const ribWave = Math.sin(t * 2.5 + v.phase) * (8 * s);
+        // Outer soft glow (GPU double-stroke, no shadowBlur)
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.35)';
+        ctx.lineWidth = Math.max(5, 10 * s);
+        ctx.beginPath();
+        ctx.moveTo(renderX - ribW, actualY - ribH * 0.7);
+        ctx.bezierCurveTo(
+          renderX - ribW * 1.3, actualY - ribH * 0.2 + ribWave,
+          renderX + ribW * 1.3, actualY - ribH * 0.4 - ribWave,
+          renderX + ribW, actualY + 4 * s
+        );
+        ctx.stroke();
+        // Inner bright core
+        ctx.strokeStyle = level >= 9 ? '#fffbe6' : '#ffd98a';
+        ctx.lineWidth = Math.max(2.2, 4.5 * s);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 3. Sao kim cương sáng lấp lánh (3 đến 8 sao nhỏ gọn, lấp lánh)
+      const numStars = 3 + Math.min(5, Math.floor(level * 0.6));
+      for (let i = 0; i < numStars; i++){
+        const starAngle = t * (1.1 + i * 0.25) + i * (Math.PI * 2 / numStars) + v.phase;
+        const starDistX = (42 + (i % 2) * 16 + level * 2) * s;
+        const starDistY = (34 + (i % 2) * 20 + level * 2) * s;
+        const sx = renderX + Math.cos(starAngle) * starDistX;
+        const sy = actualY - tagH * 0.55 + Math.sin(starAngle) * starDistY;
+        const spkSize = (7 + 5 * Math.sin(t * 5 + i * 1.8 + v.phase)) * s * 1.3;
+        const spkAlpha = 0.55 + 0.45 * Math.sin(t * 6 + i * 2.3);
+        drawSparkle(ctx, sx, sy, spkSize, spkAlpha, t * 2.2 + i);
+      }
+
+      // 4. Cánh hoa sen và bụi tiên bay lượn từ đài sen
+      if (Math.random() < 0.05 + Math.min(0.04, (level - 1) * 0.005)) {
+        petals.push({
+          x: renderX + (Math.random() - .5) * 36 * s,
+          y: actualY + 8 * s,
+          vx: (Math.random() - .5) * 12,
+          vy: -(24 + Math.random() * 28),
+          t: 0,
+          life: 1.4 + Math.random() * 0.5,
+          s: .08 + Math.random() * .05
+        });
+      }
+      if (level >= 5 && Math.random() < 0.08 + (level - 5) * 0.015) {
+        petals.push({
+          x: renderX + (Math.random() - .5) * 44 * s,
+          y: actualY + 4 * s,
+          vx: (Math.random() - .5) * 16,
+          vy: -(36 + Math.random() * 32),
+          t: 0,
+          life: 1.8 + Math.random() * 0.6,
+          s: .10 + Math.random() * 0.06
+        });
+      }
+    }
+    if (scene === 'pagoda' && v.state === 'sit') {
+      ctx.save();
+      ctx.globalAlpha = v.fade * 0.92;
+      ctx.drawImage(cushionCanvas, renderX - 72 * s, actualY - 33 * s, 144 * s, 66 * s);
+      ctx.restore();
     }
     const bowK = v.state === 'sit' ? Math.sin(Math.min(1, v.bow)*Math.PI)*.13 : 0;
-    ctx.save(); ctx.globalAlpha = v.fade; ctx.translate(v.x + shakeX, v.y);
+    ctx.save(); ctx.globalAlpha = v.fade; ctx.translate(renderX, actualY);
     if (bowK) ctx.transform(1, 0, 0, 1 - bowK, 0, 0);
-    let tagH = 268*s, drawnW = 200*s;
-    const grey = 'grayscale(1) brightness(.82)';
+
     if (anim){
       const a = ANIM[v.skin], k = s*1.05*260/a.seatH;
       if (v.flip) ctx.scale(-1, 1);
-      const src = A['anim_' + v.skin];
-      if (src?.naturalWidth){ ctx.filter = grey; ctx.drawImage(src, v.frame*a.fw, 0, a.fw, a.fh, -a.fw*k/2, -a.fh*k + breathe, a.fw*k, a.fh*k); ctx.filter = 'none'; }
+      const rawSrc = A['anim_' + v.skin];
+      if (rawSrc?.naturalWidth){
+        const src = (scene === 'hell' && !isSaved) ? getGrey('anim_' + v.skin, rawSrc) : rawSrc;
+        ctx.drawImage(src, v.frame*a.fw, 0, a.fw, a.fh, -a.fw*k/2, -a.fh*k + breathe, a.fw*k, a.fh*k);
+        // Quầng sáng kim quang cho nhân vật phi thăng (GPU add blend, không tốn CPU)
+        if (isSaved && level >= 4) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.globalAlpha = 0.22 + Math.min(0.24, level * 0.024);
+          ctx.drawImage(src, v.frame*a.fw, 0, a.fw, a.fh, -a.fw*k/2, -a.fh*k + breathe, a.fw*k, a.fh*k);
+          ctx.restore();
+        }
+      }
       tagH = (v.state === 'sit' ? a.seatH : a.fh*.97)*k; drawnW = a.fw*k;
     } else {
-      const sk = v.skin === 'master' ? 'monk' : v.skin, src = A[sk] || A.man;
-      if (src?.naturalWidth){ ctx.filter = grey; sprite(src, 0, breathe, s*1.05); ctx.filter = 'none'; }
+      const sk = v.skin === 'master' ? 'monk' : v.skin;
+      const rawSrc = A[sk] || A.man;
+      if (rawSrc?.naturalWidth){
+        const src = (scene === 'hell' && !isSaved) ? getGrey(sk, rawSrc) : rawSrc;
+        sprite(src, 0, breathe, s*1.05);
+        // Quầng sáng kim quang cho nhân vật phi thăng (GPU add blend, không tốn CPU)
+        if (isSaved && level >= 4) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.globalAlpha = 0.22 + Math.min(0.24, level * 0.024);
+          sprite(src, 0, breathe, s*1.05);
+          ctx.restore();
+        }
+      }
       tagH = 268*s;
     }
     ctx.restore();
-    if (v.state === 'sit') drawChainSoul(v, tagH, drawnW);
-    hellTag(v.name, v.x + shakeX, v.y - tagH - 10*s, s, Math.max(60, (v.seat?.tagW || v.seat?.gap || 120) - 14));
-    if (v.bubble && now < v.bubble.until) bubbles.push([v.bubble.text, v.x, v.y - tagH - 10*s - Math.max(18, 30*s/.4), s]); else v.bubble = null;
+    if (scene === 'hell' && v.state === 'sit') drawChainSoul(v, tagH, drawnW);
+    const tagMaxW = isSaved ? 180 : Math.max(60, (v.seat?.tagW || v.seat?.gap || 120) - 14);
+    hellTag(v.name, renderX, actualY - tagH - 8*s, s, tagMaxW, isSaved, tier, v.inNirvana);
+    if (v.bubble && now < v.bubble.until) bubbles.push([v.bubble.text, renderX, actualY - tagH - 8*s - Math.max(16, 26*s/.35), s]); else v.bubble = null;
   }
   for (const b of bubbles) bubble(...b);
   // petals / hearts (shared array with the pagoda scene)
@@ -636,33 +1555,54 @@ function drawHell(now, dt, t){
     ctx.save(); ctx.globalAlpha = Math.min(1, p.life - p.t); ctx.translate(p.x, p.y);
     if (p.heart){ ctx.fillStyle = '#ff5a7a'; ctx.font = '34px serif'; ctx.textAlign = 'center'; ctx.fillText('♥', 0, 0); } else { ctx.rotate(Math.sin(p.t*2 + i)*.6); sprite(A.petal, 0, 0, p.s, .5); }
     ctx.restore(); }
-  // embers + bottom fire row
-  ctx.save(); ctx.fillStyle = '#ffb347';
-  for (const e of hellEmbers){
-    e.y -= e.sp*dt; e.x += Math.sin(t*2 + e.ph)*12*dt;
-    if (e.y < 1920*.3){ e.y = 1910; e.x = Math.random()*1080; }
-    ctx.globalAlpha = .35 + .3*Math.sin(t*5 + e.ph);
-    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, 6.29); ctx.fill();
+  if (scene === 'hell') {
+    // embers + bottom fire row (chỉ trong Sám Hối Địa Ngục)
+    ctx.save(); ctx.fillStyle = '#ffb347';
+    for (const e of hellEmbers){
+      e.y -= e.sp*dt; e.x += Math.sin(t*2 + e.ph)*12*dt;
+      if (e.y < 1920*.3){ e.y = 1910; e.x = Math.random()*1080; }
+      ctx.globalAlpha = .35 + .3*Math.sin(t*5 + e.ph);
+      ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, 6.29); ctx.fill();
+    }
+    ctx.restore();
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    if (!cacheFireGrad) {
+      cacheFireGrad = ctx.createLinearGradient(0, 1920, 0, 1770);
+      cacheFireGrad.addColorStop(0, 'rgba(255,90,20,.55)');
+      cacheFireGrad.addColorStop(1, 'rgba(255,90,20,0)');
+    }
+    ctx.fillStyle = cacheFireGrad;
+    for (let i = 0; i < 12; i++){
+      const fxPos = 45 + i*88, fh = 54 + 26*Math.sin(t*9 + i*1.7) + 12*Math.sin(t*15 + i);
+      ctx.beginPath(); ctx.moveTo(fxPos - 30, 1920); ctx.quadraticCurveTo(fxPos, 1920 - fh*2, fxPos + 30, 1920); ctx.fill();
+    }
+    ctx.restore();
+  } else {
+    // Đom đóm ánh vàng thanh tịnh và kim quang lấp lánh (trong Chánh Điện)
+    ctx.save();
+    for (const e of hellEmbers){
+      e.y -= (e.sp * 0.45) * dt; e.x += Math.sin(t*1.5 + e.ph)*10*dt;
+      if (e.y < 1920*.3){ e.y = 1910; e.x = Math.random()*1080; }
+      const sparkAlpha = .22 + .22*Math.sin(t*4 + e.ph);
+      drawSparkle(ctx, e.x, e.y, e.r * 2.2, sparkAlpha, t + e.ph);
+    }
+    ctx.restore();
   }
-  ctx.restore();
-  ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  for (let i = 0; i < 12; i++){
-    const fxPos = 45 + i*88, fh = 54 + 26*Math.sin(t*9 + i*1.7) + 12*Math.sin(t*15 + i);
-    const fg = ctx.createLinearGradient(0, 1920, 0, 1920 - fh*2);
-    fg.addColorStop(0, 'rgba(255,90,20,.5)'); fg.addColorStop(1, 'rgba(255,90,20,0)');
-    ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(fxPos - 30, 1920); ctx.quadraticCurveTo(fxPos, 1920 - fh*2, fxPos + 30, 1920); ctx.fill();
-  }
-  ctx.restore();
-  // remove ascended souls and free their seats
+  // remove departed / nirvana souls and free their seats
   let freed = false;
   for (let i = soulOrder.length-1; i >= 0; i--){
     const s = souls.get(soulOrder[i]); if (!s) { soulOrder.splice(i,1); continue; }
-    if (s.gone){ if (s.seat) s.seat.taken = null; souls.delete(s.id); soulOrder.splice(i,1); freed = true; }
+    if (s.gone || (s.inNirvana && s.fade <= 0)){
+      if (s.seat) s.seat.taken = null;
+      souls.delete(s.id);
+      soulOrder.splice(i,1);
+      freed = true;
+    }
   }
   if (freed){ reseatHell(); renderBook(); }
 }
 
-layout(24); requestAnimationFrame(frame);
+layout(100); layoutHell(100); requestAnimationFrame(frame);
 </script>
 </body>
 </html>
