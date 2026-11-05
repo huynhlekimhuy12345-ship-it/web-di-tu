@@ -67,6 +67,43 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 #hellGuide{left:16px;top:350px;width:265px;display:none;background:rgba(26,8,4,.92);border:2px solid rgba(255,122,60,.4);box-shadow:0 4px 20px rgba(0,0,0,.6);padding:10px 12px;font-size:14px;line-height:1.32;border-radius:14px}
 #hellGuide div+div{border-top:1px solid rgba(255,122,60,.25);margin-top:6px;padding-top:6px}
 #hellGuide b{color:#ffb08a}
+
+/* bar club scene styles */
+#barGuide{left:16px;top:350px;width:265px;display:none;background:rgba(20,5,35,.92);border:2px solid rgba(0,255,255,.45);box-shadow:0 4px 20px rgba(0,0,0,.7);padding:10px 12px;font-size:14px;line-height:1.32;border-radius:14px}
+#barGuide div+div{border-top:1px solid rgba(0,255,255,.25);margin-top:6px;padding-top:6px}
+#barGuide b{color:#00ffff}
+
+#stage.scene-bar #plaque {
+  border-color: #00ffff;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.45), 0 0 40px rgba(255, 0, 128, 0.35) inset;
+  background: linear-gradient(180deg, rgba(35, 10, 55, 0.94), rgba(12, 5, 25, 0.94));
+}
+#stage.scene-bar #title {
+  color: #00ffff;
+  text-shadow: 0 0 16px rgba(0, 255, 255, 0.7), 0 0 30px rgba(255, 0, 128, 0.5);
+}
+#stage.scene-bar #subtitle {
+  color: #ff80df;
+  text-shadow: 0 0 10px rgba(255, 0, 128, 0.6);
+}
+#stage.scene-bar #hellBook {
+  border-color: rgba(0, 255, 255, 0.45);
+  box-shadow: 0 0 20px rgba(180, 0, 255, 0.35);
+  background: rgba(18, 6, 32, 0.92);
+}
+#stage.scene-bar #hellBook h3 {
+  color: #00ffff;
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+}
+#stage.scene-bar #salvation {
+  border-color: #00ffff;
+  background: radial-gradient(ellipse at 50% 0%, rgba(130, 15, 110, 0.98), rgba(25, 4, 38, 0.98));
+  box-shadow: 0 0 70px rgba(0, 255, 255, 0.65);
+}
+#stage.scene-bar #salvation .who {
+  color: #00ffff;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 35px rgba(255, 0, 128, 0.6);
+}
 #hellBook{right:16px;top:340px;width:320px;max-height:none;overflow:hidden;scrollbar-width:none;text-align:center;display:none;padding:10px 14px;background:rgba(18,6,3,.90);border:1.5px solid rgba(255,190,80,.32);box-shadow:0 4px 24px rgba(0,0,0,.5);border-radius:14px}
 #hellBook::-webkit-scrollbar{display:none}
 #hellBook h3{margin:0 0 6px;font-family:var(--display);font-size:22px;color:#ffd98a;letter-spacing:.08em;text-shadow:0 0 10px rgba(255,215,0,.4)}
@@ -140,6 +177,12 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
     <div>🎁 <b>Donate hoa thăng cấp:</b> Cấp 1 (1 hoa) → Cấp 10 (10 hoa)</div>
     <div>❤️ <b>1 tym = 1 lạy sám hối</b></div>
   </div>
+  <div id="barGuide" class="card ui">
+    <div>💬 <b>Bình luận bất kỳ</b> để vào bàn quẩy bar</div>
+    <div>👤 Gõ <b>nam · nữ · sư · ni · tiểu · bà · cao tăng</b> để đổi hình dạng</div>
+    <div>🍻 <b>1 tym = 1 cụng ly "1 2 3 DÔ!"</b></div>
+    <div>🍾 <b>Mời bia / rượu thăng cấp Đô Nhậu</b> (Cấp 1 – 10)</div>
+  </div>
   <div id="hellBook" class="card ui"><h3>✦ Sổ Sám Hối ✦</h3><ol id="hellBookList"><li class="empty">Chưa có</li></ol></div>
   <div id="verdict" class="ui"><div class="who">⚖️ PHÁN QUYẾT ⚖️</div><div class="txt" id="verdictText"></div></div>
   <div id="salvation" class="ui">
@@ -165,7 +208,7 @@ addEventListener('resize', fit); fit();
 
 /* ======================= assets ======================= */
 const A = {};
-const IMG = { hall:'/assets/hall.jpg', hell:'/assets/hell.jpg', monk:'/assets/c_monk.png', nun:'/assets/c_nun.png', granny:'/assets/c_granny.png', man:'/assets/c_man.png',
+const IMG = { hall:'/assets/hall.jpg', hell:'/assets/hell.jpg', bar:'/assets/bar.jpg', monk:'/assets/c_monk.png', nun:'/assets/c_nun.png', granny:'/assets/c_granny.png', man:'/assets/c_man.png',
   woman:'/assets/c_woman.png', child:'/assets/c_child.png', anim_man:'/assets/anim_man.png', anim_woman:'/assets/anim_woman.png', anim_granny:'/assets/anim_granny.png',
   lotus:'/assets/fx_lotus.png', halo:'/assets/fx_halo.png', bell:'/assets/fx_bell.png', incense:'/assets/fx_incense.png', petal:'/assets/fx_petal.png' };
 for (const [k,src] of Object.entries(IMG)){ const im=new Image(); im.src=src; A[k]=im; }
@@ -202,6 +245,23 @@ cushionCanvas.width = 144; cushionCanvas.height = 72;
   cctx.lineWidth = 3;
   cctx.strokeStyle = 'rgba(240, 180, 80, 0.65)';
   cctx.stroke();
+}
+
+const barSeatCanvas = document.createElement('canvas');
+barSeatCanvas.width = 144; barSeatCanvas.height = 72;
+{
+  const bctx = barSeatCanvas.getContext('2d');
+  const bg = bctx.createRadialGradient(72, 36, 10, 72, 36, 68);
+  bg.addColorStop(0, 'rgba(0, 255, 255, 0.7)');
+  bg.addColorStop(0.6, 'rgba(180, 0, 255, 0.45)');
+  bg.addColorStop(1, 'rgba(255, 0, 128, 0)');
+  bctx.fillStyle = bg;
+  bctx.beginPath();
+  bctx.ellipse(72, 36, 68, 30, 0, 0, Math.PI * 2);
+  bctx.fill();
+  bctx.lineWidth = 2.5;
+  bctx.strokeStyle = '#00ffff';
+  bctx.stroke();
 }
 
 /* ======================= seats ======================= */
@@ -347,6 +407,37 @@ function mo(){
   const g=AC.createGain(); g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.14);
   o.connect(bp); bp.connect(g); g.connect(sfx); o.start(t); o.stop(t+.16);
 }
+
+function clinkGlass(){
+  if (!AC) return;
+  const t0 = AC.currentTime;
+  const osc1 = AC.createOscillator();
+  const osc2 = AC.createOscillator();
+  const gain = AC.createGain();
+  osc1.type = 'sine'; osc1.frequency.setValueAtTime(2400, t0);
+  osc2.type = 'sine'; osc2.frequency.setValueAtTime(3600, t0);
+  gain.gain.setValueAtTime(0.28, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.55);
+  osc1.connect(gain); osc2.connect(gain);
+  gain.connect(sfx || master || AC.destination);
+  osc1.start(t0); osc2.start(t0);
+  osc1.stop(t0 + 0.55); osc2.stop(t0 + 0.55);
+}
+
+function champagnePop(){
+  if (!AC) return;
+  const t = AC.currentTime;
+  const o = AC.createOscillator();
+  const g = AC.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(160, t);
+  o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+  g.gain.setValueAtTime(0.7, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+  o.connect(g); g.connect(sfx || master || AC.destination);
+  o.start(t); o.stop(t + 0.15);
+  setTimeout(clinkGlass, 90);
+}
 let moTimer=null;
 function scheduleMo(){
   clearInterval(moTimer);
@@ -386,7 +477,7 @@ function connect(){
       case 'state':
         Object.assign(settings,m.settings); applySettings(); startedAt=m.startedAt;
         visitors.clear(); order=[]; layout(m.cap || 100); for (const p of m.viewers) addVisitor(p,true); updateCount(); renderMerit();
-        scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene();
+        scene = ['hell', 'bar'].includes(m.scene) ? m.scene : 'pagoda'; applyScene();
         souls.clear(); soulOrder=[]; layoutHell(m.cap || 100); for (const p of m.viewers) addSoul(p,true); updateCount(); renderBook(); break;
       case 'settings': Object.assign(settings,m.settings); applySettings(); if (m.cap!==cap){ layout(m.cap); layoutHell(m.cap); updateCount(); } applyScene(); break;
       case 'join': if (m.cap!==cap){ layout(m.cap); layoutHell(m.cap); } addVisitor(m.v, m.v.demo && visitors.size>8); addSoul(m.v, m.v.demo && souls.size>8); updateCount(); break;
@@ -454,12 +545,37 @@ function connect(){
             bowSoul(so.id, m.n, m.totalLikes);
           }
         }
+        if (scene === 'bar') clinkGlass();
       } break;
-      case 'scene': scene = m.scene === 'hell' ? 'hell' : 'pagoda'; applyScene(); updateCount(); break;
+      case 'scene': scene = ['hell', 'bar'].includes(m.scene) ? m.scene : 'pagoda'; applyScene(); updateCount(); break;
+      case 'barCmd': {
+        if (m.cmd === 'do') {
+          clinkGlass();
+          for (let i = 0; i < 26; i++) {
+            petals.push({
+              x: 540 + (Math.random() - .5) * 600,
+              y: 1100 + (Math.random() - .5) * 300,
+              vx: (Math.random() - .5) * 60,
+              vy: -(90 + Math.random() * 110),
+              t: 0,
+              life: 2.8 + Math.random(),
+              s: .2 + Math.random() * .15,
+              heart: true
+            });
+          }
+        } else if (m.cmd === 'champagne') {
+          champagnePop();
+        } else if (m.cmd === 'dropbass') {
+          if (AC) bell(true);
+        } else if (m.cmd === 'cheers') {
+          clinkGlass();
+        }
+        break;
+      }
       case 'rejoin': {
-        const tierObj = TIERS[(m.tier || 1) - 1] || TIERS[0];
+        const tierObj = (scene === 'bar' ? BAR_TIERS : TIERS)[(m.tier || 1) - 1] || (scene === 'bar' ? BAR_TIERS : TIERS)[0];
         showReturnNotice(m.name, m.tier, m.tierName || tierObj.name, m.avatar);
-        if (AC) bell(false);
+        if (AC) { if (scene === 'bar') clinkGlass(); else bell(false); }
         break;
       }
       case 'verdict': { const vd = VERDICTS[m.verdict]; if (vd) verdictSoul(m.verdict); } break;
@@ -740,6 +856,19 @@ const TIERS = [
   { level: 10, name: 'Đại Giác Viên Mãn', shortName: 'Siêu Thoát', badge: '☸️', minCoins: 55, reqFlowers: 10, desc: 'Quả vị tối thượng, siêu thoát vĩnh hằng' },
 ];
 
+const BAR_TIERS = [
+  { level: 1, name: 'Nhập Tiệc', shortName: 'Nhập Tiệc', badge: '🍻', minCoins: 1, reqFlowers: 1, desc: 'Làm quen 1 ly mở màn' },
+  { level: 2, name: 'Khai Vị', shortName: 'Khai Vị', badge: '🍺', minCoins: 3, reqFlowers: 2, desc: '1 2 3 Dô nóng máy' },
+  { level: 3, name: 'Vào Cầu', shortName: 'Vào Cầu', badge: '🥂', minCoins: 6, reqFlowers: 3, desc: 'Rót đều tay, quẩy hết nấc' },
+  { level: 4, name: 'Tay Uống Khét', shortName: 'Uống Khét', badge: '🍹', minCoins: 10, reqFlowers: 4, desc: 'Không say không về' },
+  { level: 5, name: 'Bao Bàn', shortName: 'Bao Bàn', badge: '🍾', minCoins: 15, reqFlowers: 5, desc: 'Mời anh em 1 vòng bàn' },
+  { level: 6, name: 'Đại Gia Phố', shortName: 'Đại Gia', badge: '🍸', minCoins: 21, reqFlowers: 6, desc: 'Gọi combo mồi xịn sò' },
+  { level: 7, name: 'Dân Chơi Thứ Thiệt', shortName: 'Dân Chơi', badge: '💎', minCoins: 28, reqFlowers: 7, desc: 'Rót đầy ly tràn quẩy nóc' },
+  { level: 8, name: 'Trùm Quầy Bar', shortName: 'Trùm Bar', badge: '👑', minCoins: 36, reqFlowers: 8, desc: 'Bá chủ quầy bar vũ trường' },
+  { level: 9, name: 'Đô Bất Tử', shortName: 'Bất Tử', badge: '⚡', minCoins: 45, reqFlowers: 9, desc: 'Ngàn chén không say' },
+  { level: 10, name: 'Thần Cồn Vô Đối', shortName: 'Thần Cồn', badge: '🌟', minCoins: 55, reqFlowers: 10, desc: 'VIP Lounge đệ nhất tửu thần' },
+];
+
 function calcTierFromCoins(coins){
   if (!coins || coins <= 0) return 0;
   let lvl = 1;
@@ -752,11 +881,12 @@ function calcTierFromCoins(coins){
 
 function getSoulTier(s){
   if (!s) return null;
-  if (s.tier && s.tier >= 1) return TIERS[Math.min(10, s.tier) - 1] || TIERS[0];
+  const list = scene === 'bar' ? BAR_TIERS : TIERS;
+  if (s.tier && s.tier >= 1) return list[Math.min(10, s.tier) - 1] || list[0];
   const coins = Math.max(0, s.coins || 0);
   if (coins <= 0 && s.state !== 'saved') return null;
   const lvl = calcTierFromCoins(coins) || 1;
-  return TIERS[lvl - 1] || TIERS[0];
+  return list[lvl - 1] || list[0];
 }
 
 function renderBook(){
@@ -966,10 +1096,12 @@ function showReturnNotice(name, level, tierName, avatarUrl){
   const tName = tierName || (TIERS[lvl - 1]?.name || 'Sơ Tâm Sám Hối');
   const returnTitleEl = document.querySelector('#returnNotice .return-title');
   if (returnTitleEl) {
-    returnTitleEl.textContent = scene === 'hell' ? '✨ ĐẠO HỮU TRỞ LẠI SÁM HỐI ✨' : '✨ ĐẠO HỮU TRỞ LẠI CHÁNH ĐIỆN ✨';
+    returnTitleEl.textContent = scene === 'bar' ? '🍻 DÂN CHƠI TRỞ LẠI BÀN VIP 🍻' : scene === 'hell' ? '✨ ĐẠO HỮU TRỞ LẠI SÁM HỐI ✨' : '✨ ĐẠO HỮU TRỞ LẠI CHÁNH ĐIỆN ✨';
   }
   document.getElementById('returnWho').textContent = `✨ ${name} · [${tName}] ✨`;
-  document.getElementById('returnWhat').textContent = scene === 'hell'
+  document.getElementById('returnWhat').textContent = scene === 'bar'
+    ? `Dân chơi [${tName}] đã vào lại quầy bar · Nâng ly cụng chén!`
+    : scene === 'hell'
     ? `Bậc [${tName}] đã vào lại sám hối · Công đức viên mãn!`
     : `Bậc [${tName}] đã vào lại chánh điện · Phước huệ trang nghiêm!`;
   const el = document.getElementById('returnNotice');
@@ -987,9 +1119,13 @@ function showSalvation(name, giftName, avatarUrl, tier){
   } else {
     avEl.style.display = 'none';
   }
-  const tName = tier ? tier.name : 'Sơ Tâm Sám Hối';
+  const tName = tier ? tier.name : (scene === 'bar' ? 'Nhập Tiệc' : 'Sơ Tâm Sám Hối');
   document.getElementById('salvationWho').textContent = `✨ ${name} · [${tName}] ✨`;
-  if (scene === 'hell') {
+  if (scene === 'bar') {
+    document.getElementById('salvationWhat').textContent = giftName
+      ? `Lên Bàn VIP đắc cảnh giới [${tName}] nhờ ${giftName} · 1 2 3 DÔ!`
+      : `Lên Bàn VIP đắc cảnh giới [${tName}] · Quẩy tung nóc nhà!`;
+  } else if (scene === 'hell') {
     document.getElementById('salvationWhat').textContent = giftName
       ? `Phi thăng đắc cảnh giới [${tName}] nhờ ${giftName} · Siêu thoát luân hồi!`
       : `Phi thăng đắc cảnh giới [${tName}] · Tiêu trừ nghiệp chướng!`;
@@ -1053,24 +1189,52 @@ function salvationById(id, m){
       s.seat = null;
       reseatHell();
     }
-    if (AC) bell(true);
+    if (scene === 'bar') {
+      champagnePop();
+    } else if (AC) {
+      bell(true);
+    }
   }
   const tier = s ? getSoulTier(s) : null;
   const avUrl = (m && m.avatar) || (s && s.avatar) || '';
-  showSalvation((m && m.name) || (s && s.name) || (scene === 'hell' ? 'Vong hồn' : 'Phật tử'), m && m.giftName, avUrl, tier);
+  showSalvation((m && m.name) || (s && s.name) || (scene === 'bar' ? 'Dân chơi' : scene === 'hell' ? 'Vong hồn' : 'Phật tử'), m && m.giftName, avUrl, tier);
   updateCount();
   renderBook();
 }
 function applyScene(){
-  const hell = scene === 'hell';
-  document.getElementById('guide').style.display = hell ? 'none' : 'block';
-  document.getElementById('hellGuide').style.display = hell ? 'block' : 'none';
+  const isHell = scene === 'hell';
+  const isBar = scene === 'bar';
+  const isPagoda = scene === 'pagoda';
+
+  const st = document.getElementById('stage');
+  if (st) {
+    st.classList.remove('scene-pagoda', 'scene-hell', 'scene-bar');
+    st.classList.add(isBar ? 'scene-bar' : isHell ? 'scene-hell' : 'scene-pagoda');
+  }
+
+  document.getElementById('guide').style.display = isPagoda ? 'block' : 'none';
+  document.getElementById('hellGuide').style.display = isHell ? 'block' : 'none';
+  const barG = document.getElementById('barGuide');
+  if (barG) barG.style.display = isBar ? 'block' : 'none';
+
   document.getElementById('hellBook').style.display = 'block';
   document.getElementById('merit').style.display = 'none';
-  document.getElementById('title').textContent = hell ? 'Sám Hối Địa Ngục' : (settings.title || 'Chánh Điện Tịnh Tâm');
-  document.getElementById('subtitle').textContent = hell ? 'Nam Mô Địa Tạng Vương Bồ Tát' : (settings.subtitle || 'Nam Mô A Di Đà Phật');
+
+  if (isBar) {
+    document.getElementById('title').textContent = 'Bar Club Quẩy Nhậu';
+    document.getElementById('subtitle').textContent = '1 2 3 DÔ · KHÔNG SAY KHÔNG VỀ';
+  } else if (isHell) {
+    document.getElementById('title').textContent = 'Sám Hối Địa Ngục';
+    document.getElementById('subtitle').textContent = 'Nam Mô Địa Tạng Vương Bồ Tát';
+  } else {
+    document.getElementById('title').textContent = settings.title || 'Chánh Điện Tịnh Tâm';
+    document.getElementById('subtitle').textContent = settings.subtitle || 'Nam Mô A Di Đà Phật';
+  }
+
   const bookTitle = document.querySelector('#hellBook h3');
-  if (bookTitle) bookTitle.textContent = hell ? '✦ Sổ Sám Hối ✦' : '✦ Bảng Công Đức ✦';
+  if (bookTitle) {
+    bookTitle.textContent = isBar ? '✦ Bảng Đô Nhậu VIP ✦' : isHell ? '✦ Sổ Sám Hối ✦' : '✦ Bảng Công Đức ✦';
+  }
   renderBook();
 }
 function drawSparkle(ctx, cx, cy, size, alpha, rot = 0){
@@ -1103,6 +1267,8 @@ let cacheFireGrad = null;
 function drawHell(now, dt, t){
   ctx.clearRect(0, 0, 1080, 1920);
   const isPagoda = scene === 'pagoda';
+  const isBar = scene === 'bar';
+  const isHell = scene === 'hell';
 
   if (isPagoda) {
     // ---------------- CHÁNH ĐIỆN BACKGROUND ----------------
@@ -1161,6 +1327,46 @@ function drawHell(now, dt, t){
       ctx.fill();
     }
     ctx.restore();
+  } else if (isBar) {
+    // ---------------- QUÁN BAR CLUB QUẨY NHẬU BACKGROUND ----------------
+    if (A.bar?.naturalWidth){
+      const sc = Math.max(1080 / A.bar.naturalWidth, 1920 / A.bar.naturalHeight);
+      const dw = A.bar.naturalWidth * sc, dh = A.bar.naturalHeight * sc;
+      ctx.drawImage(A.bar, (1080 - dw)/2, (1920 - dh)/2, dw, dh);
+    } else { ctx.fillStyle = '#090314'; ctx.fillRect(0, 0, 1080, 1920); }
+
+    // Ánh đèn laser nhiều màu quét chớp động vũ trường
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const laserColors = ['rgba(0, 255, 255, ', 'rgba(255, 0, 128, ', 'rgba(170, 50, 255, ', 'rgba(255, 230, 50, '];
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.sin(t * 1.5 + i * 1.2) * 0.42;
+      const originX = 540 + (i - 2.5) * 170;
+      const alpha = 0.22 + 0.12 * Math.sin(t * 3.6 + i * 2);
+      ctx.strokeStyle = laserColors[i % laserColors.length] + alpha + ')';
+      ctx.lineWidth = 3.5 + 1.5 * Math.sin(t * 2 + i);
+      ctx.beginPath();
+      ctx.moveTo(originX, 180);
+      ctx.lineTo(originX + Math.tan(angle) * 1700, 1920);
+      ctx.stroke();
+    }
+    // Disco ball center glow
+    const barGlow = ctx.createRadialGradient(540, 260, 30, 540, 260, 480);
+    const pBar = 0.32 + 0.14 * Math.sin(t * 4);
+    barGlow.addColorStop(0, `rgba(255, 50, 200, ${pBar})`);
+    barGlow.addColorStop(0.5, `rgba(0, 220, 255, ${pBar * 0.45})`);
+    barGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = barGlow;
+    ctx.fillRect(0, 0, 1080, 900);
+    ctx.restore();
+
+    // Sàn vũ trường neon phản chiếu
+    const floorG = ctx.createLinearGradient(0, 1920 * .45, 0, 1920);
+    floorG.addColorStop(0, 'rgba(15, 5, 28, 0)');
+    floorG.addColorStop(0.5, 'rgba(25, 8, 45, 0.45)');
+    floorG.addColorStop(1, 'rgba(10, 3, 20, 0.75)');
+    ctx.fillStyle = floorG;
+    ctx.fillRect(0, 1920 * .45, 1080, 1920 * .55);
   } else {
     // ---------------- SÁM HỐI ĐỊA NGỤC BACKGROUND ----------------
     if (A.hell?.naturalWidth){
@@ -1504,6 +1710,11 @@ function drawHell(now, dt, t){
       ctx.globalAlpha = v.fade * 0.92;
       ctx.drawImage(cushionCanvas, renderX - 72 * s, actualY - 33 * s, 144 * s, 66 * s);
       ctx.restore();
+    } else if (scene === 'bar' && v.state === 'sit') {
+      ctx.save();
+      ctx.globalAlpha = v.fade * 0.95;
+      ctx.drawImage(barSeatCanvas, renderX - 72 * s, actualY - 33 * s, 144 * s, 66 * s);
+      ctx.restore();
     }
     const bowK = v.state === 'sit' ? Math.sin(Math.min(1, v.bow)*Math.PI)*.13 : 0;
     ctx.save(); ctx.globalAlpha = v.fade; ctx.translate(renderX, actualY);
@@ -1553,7 +1764,13 @@ function drawHell(now, dt, t){
   // petals / hearts (shared array with the pagoda scene)
   for (let i = petals.length-1; i >= 0; i--){ const p = petals[i]; p.t += dt; if (p.t > p.life){ petals.splice(i,1); continue; } p.x += p.vx*dt + Math.sin(p.t*3 + i)*20*dt; p.y += p.vy*dt;
     ctx.save(); ctx.globalAlpha = Math.min(1, p.life - p.t); ctx.translate(p.x, p.y);
-    if (p.heart){ ctx.fillStyle = '#ff5a7a'; ctx.font = '34px serif'; ctx.textAlign = 'center'; ctx.fillText('♥', 0, 0); } else { ctx.rotate(Math.sin(p.t*2 + i)*.6); sprite(A.petal, 0, 0, p.s, .5); }
+    if (p.heart){
+      if (scene === 'bar') {
+        ctx.font = '34px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🍻', 0, 0);
+      } else {
+        ctx.fillStyle = '#ff5a7a'; ctx.font = '34px serif'; ctx.textAlign = 'center'; ctx.fillText('♥', 0, 0);
+      }
+    } else { ctx.rotate(Math.sin(p.t*2 + i)*.6); sprite(A.petal, 0, 0, p.s, .5); }
     ctx.restore(); }
   if (scene === 'hell') {
     // embers + bottom fire row (chỉ trong Sám Hối Địa Ngục)
@@ -1575,6 +1792,20 @@ function drawHell(now, dt, t){
     for (let i = 0; i < 12; i++){
       const fxPos = 45 + i*88, fh = 54 + 26*Math.sin(t*9 + i*1.7) + 12*Math.sin(t*15 + i);
       ctx.beginPath(); ctx.moveTo(fxPos - 30, 1920); ctx.quadraticCurveTo(fxPos, 1920 - fh*2, fxPos + 30, 1920); ctx.fill();
+    }
+    ctx.restore();
+  } else if (scene === 'bar') {
+    // hạt ánh sáng neon tím / cyan lấp lánh vũ trường
+    ctx.save();
+    for (const e of hellEmbers){
+      e.y -= (e.sp * 0.7) * dt; e.x += Math.sin(t*2.2 + e.ph)*16*dt;
+      if (e.y < 1920*.25){ e.y = 1910; e.x = Math.random()*1080; }
+      const sparkAlpha = .35 + .3*Math.sin(t*5.5 + e.ph);
+      ctx.fillStyle = (e.r > 2.5) ? '#00ffff' : '#ff007f';
+      ctx.globalAlpha = sparkAlpha;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.r * 1.6, 0, 6.29);
+      ctx.fill();
     }
     ctx.restore();
   } else {

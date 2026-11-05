@@ -51,6 +51,25 @@ body.theme-hell {
   --gold: #ff6a42;
 }
 
+/* ================= THEME BAR CLUB (MÀU TÍM CYAN NEON CYBERPUNK) ================= */
+body.theme-bar {
+  --bg: #090314;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #22083d 0%, #090314 75%);
+  --card: #150626;
+  --card2: #210a3c;
+  --fg: #f4e8ff;
+  --muted: #b99acb;
+  --line: #521a7d;
+  --theme-color: #00ffff;
+  --theme-accent: #ff007f;
+  --theme-glow: rgba(0, 255, 255, 0.55);
+  --btn-theme: linear-gradient(135deg, #700b68, #2a0438);
+  --btn-theme-hover: linear-gradient(135deg, #911287, #3e0752);
+  --green: #00e676;
+  --red: #ff1744;
+  --gold: #00ffff;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -95,11 +114,12 @@ h1 {
 .chip.bad { border-color: #a33; color: #f3a3a3; }
 .chip.chip-pagoda { border-color: #ffd700; color: #ffd700; background: rgba(255,215,0,0.12); font-weight: 600; }
 .chip.chip-hell { border-color: #ff4d2d; color: #ff6a42; background: rgba(255,77,45,0.15); font-weight: 600; }
+.chip.chip-bar { border-color: #00ffff; color: #00ffff; background: rgba(0,255,255,0.15); font-weight: 600; }
 
-/* ================= 2 TABS CHUYỂN CẢNH TO BẢN ================= */
+/* ================= 3 TABS CHUYỂN CẢNH TO BẢN ================= */
 .scene-switch-bar {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -158,20 +178,35 @@ h1 {
   box-shadow: 0 0 10px rgba(255, 77, 45, 0.6);
 }
 
-/* ================= 2 NÚT CHUYỂN CẢNH PILL (CHÁNH ĐIỆN / ĐỊA NGỤC) ================= */
+/* Tab Bar Club khi active */
+.scene-tab.bar.active {
+  border-color: #00ffff;
+  background: linear-gradient(135deg, rgba(112, 11, 104, 0.65), rgba(42, 4, 56, 0.95));
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.5);
+}
+.scene-tab.bar.active .tab-title { color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+.scene-tab.bar.active .active-badge {
+  display: block;
+  background: #00ffff;
+  color: #120224;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+/* ================= 3 NÚT CHUYỂN CẢNH PILL ================= */
 .scene-pills {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin: 6px 0 16px;
+  flex-wrap: wrap;
 }
 .scene-pill {
-  flex: 1;
-  padding: 12px 20px;
+  flex: 1 1 130px;
+  padding: 10px 16px;
   border-radius: 999px;
   font-family: var(--body);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   cursor: pointer;
   border: 1.5px solid var(--line);
   background: var(--card2);
@@ -181,7 +216,7 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 .scene-pill:hover {
   transform: translateY(-2px);
@@ -204,6 +239,15 @@ body.theme-hell .scene-pill.hell,
   background: linear-gradient(135deg, rgba(196, 36, 16, 0.9), rgba(92, 16, 7, 0.98));
   color: #fff5f2;
   box-shadow: 0 0 22px rgba(255, 77, 45, 0.65);
+}
+
+/* Nút Bar Club khi active */
+body.theme-bar .scene-pill.bar,
+.scene-pill.bar.active {
+  border-color: #00ffff;
+  background: linear-gradient(135deg, rgba(112, 11, 104, 0.85), rgba(42, 4, 56, 0.98));
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
 }
 
 /* ================= DẢI PHÂN CÁCH 2 ĐOẠN ================= */
@@ -340,7 +384,7 @@ button.red { background: var(--red); border-color: #b84a33; }
 <body class="theme-pagoda">
 
 <header>
-  <h1>Bảng Điều Khiển · Chánh Điện & Địa Ngục</h1>
+  <h1>Bảng Điều Khiển · Chánh Điện · Địa Ngục · Bar Club</h1>
   <div class="status">
     <span class="chip" id="srv">Server: …</span>
     <span class="chip" id="tt">TikTok: chưa kết nối</span>
@@ -349,7 +393,7 @@ button.red { background: var(--red); border-color: #b84a33; }
   </div>
 </header>
 
-<!-- ================= 2 TABS CHUYỂN ĐOẠN / CẢNH ================= -->
+<!-- ================= 3 TABS CHUYỂN ĐOẠN / CẢNH ================= -->
 <div class="scene-switch-bar">
   <button id="btnScenePagoda" class="scene-tab pagoda active" type="button">
     <div class="tab-main">
@@ -370,6 +414,16 @@ button.red { background: var(--red); border-color: #b84a33; }
       </div>
     </div>
     <div class="active-badge">Đang chạy 🔥</div>
+  </button>
+  <button id="btnSceneBar" class="scene-tab bar" type="button">
+    <div class="tab-main">
+      <div class="tab-icon">🍸</div>
+      <div>
+        <div class="tab-title">ĐOẠN 3: BAR CLUB QUẨY NHẬU</div>
+        <div class="tab-sub">1 2 3 Dô · Bia Rượu · Màu Tím Cyan Neon</div>
+      </div>
+    </div>
+    <div class="active-badge">Đang chạy 🍸</div>
   </button>
 </div>
 
@@ -489,8 +543,9 @@ button.red { background: var(--red); border-color: #b84a33; }
   <!-- Card 4: 5 Lệnh Phán Quyết Diêm La -->
   <section class="card">
     <div class="scene-pills">
-      <button type="button" class="scene-pill pagoda active" id="btnScenePagoda2">Chánh điện</button>
-      <button type="button" class="scene-pill hell" id="btnSceneHell2">Địa ngục</button>
+      <button type="button" class="scene-pill pagoda" data-scene="pagoda">🏛️ Chánh điện</button>
+      <button type="button" class="scene-pill hell" data-scene="hell">🔥 Địa ngục</button>
+      <button type="button" class="scene-pill bar" data-scene="bar">🍸 Bar Club</button>
     </div>
     <h2>Lệnh Phán Quyết Diêm La</h2>
     <p class="hint">Bấm lệnh để thị uy phán xét linh hồn trên phiên live. Hệ thống sẽ tự động phát âm thanh chuông lệnh và hiện sớ phán quyết.</p>
@@ -514,6 +569,50 @@ button.red { background: var(--red); border-color: #b84a33; }
       <button data-gift="Đại hồng chung" data-dia="1200" class="gold">🔔 Đại Hồng Chung (+1 Cấp, +1200 c.đức)</button>
     </div>
     <p class="hint"><b>10 Cảnh Giới Thăng Tiến (Theo số hoa tích lũy):</b> 1. Sơ Tâm Sám Hối (1 hoa) · 2. Quy Y Tam Bảo (3 hoa) · 3. Khai Minh Giác Ngộ (6 hoa) · 4. Thanh Tịnh Thân Tâm (10 hoa) · 5. Tích Phước Tụ Duyên (15 hoa) · 6. Tiêu Tai Tịnh Nghiệp (21 hoa) · 7. Phát Tâm Bồ Đề (28 hoa) · 8. Đắc Đạo Viên Thành (36 hoa) · 9. Giải Thoát Luân Hồi (45 hoa) · 10. Đại Giác Viên Mãn (55 hoa).</p>
+  </section>
+</div>
+
+<!-- ==================== ĐOẠN 3: BAR CLUB & ĐI NHẬU ONLINE ==================== -->
+<div class="section-divider bar-divider" style="margin-top:26px">
+  <div class="divider-line"></div>
+  <div class="divider-title">
+    <span>🍸</span>
+    <span>ĐOẠN 3 · KHU VỰC BAR CLUB & ĐI NHẬU ONLINE</span>
+    <span class="tag" style="background:#ff007f;color:#fff">Màu Tím Cyan Neon</span>
+  </div>
+  <div class="divider-line"></div>
+</div>
+
+<div class="grid section-bar">
+  <!-- Card 6: 5 Lệnh Dân Chơi Bar Club -->
+  <section class="card">
+    <div class="scene-pills">
+      <button type="button" class="scene-pill pagoda" data-scene="pagoda">🏛️ Chánh điện</button>
+      <button type="button" class="scene-pill hell" data-scene="hell">🔥 Địa ngục</button>
+      <button type="button" class="scene-pill bar active" data-scene="bar">🍸 Bar Club</button>
+    </div>
+    <h2>Lệnh Dân Chơi Bar Club</h2>
+    <p class="hint">Bấm lệnh để hoạt náo không khí vũ trường, phát tiếng cụng ly leng keng, khui champagne nổ giòn giã và giọng đọc quẩy tưng bừng.</p>
+    <div class="row">
+      <button data-bar="do" class="gold">🍻 1, 2, 3 DÔ!</button>
+      <button data-bar="champagne" class="gold">🍾 Khui Champagne</button>
+      <button data-bar="dropbass" class="gold">🎶 Drop Bass</button>
+      <button data-bar="cheers" class="gold">🍹 Mời Cả Quán</button>
+      <button data-bar="say" class="gold">🚨 Nhắc Đô Say</button>
+    </div>
+    <p class="hint">1 tym trên Live = 1 lần cụng ly leng keng "1 2 3 DÔ!".</p>
+  </section>
+
+  <!-- Card 7: Tặng Bia & Thăng Cấp Đô Nhậu -->
+  <section class="card">
+    <h2>Mời Bia & Thăng Hạng Đô Nhậu (Cấp 1 – 10)</h2>
+    <p class="hint">Thử nghiệm lên Bàn VIP: Khi người xem donate bia/quà, họ sẽ được thăng cấp đô nhậu và ngự trên Bàn VIP Lounge.</p>
+    <div class="row">
+      <button id="btnBarSalvation" class="gold">✨ Mời Bia (+1 Cấp Đô Nhậu)</button>
+      <button data-gift="Rượu Champagne" data-dia="300" class="gold">🍾 Rót Champagne (+1 Cấp, +300 bia)</button>
+      <button data-gift="Tháp Bia VIP" data-dia="1200" class="gold">👑 Tháp Bia VIP (+1 Cấp, +1200 bia)</button>
+    </div>
+    <p class="hint"><b>10 Cấp Đô Nhậu (Theo số bia tích lũy):</b> 1. Nhập Tiệc (1 bia) · 2. Khai Vị (3 bia) · 3. Vào Cầu (6 bia) · 4. Tay Uống Khét (10 bia) · 5. Bao Bàn (15 bia) · 6. Đại Gia Phố (21 bia) · 7. Dân Chơi Thứ Thiệt (28 bia) · 8. Trùm Quầy Bar (36 bia) · 9. Đô Bất Tử (45 bia) · 10. Thần Cồn Vô Đối (55 bia).</p>
   </section>
 </div>
 
@@ -546,27 +645,31 @@ function setTT(st){
   el.textContent = st.status==='connected' ? `TikTok: @${st.uniqueId} ✓` : st.status==='connecting' ? `TikTok: đang kết nối @${st.uniqueId}…` : st.status==='error' ? 'TikTok: lỗi kết nối' : 'TikTok: chưa kết nối';
 }
 
-/* ================= CHUYỂN GIAO DIỆN CHÁNH ĐIỆN (VÀNG) ↔ ĐỊA NGỤC (ĐỎ) ================= */
+/* ================= CHUYỂN GIAO DIỆN CHÁNH ĐIỆN ↔ ĐỊA NGỤC ↔ BAR CLUB ================= */
 function setSceneUI(s){
   const isHell = s === 'hell';
-  document.body.classList.remove('theme-pagoda', 'theme-hell');
-  document.body.classList.add(isHell ? 'theme-hell' : 'theme-pagoda');
+  const isBar = s === 'bar';
+  const isPagoda = !isHell && !isBar;
+
+  document.body.classList.remove('theme-pagoda', 'theme-hell', 'theme-bar');
+  document.body.classList.add(isBar ? 'theme-bar' : isHell ? 'theme-hell' : 'theme-pagoda');
 
   const el = $('sceneChip');
   if (el) {
-    el.textContent = isHell ? '🔥 Cảnh: Địa ngục' : '🏛️ Cảnh: Chánh điện';
-    el.className = 'chip ' + (isHell ? 'chip-hell' : 'chip-pagoda');
+    el.textContent = isBar ? '🍸 Cảnh: Bar Club' : isHell ? '🔥 Cảnh: Địa ngục' : '🏛️ Cảnh: Chánh điện';
+    el.className = 'chip ' + (isBar ? 'chip-bar' : isHell ? 'chip-hell' : 'chip-pagoda');
   }
 
   const btnP = $('btnScenePagoda');
   const btnH = $('btnSceneHell');
-  if (btnP) btnP.classList.toggle('active', !isHell);
+  const btnB = $('btnSceneBar');
+  if (btnP) btnP.classList.toggle('active', isPagoda);
   if (btnH) btnH.classList.toggle('active', isHell);
+  if (btnB) btnB.classList.toggle('active', isBar);
 
-  const btnP2 = $('btnScenePagoda2');
-  const btnH2 = $('btnSceneHell2');
-  if (btnP2) btnP2.classList.toggle('active', !isHell);
-  if (btnH2) btnH2.classList.toggle('active', isHell);
+  document.querySelectorAll('.scene-pill.pagoda').forEach(b => b.classList.toggle('active', isPagoda));
+  document.querySelectorAll('.scene-pill.hell').forEach(b => b.classList.toggle('active', isHell));
+  document.querySelectorAll('.scene-pill.bar').forEach(b => b.classList.toggle('active', isBar));
 }
 
 function connect(){
@@ -603,24 +706,44 @@ $('btnChant').onclick = () => send('chant');
 $('btnBell').onclick = () => send('bell');
 $('btnMo').onclick = () => send('mo');
 
-/* Bấm chuyển cảnh Chánh Điện ↔ Địa Ngục */
+/* Bấm chuyển cảnh Chánh Điện ↔ Địa Ngục ↔ Bar Club */
 const switchScene = scene => {
   setSceneUI(scene);
   send('scene', { scene });
 };
-$('btnScenePagoda').onclick = () => switchScene('pagoda');
-$('btnSceneHell').onclick = () => switchScene('hell');
+if ($('btnScenePagoda')) $('btnScenePagoda').onclick = () => switchScene('pagoda');
+if ($('btnSceneHell')) $('btnSceneHell').onclick = () => switchScene('hell');
+if ($('btnSceneBar')) $('btnSceneBar').onclick = () => switchScene('bar');
 if ($('btnScenePagoda2')) $('btnScenePagoda2').onclick = () => switchScene('pagoda');
 if ($('btnSceneHell2')) $('btnSceneHell2').onclick = () => switchScene('hell');
+if ($('btnSceneBar2')) $('btnSceneBar2').onclick = () => switchScene('bar');
+
+document.querySelectorAll('[data-scene]').forEach(b => {
+  b.onclick = () => switchScene(b.dataset.scene);
+});
 
 document.querySelectorAll('[data-verdict]').forEach(b => b.onclick = () => {
   send('scene', { scene: 'hell' });
   setSceneUI('hell');
   send('verdict', { verdict: b.dataset.verdict });
 });
-$('btnSalvation').onclick = () => {
-  send('salvation', { name: $('simName').value });
-};
+
+document.querySelectorAll('[data-bar]').forEach(b => b.onclick = () => {
+  send('scene', { scene: 'bar' });
+  setSceneUI('bar');
+  send('barCmd', { action: b.dataset.bar, name: $('simName').value });
+});
+
+if ($('btnSalvation')) {
+  $('btnSalvation').onclick = () => {
+    send('salvation', { name: $('simName').value });
+  };
+}
+if ($('btnBarSalvation')) {
+  $('btnBarSalvation').onclick = () => {
+    send('salvation', { name: $('simName').value });
+  };
+}
 for (const k of SETTING_IDS) $(k).addEventListener('change', () => send('settings', { settings: readSettings() }));
 </script>
 </body>

@@ -71,11 +71,29 @@ const TIER_NAMES = [
   'Giải Thoát Luân Hồi',
   'Đại Giác Viên Mãn'
 ];
+
+/* 10 cấp bậc đô nhậu (Dành riêng cho cảnh Bar Club) */
+const BAR_TIER_NAMES = [
+  'Nhập Tiệc',
+  'Khai Vị',
+  'Vào Cầu',
+  'Tay Uống Khét',
+  'Bao Bàn',
+  'Đại Gia Phố',
+  'Dân Chơi Thứ Thiệt',
+  'Trùm Quầy Bar',
+  'Đô Bất Tử',
+  'Thần Cồn Vô Đối'
+];
+
 // Mốc hoa/xu tích lũy để thăng cấp:
 // Cấp 1 cần 1 hoa, Cấp 2 cần thêm 2 hoa (tổng 3), Cấp 3 cần thêm 3 hoa (tổng 6)...
 const TIER_THRESHOLDS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55];
 
-const getTierName = lvl => TIER_NAMES[Math.min(10, Math.max(1, lvl)) - 1] || TIER_NAMES[0];
+const getTierName = (lvl, sc = currentScene) => {
+  const list = sc === 'bar' ? BAR_TIER_NAMES : TIER_NAMES;
+  return list[Math.min(10, Math.max(1, lvl)) - 1] || list[0];
+};
 
 function calcTierFromCoins(coins) {
   if (!coins || coins <= 0) return 0;
@@ -200,7 +218,7 @@ function seat(id, name, opts = {}) {
   broadcast({ t: 'join', v: pub(v), cap: capacity() });
   if (archived && (archived.coins > 0 || archived.donateCount > 0)) {
     const curLvl = calcTierFromCoins(v.coins) || 1;
-    const tierName = getTierName(curLvl);
+    const tierName = getTierName(curLvl, currentScene);
     broadcast({
       t: 'rejoin',
       id: v.id,
@@ -211,7 +229,9 @@ function seat(id, name, opts = {}) {
       tier: curLvl,
       tierName
     });
-    const line = currentScene === 'hell'
+    const line = currentScene === 'bar'
+      ? `Chào mừng dân chơi ${spoken(v.name)}, bậc ${tierName} đã trở lại quầy bar!`
+      : currentScene === 'hell'
       ? `Chào mừng đạo hữu ${spoken(v.name)}, bậc ${tierName} đã trở lại sám hối!`
       : `Chào mừng Phật tử ${spoken(v.name)}, bậc ${tierName} đã trở lại chánh điện!`;
     say(line, { tag: 'rejoin', id: v.id });
@@ -266,23 +286,31 @@ function onGift(id, name, giftName, count, diamonds, avatar) {
   saveMeritArchive(v);
 
   const curLvl = calcTierFromCoins(v.coins);
-  const tierName = getTierName(curLvl);
+  const tierName = getTierName(curLvl, currentScene);
   const didLevelUp = curLvl > oldLvl;
 
   const prayer = (v.lastText && Date.now() - v.lastTextAt < 90_000 && v.lastText.length > 6) ? v.lastText : pickPrayer();
 
   let line = '';
   if (didLevelUp) {
-    line = currentScene === 'hell'
-      ? `Chúc mừng bạn ${spoken(v.name)} nhờ dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} đã phi thăng chứng đắc cảnh giới ${tierName}, công đức vô lượng, siêu thoát luân hồi!`
-      : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}, đắc chứng phẩm vị ${tierName}, công đức vô lượng, phước huệ trang nghiêm!`;
-    addLog(`✨ ${v.name} THĂNG CẤP → [${tierName}] (Tổng ${v.coins} hoa/xu)`);
+    if (currentScene === 'bar') {
+      line = `Chúc mừng dân chơi ${spoken(v.name)} nhờ tặng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} đã thăng hạng đô nhậu lên cảnh giới ${tierName}, bao trọn bàn VIP, 1 2 3 dô!`;
+    } else if (currentScene === 'hell') {
+      line = `Chúc mừng bạn ${spoken(v.name)} nhờ dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''} đã phi thăng chứng đắc cảnh giới ${tierName}, công đức vô lượng, siêu thoát luân hồi!`
+    } else {
+      line = `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm dâng ${giftName}${count > 1 ? ', ' + count + ' lần' : ''}, đắc chứng phẩm vị ${tierName}, công đức vô lượng, phước huệ trang nghiêm!`;
+    }
+    addLog(`✨ ${v.name} THĂNG HẠNG → [${tierName}] (Tổng ${v.coins} hoa/bia/xu)`);
   } else {
     const needed = getCoinsNeededForNextTier(v.coins);
-    line = currentScene === 'hell'
-      ? `Đạo hữu ${spoken(v.name)} thành tâm sám hối dâng ${count > 1 ? count + ' ' : ''}${giftName}, tích lũy thêm công đức lành!`
-      : `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm cúng dường ${count > 1 ? count + ' ' : ''}${giftName}, công đức vô lượng!`;
-    addLog(`🌸 ${v.name} dâng ${giftName} (+${coins} hoa/xu). Tổng ${v.coins} hoa (Cần thêm ${needed} hoa để lên [${getTierName(curLvl + 1)}])`);
+    if (currentScene === 'bar') {
+      line = `Dân chơi ${spoken(v.name)} vừa mời cả quán ${count > 1 ? count + ' ' : ''}${giftName}, nâng ly cụng chén 1 2 3 dô!`;
+    } else if (currentScene === 'hell') {
+      line = `Đạo hữu ${spoken(v.name)} thành tâm sám hối dâng ${count > 1 ? count + ' ' : ''}${giftName}, tích lũy thêm công đức lành!`;
+    } else {
+      line = `Nam mô A Di Đà Phật. Phật tử ${spoken(v.name)} thành tâm cúng dường ${count > 1 ? count + ' ' : ''}${giftName}, công đức vô lượng!`;
+    }
+    addLog(`🌸 ${v.name} dâng ${giftName} (+${coins} hoa/xu). Tổng ${v.coins} hoa (Cần thêm ${needed} hoa để lên [${getTierName(curLvl + 1, currentScene)}])`);
   }
 
   broadcast({
@@ -514,7 +542,34 @@ function onControl(m) {
       applySettings(m.settings || {});
       scheduleChant(); broadcast({ t: 'settings', settings, cap: capacity() }); break;
     case 'bots': setBots(!!m.on, +m.n || 12, m.pace); break;
-    case 'scene': { const s = m.scene === 'hell' ? 'hell' : 'pagoda'; currentScene = s; broadcast({ t: 'scene', scene: s }); addLog(s === 'hell' ? 'Chuyển overlay sang Sám Hối Địa Ngục' : 'Chuyển overlay sang Chánh Điện Tịnh Tâm'); break; }
+    case 'scene': {
+      const s = ['hell', 'bar'].includes(m.scene) ? m.scene : 'pagoda';
+      currentScene = s;
+      broadcast({ t: 'scene', scene: s });
+      addLog(s === 'hell' ? 'Chuyển overlay sang Sám Hối Địa Ngục' : s === 'bar' ? 'Chuyển overlay sang Bar Club Quẩy Nhậu' : 'Chuyển overlay sang Chánh Điện Tịnh Tâm');
+      break;
+    }
+    case 'barCmd': {
+      const cmd = m.cmd || 'do';
+      broadcast({ t: 'barCmd', cmd });
+      if (cmd === 'do') {
+        say('1, 2, 3... Dô! 2, 3... Dô! 2, 3... Uống cạn ly nào anh em ơi!');
+        addLog('🍻 Lệnh Bar: 1 2 3 DÔ! Toàn quán nâng ly');
+      } else if (cmd === 'champagne') {
+        say('Bụp! Khui sâm banh ăn mừng dân chơi bao trọn bàn VIP đêm nay!');
+        addLog('🍾 Lệnh Bar: Khui Champagne nổ rực rỡ');
+      } else if (cmd === 'dropbass') {
+        say('Lên nhạc quẩy tung nóc nhà đi anh em ơi!');
+        addLog('🎶 Lệnh Bar: Drop Bass bay lắc');
+      } else if (cmd === 'cheers') {
+        say('Mời toàn thể anh em bạn bè trong quán nâng ly cụng chén!');
+        addLog('🍹 Lệnh Bar: Mời bia vòng quanh quán');
+      } else if (cmd === 'say') {
+        say('Ai say quắc cần câu thì xin phép nghỉ ngơi giữ sức nhé!');
+        addLog('🚨 Lệnh Bar: Nhắc nhở anh em đô say');
+      }
+      break;
+    }
     case 'verdict': { const label = VERDICT_LABELS[m.verdict]; if (!label) break; broadcast({ t: 'verdict', verdict: m.verdict, label }); addLog(`⚖️ Phán quyết: ${label}`); break; }
     case 'salvation': {
       const n = String(m.name || 'Khách').slice(0, 18);
@@ -536,7 +591,7 @@ function onControl(m) {
         saveMeritArchive(found);
         curLvl = calcTierFromCoins(found.coins);
       }
-      const tierName = getTierName(curLvl);
+      const tierName = getTierName(curLvl, currentScene);
       broadcast({
         t: 'salvation',
         id: found ? found.id : null,
@@ -548,11 +603,13 @@ function onControl(m) {
         tierName,
         levelUp: true
       });
-      const line = currentScene === 'hell'
+      const line = currentScene === 'bar'
+        ? `Chúc mừng dân chơi ${spoken(who)} đã thăng hạng đô nhậu lên cảnh giới ${tierName}, bao trọn bàn VIP, 1 2 3 dô!`
+        : currentScene === 'hell'
         ? `Chúc mừng bạn ${spoken(who)} đã phi thăng chứng đắc cảnh giới ${tierName}, công đức vô lượng, tiêu trừ tiền khiên nghiệp chướng, siêu thoát luân hồi!`
         : `Chúc mừng đạo hữu ${spoken(who)} đã đắc chứng phẩm vị ${tierName}, công đức vô lượng, phước huệ trang nghiêm!`;
       say(line, { tag: 'salvation' });
-      addLog(found ? `✨ ${found.name} phi thăng đắc cảnh giới [${tierName}] (Tổng ${found.coins} hoa/xu)` : `✨ Linh hồn ${n} phi thăng đắc cảnh giới [${tierName}]`);
+      addLog(found ? `✨ ${found.name} thăng cảnh giới [${tierName}] (Tổng ${found.coins} hoa/xu)` : `✨ Khách ${n} thăng cảnh giới [${tierName}]`);
       break;
     }
   }
