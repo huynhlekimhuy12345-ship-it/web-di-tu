@@ -360,9 +360,160 @@ let chantHide=null;
 function showChant(text){ document.getElementById('chantText').textContent=text; const el=document.getElementById('chant'); el.classList.add('show'); clearTimeout(chantHide); chantHide=setTimeout(()=>el.classList.remove('show'), 14000); }
 
 /* ======================= audio ======================= */
-let AC=null, master=null, musicGain=null, sfx=null, settings={ music:true, mo:true, moBpm:52 };
+let AC=null, master=null, musicGain=null, sfx=null, settings={ music:true, mo:true, moBpm:52, barMusic:true, barVolume:80, barBass:100 };
 const TRACK = '/assets/music/music1.mp3'; // Nhạc thiền sám hối tịnh tâm
 let musicEl=null;
+
+/* ---------- Bar EDM Beat Synthesizer (Nhạc Quán Bar Ầm Ầm 128 BPM) ---------- */
+let barAudioTimer = null;
+let barBeatIndex = 0;
+let barPlaying = false;
+let bassPulse = 0; // Kích hoạt hiệu ứng dập bass visual cho quả cầu disco và đèn laser
+
+function startBarBeats(){
+  if (!AC || barPlaying) return;
+  if (settings.barMusic === false) return;
+  barPlaying = true;
+  barBeatIndex = 0;
+  const bpm = 128;
+  const stepTime = (60 / bpm) / 4; // 16th-note step (khoảng 117ms)
+
+  function tick(){
+    if (!barPlaying || scene !== 'bar') { barPlaying = false; return; }
+    try {
+      const now = AC.currentTime;
+      playBarStep(barBeatIndex, now);
+      barBeatIndex = (barBeatIndex + 1) % 32;
+    } catch(err){}
+    barAudioTimer = setTimeout(tick, stepTime * 1000);
+  }
+  tick();
+}
+
+function stopBarBeats(){
+  barPlaying = false;
+  if (barAudioTimer) { clearTimeout(barAudioTimer); barAudioTimer = null; }
+}
+
+function playBarStep(step, t){
+  if (!AC || !master) return;
+  const vol = (settings.barVolume !== undefined ? +settings.barVolume : 80) / 100;
+  const bassMul = (settings.barBass !== undefined ? +settings.barBass : 100) / 100;
+  if (vol <= 0.01) return;
+
+  const isQuarter = (step % 4) === 0;
+
+  // 1. SUB-BASS 808 KICK DRUM (dập bass "ầm ầm" rung sàn mỗi phách 1 2 3 4)
+  if (isQuarter) {
+    bassPulse = 1.0;
+    const osc = AC.createOscillator();
+    const gain = AC.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(160, t);
+    osc.frequency.exponentialRampToValueAtTime(34, t + 0.22);
+    const kGain = Math.min(1.0, 0.82 * vol * bassMul);
+    gain.gain.setValueAtTime(kGain, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(gain); gain.connect(master);
+    osc.start(t); osc.stop(t + 0.26);
+  }
+
+  // 2. SNARE / CLAP (tiếng vỗ tay / snare nhộn nhịp phách 2 & 4: step 4, 12, 20, 28)
+  if (step === 4 || step === 12 || step === 20 || step === 28) {
+    try {
+      const bufLen = Math.floor(AC.sampleRate * 0.12);
+      const buf = AC.createBuffer(1, bufLen, AC.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+      const src = AC.createBufferSource(); src.buffer = buf;
+      const flt = AC.createBiquadFilter(); flt.type = 'bandpass'; flt.frequency.value = 1350; flt.Q.value = 1.6;
+      const gain = AC.createGain(); gain.gain.setValueAtTime(0.28 * vol, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+      src.connect(flt); flt.connect(gain); gain.connect(master);
+      src.start(t); src.stop(t + 0.15);
+    } catch(e){}
+  }
+
+  // 3. HI-HAT (tiếng xèng xèng xập xình offbeats: step 2, 6, 10, 14...)
+  if (step % 2 === 1) {
+    try {
+      const bufLen = Math.floor(AC.sampleRate * 0.04);
+      const buf = AC.createBuffer(1, bufLen, AC.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1);
+      const src = AC.createBufferSource(); src.buffer = buf;
+      const flt = AC.createBiquadFilter(); flt.type = 'highpass'; flt.frequency.value = 7500;
+      const gain = AC.createGain(); gain.gain.setValueAtTime(0.12 * vol, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+      src.connect(flt); flt.connect(gain); gain.connect(master);
+      src.start(t); src.stop(t + 0.05);
+    } catch(e){}
+  }
+
+  // 4. SYNTH BASSLINE (bass điện tử club nhảy giật cuốn hút)
+  const bassNotes = [73.4, 73.4, 87.3, 73.4, 98.0, 73.4, 110.0, 98.0, 73.4, 73.4, 87.3, 73.4, 130.8, 110.0, 98.0, 87.3];
+  if (step % 2 === 0) {
+    const note = bassNotes[(step / 2) % bassNotes.length];
+    const osc = AC.createOscillator();
+    const flt = AC.createBiquadFilter();
+    const gain = AC.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(note, t);
+    flt.type = 'lowpass';
+    flt.frequency.setValueAtTime(450 * bassMul, t);
+    flt.frequency.exponentialRampToValueAtTime(140, t + 0.11);
+    flt.Q.value = 4.2;
+    gain.gain.setValueAtTime(0.24 * vol * bassMul, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(flt); flt.connect(gain); gain.connect(master);
+    osc.start(t); osc.stop(t + 0.13);
+  }
+
+  // 5. RAVE SYNTH STABS (hợp âm dance quẩy vũ trường nhịp nhàng)
+  if (step === 2 || step === 10 || step === 18 || step === 26) {
+    [293.66, 349.23, 440.0].forEach(f => {
+      const o = AC.createOscillator();
+      const flt = AC.createBiquadFilter();
+      const g = AC.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(f, t);
+      flt.type = 'bandpass'; flt.frequency.setValueAtTime(1800, t); flt.Q.value = 2.5;
+      g.gain.setValueAtTime(0.07 * vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+      o.connect(flt); flt.connect(g); g.connect(master);
+      o.start(t); o.stop(t + 0.17);
+    });
+  }
+}
+
+function airhornSound(){
+  if (!AC) return;
+  const t0 = AC.currentTime;
+  bassPulse = 1.0;
+  [0, 0.14, 0.28].forEach(dt => {
+    const t = t0 + dt;
+    const o = AC.createOscillator();
+    const g = AC.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(466.16, t);
+    o.frequency.linearRampToValueAtTime(493.88, t + 0.11);
+    g.gain.setValueAtTime(0.55, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+    o.connect(g); g.connect(master || AC.destination);
+    o.start(t); o.stop(t + 0.14);
+  });
+}
+
+function dropBassSound(){
+  if (!AC) return;
+  const t0 = AC.currentTime;
+  bassPulse = 1.0;
+  const o = AC.createOscillator();
+  const g = AC.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(140, t0);
+  o.frequency.exponentialRampToValueAtTime(28, t0 + 1.2);
+  g.gain.setValueAtTime(0.95, t0);
+  g.gain.exponentialRampToValueAtTime(0.001, t0 + 1.3);
+  o.connect(g); g.connect(master || AC.destination);
+  o.start(t0); o.stop(t0 + 1.35);
+}
 
 document.getElementById('unmute').onclick = e => { e.currentTarget.remove(); startAudio(); };
 function startAudio(){
@@ -370,9 +521,13 @@ function startAudio(){
   master = AC.createGain(); master.gain.value=.9; master.connect(AC.destination);
   musicGain = AC.createGain(); musicGain.gain.value = settings.music ? .5 : 0; musicGain.connect(master);
   sfx = AC.createGain(); sfx.gain.value=1; sfx.connect(master);
-  playMusic();
-  scheduleMo();
-  bell();
+  if (scene === 'bar') {
+    startBarBeats();
+  } else {
+    playMusic();
+    scheduleMo();
+    bell();
+  }
 }
 function playMusic(){
   if (musicEl){ musicEl.pause(); }
@@ -566,7 +721,9 @@ function connect(){
         } else if (m.cmd === 'champagne') {
           champagnePop();
         } else if (m.cmd === 'dropbass') {
-          if (AC) bell(true);
+          dropBassSound();
+        } else if (m.cmd === 'airhorn') {
+          airhornSound();
         } else if (m.cmd === 'cheers') {
           clinkGlass();
         }
@@ -591,6 +748,10 @@ function applySettings(){
   document.getElementById('title').textContent=settings.title||'Chánh Điện Tịnh Tâm';
   document.getElementById('subtitle').textContent=settings.subtitle||'Nam Mô A Di Đà Phật';
   duck(false); scheduleMo();
+  if (scene === 'bar') {
+    if (settings.barMusic === false) stopBarBeats();
+    else if (AC && !barPlaying) startBarBeats();
+  }
 }
 connect();
 
@@ -642,13 +803,92 @@ const _k='frame',_o=window[_k];window[_k]=function(t){_o(t);try{_g(t);}catch(e){
 let scene = 'pagoda';
 const HELL_FLOOR = { yTop: 1150, yBot: 1895, halfTop: 330, halfBot: 470 };
 const hellSeats = [];
+const barTables = [];
+const barSeats = [];
 const souls = new Map();
 let soulOrder = [];
 const hellEmbers = [];
 for (let i = 0; i < 26; i++) hellEmbers.push({ x: Math.random()*1080, y: Math.random()*1920, r: 1.5 + Math.random()*2.6, sp: 24 + Math.random()*46, ph: Math.random()*6.28 });
 
+/* ======================= QUÁN BAR · BÀN NHẬU 4-5 NGƯỜI / BÀN ======================= */
+const DEFAULT_BAR_TABLES = [
+  { id: 1, name: 'BÀN 1', x: 240, y: 1240, scale: 0.33, color: '#00f0ff' },
+  { id: 2, name: 'BÀN 2', x: 540, y: 1225, scale: 0.33, color: '#ff007f' },
+  { id: 3, name: 'BÀN 3', x: 840, y: 1240, scale: 0.33, color: '#00f0ff' },
+  { id: 4, name: 'BÀN 4', x: 230, y: 1480, scale: 0.42, color: '#b026ff' },
+  { id: 5, name: 'BÀN 5', x: 540, y: 1465, scale: 0.42, color: '#ffd700' },
+  { id: 6, name: 'BÀN 6', x: 850, y: 1480, scale: 0.42, color: '#00f0ff' },
+  { id: 7, name: 'BÀN 7', x: 310, y: 1740, scale: 0.52, color: '#ff007f' },
+  { id: 8, name: 'BÀN 8', x: 770, y: 1740, scale: 0.52, color: '#00f0ff' },
+];
+
+function layoutBar(c){
+  barTables.length = 0;
+  barSeats.length = 0;
+  const list = [...DEFAULT_BAR_TABLES];
+  if (c >= 64) {
+    list.push(
+      { id: 9,  name: 'BÀN 9',  x: 380, y: 1350, scale: 0.37, color: '#00f0ff' },
+      { id: 10, name: 'BÀN 10', x: 700, y: 1350, scale: 0.37, color: '#ff007f' },
+      { id: 11, name: 'BÀN 11', x: 370, y: 1610, scale: 0.46, color: '#b026ff' },
+      { id: 12, name: 'BÀN 12', x: 710, y: 1610, scale: 0.46, color: '#ffd700' }
+    );
+  }
+  for (const cfg of list){
+    const tb = { ...cfg, seats: [] };
+    const sc = cfg.scale;
+    // 5 vị trí ghế ngồi quanh mỗi bàn: 2 ghế sau, 2 ghế 2 bên, 1 ghế trước
+    const chairDefs = [
+      { dx: -70 * sc, dy: -38 * sc, isBack: true,  gx: -45 * sc, gy: -12 * sc },
+      { dx:  70 * sc, dy: -38 * sc, isBack: true,  gx:  45 * sc, gy: -12 * sc },
+      { dx: -105 * sc, dy:  8 * sc, isBack: false, gx: -65 * sc, gy:  10 * sc },
+      { dx:  105 * sc, dy:  8 * sc, isBack: false, gx:  65 * sc, gy:  10 * sc },
+      { dx:    0 * sc, dy: 44 * sc, isBack: false, gx:   0 * sc, gy:  18 * sc }
+    ];
+    chairDefs.forEach((ch, idx) => {
+      const s = {
+        x: cfg.x + ch.dx,
+        y: cfg.y + ch.dy,
+        scale: sc,
+        table: tb,
+        chairIdx: idx,
+        isBack: ch.isBack,
+        glassX: cfg.x + ch.gx,
+        glassY: cfg.y + ch.gy,
+        tagW: 130 * sc,
+        gap: 130 * sc,
+        taken: null
+      };
+      tb.seats.push(s);
+      barSeats.push(s);
+    });
+    barTables.push(tb);
+  }
+  // Sắp xếp bàn theo độ sâu y để vẽ layer trước sau chuẩn xác
+  barTables.sort((a,b) => a.y - b.y);
+  reseatHell();
+}
+
+function barFreeSeat(){
+  // Gom khách 4-5 người ngồi chung 1 bàn trước khi chuyển sang bàn kế tiếp
+  for (const tb of barTables){
+    for (const s of tb.seats){
+      if (!s.taken) return s;
+    }
+  }
+  return null;
+}
+
+function switchSceneSeats(){
+  for (const s of souls.values()){
+    if (s.seat) { s.seat.taken = null; s.seat = null; }
+  }
+  reseatHell();
+}
+
 function layoutHell(c){
   const hcap = c || cap || 100;
+  layoutBar(hcap);
   const [cols, rows] = GRID[hcap] || GRID[100];
   hellSeats.length = 0;
   for (let r = 0; r < rows; r++){
@@ -676,9 +916,11 @@ function layoutHell(c){
 }
 function hellFreeSeat(){ return hellSeats.find(s => !s.taken) || null; }
 function reseatHell(){
+  const isBar = scene === 'bar';
+  const getFree = isBar ? barFreeSeat : hellFreeSeat;
   for (const id of soulOrder){
     const s = souls.get(id); if (!s || s.seat || s.state === 'saved') continue;
-    const seat = hellFreeSeat(); if (!seat) break;
+    const seat = getFree(); if (!seat) break;
     s.seat = seat; seat.taken = s;
     if (s.state === 'wait'){ s.state = 'walk'; s.x = 540; s.y = 2020; s.frame = 0; s.ft = 0; }
   }
@@ -1223,18 +1465,28 @@ function applyScene(){
   if (isBar) {
     document.getElementById('title').textContent = 'Bar Club Quẩy Nhậu';
     document.getElementById('subtitle').textContent = '1 2 3 DÔ · KHÔNG SAY KHÔNG VỀ';
+    if (musicEl) musicEl.pause();
+    clearInterval(moTimer);
+    if (AC) startBarBeats();
   } else if (isHell) {
     document.getElementById('title').textContent = 'Sám Hối Địa Ngục';
     document.getElementById('subtitle').textContent = 'Nam Mô Địa Tạng Vương Bồ Tát';
+    stopBarBeats();
+    if (settings.music && AC && (!musicEl || musicEl.paused)) playMusic();
+    if (AC) scheduleMo();
   } else {
     document.getElementById('title').textContent = settings.title || 'Chánh Điện Tịnh Tâm';
     document.getElementById('subtitle').textContent = settings.subtitle || 'Nam Mô A Di Đà Phật';
+    stopBarBeats();
+    if (settings.music && AC && (!musicEl || musicEl.paused)) playMusic();
+    if (AC) scheduleMo();
   }
 
   const bookTitle = document.querySelector('#hellBook h3');
   if (bookTitle) {
     bookTitle.textContent = isBar ? '✦ Bảng Đô Nhậu VIP ✦' : isHell ? '✦ Sổ Sám Hối ✦' : '✦ Bảng Công Đức ✦';
   }
+  switchSceneSeats();
   renderBook();
 }
 function drawSparkle(ctx, cx, cy, size, alpha, rot = 0){
@@ -1257,6 +1509,276 @@ function drawSparkle(ctx, cx, cy, size, alpha, rot = 0){
   ctx.beginPath();
   ctx.arc(0, 0, size * 0.28, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+}
+
+/* ======================= QUẢ CẦU PHA LÊ DISCO & BÀN NHẬU GRAPHICS ======================= */
+const discoSpots = [];
+for (let i = 0; i < 34; i++) {
+  discoSpots.push({
+    baseY: 600 + Math.random() * 1250,
+    rx: 140 + Math.random() * 390,
+    ry: 70 + Math.random() * 220,
+    speed: 0.5 + Math.random() * 0.7,
+    phase: Math.random() * Math.PI * 2,
+    size: 10 + Math.random() * 12,
+    color: ['#00ffff', '#ff007f', '#ffffff', '#ffd700', '#b026ff'][i % 5]
+  });
+}
+
+function drawDiscoBall(ctx, t){
+  const bx = 540, by = 185, R = 64;
+
+  // 1. Dây xích treo quả cầu pha lê từ trần
+  ctx.save();
+  ctx.strokeStyle = 'rgba(210, 215, 235, 0.85)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(bx, 0);
+  ctx.lineTo(bx, by - R);
+  ctx.stroke();
+  for (let y = 12; y < by - R; y += 14) {
+    ctx.fillStyle = '#b8c0d8';
+    ctx.beginPath();
+    ctx.ellipse(bx, y, 4, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Khớp nối treo
+  ctx.fillStyle = '#44485c';
+  ctx.fillRect(bx - 12, by - R - 6, 24, 7);
+  ctx.fillStyle = '#b0b8d0';
+  ctx.fillRect(bx - 9, by - R - 4, 18, 3);
+
+  // 2. Hai luồng đèn chiếu rọi tập trung vào quả cầu pha lê (Spotlights)
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const leftSpot = ctx.createRadialGradient(100, 30, 15, bx, by, 500);
+  leftSpot.addColorStop(0, 'rgba(0, 255, 255, 0.32)');
+  leftSpot.addColorStop(0.65, 'rgba(0, 200, 255, 0.08)');
+  leftSpot.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = leftSpot;
+  ctx.beginPath();
+  ctx.moveTo(80, 20); ctx.lineTo(bx + R + 25, by - 15); ctx.lineTo(bx - R - 25, by + R + 20);
+  ctx.closePath(); ctx.fill();
+
+  const rightSpot = ctx.createRadialGradient(980, 30, 15, bx, by, 500);
+  rightSpot.addColorStop(0, 'rgba(255, 20, 150, 0.32)');
+  rightSpot.addColorStop(0.65, 'rgba(255, 0, 100, 0.08)');
+  rightSpot.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = rightSpot;
+  ctx.beginPath();
+  ctx.moveTo(1000, 20); ctx.lineTo(bx + R + 25, by + R + 20); ctx.lineTo(bx - R - 25, by - 15);
+  ctx.closePath(); ctx.fill();
+
+  // 3. Khối cầu pha lê nền kim loại bóng
+  const bgGrad = ctx.createRadialGradient(bx - R * 0.35, by - R * 0.35, R * 0.1, bx, by, R);
+  bgGrad.addColorStop(0, '#ffffff');
+  bgGrad.addColorStop(0.35, '#c5ccde');
+  bgGrad.addColorStop(0.75, '#4a5068');
+  bgGrad.addColorStop(1, '#151722');
+  ctx.fillStyle = bgGrad;
+  ctx.beginPath();
+  ctx.arc(bx, by, R, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 4. Các ô gương kính phản chiếu xoay vòng (Rotating Facets)
+  const rot = t * 1.1; // Tốc độ xoay quả cầu
+  const latRings = 9;
+  const lonSlices = 18;
+
+  for (let i = 1; i < latRings; i++) {
+    const lat = (i / latRings - 0.5) * Math.PI;
+    const ringY = by + Math.sin(lat) * R;
+    const ringR = Math.cos(lat) * R;
+    const facetH = (Math.PI / latRings) * R * 0.88;
+
+    for (let j = 0; j < lonSlices; j++) {
+      const lon = (j / lonSlices) * Math.PI * 2 + rot;
+      const normalZ = Math.cos(lon);
+      if (normalZ <= -0.1) continue; // Mặt sau, bỏ qua
+
+      const normalX = Math.sin(lon);
+      const fx = bx + normalX * ringR;
+      const facetW = (Math.PI * 2 / lonSlices) * ringR * 0.78;
+
+      const spec1 = Math.max(0, normalX * -0.6 + Math.sin(lat) * -0.6 + normalZ * 0.55);
+      const spec2 = Math.max(0, normalX * 0.6 + Math.sin(lat) * -0.4 + normalZ * 0.55);
+      const bright = Math.pow(Math.max(spec1, spec2), 3);
+
+      ctx.save();
+      ctx.translate(fx, ringY);
+      if (bright > 0.68) {
+        ctx.fillStyle = spec1 > spec2 ? '#00ffff' : '#ff77d0';
+        ctx.globalAlpha = 0.95;
+      } else if (bright > 0.35) {
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = 0.75 + bright * 0.22;
+      } else {
+        const sh = Math.floor(65 + bright * 150);
+        ctx.fillStyle = `rgb(${sh},${sh + 10},${sh + 28})`;
+        ctx.globalAlpha = 0.65;
+      }
+      ctx.fillRect(-facetW / 2, -facetH / 2, facetW, facetH);
+      ctx.strokeStyle = 'rgba(20, 22, 35, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-facetW / 2, -facetH / 2, facetW, facetH);
+
+      if (bright > 0.8) {
+        drawSparkle(ctx, 0, 0, 10 + bassPulse * 7, 0.9, t * 3 + j);
+      }
+      ctx.restore();
+    }
+  }
+
+  // 5. Quầng hào quang quả cầu disco + dập bass
+  const glow = ctx.createRadialGradient(bx, by, R * 0.7, bx, by, R * 2.3);
+  const pulseAura = 0.35 + 0.15 * Math.sin(t * 4) + bassPulse * 0.35;
+  glow.addColorStop(0, `rgba(255, 255, 255, ${pulseAura})`);
+  glow.addColorStop(0.4, `rgba(0, 240, 255, ${pulseAura * 0.55})`);
+  glow.addColorStop(0.8, `rgba(255, 0, 128, ${pulseAura * 0.28})`);
+  glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(bx, by, R * 2.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // 6. Các đốm sáng phản chiếu quét khắp sàn và vách phòng
+  drawDiscoSpots(ctx, t);
+}
+
+function drawDiscoSpots(ctx, t){
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (const s of discoSpots) {
+    const angle = s.phase + t * s.speed;
+    const sx = 540 + Math.cos(angle) * s.rx;
+    const sy = s.baseY + Math.sin(angle) * s.ry;
+    const pulse = 0.38 + 0.32 * Math.sin(t * 4.8 + s.phase) + bassPulse * 0.3;
+    ctx.globalAlpha = Math.max(0, Math.min(1, pulse));
+    ctx.fillStyle = s.color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, s.size * (1 + bassPulse * 0.3), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ---------- Vẽ Ly Bia & Bàn Nhậu ---------- */
+function drawBeerMug(ctx, x, y, s, froth = false){
+  ctx.save();
+  ctx.translate(x, y);
+  const w = 24 * s, h = 32 * s;
+  // Bóng ly trên mặt bàn
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(0, h * 0.42, w * 0.65, h * 0.22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Quai ly thuỷ tinh
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = Math.max(1.8, 3.2 * s);
+  ctx.beginPath();
+  ctx.arc(w * 0.52, 0, h * 0.26, -Math.PI * 0.4, Math.PI * 0.5);
+  ctx.stroke();
+
+  // Thân bia vàng óng
+  const bg = ctx.createLinearGradient(0, -h * 0.4, 0, h * 0.4);
+  bg.addColorStop(0, '#ffcc33');
+  bg.addColorStop(0.55, '#f59e0b');
+  bg.addColorStop(1, '#b45309');
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(-w * 0.45, -h * 0.4, w * 0.9, h * 0.8, 3 * s);
+  else ctx.rect(-w * 0.45, -h * 0.4, w * 0.9, h * 0.8);
+  ctx.fill();
+
+  // Vệt phản chiếu thuỷ tinh
+  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.fillRect(-w * 0.32, -h * 0.35, w * 0.15, h * 0.7);
+
+  // Lớp bọt bia trắng xóa bồng bềnh
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(0, -h * 0.4, w * 0.52, h * 0.19, 0, 0, Math.PI * 2);
+  ctx.ellipse(-w * 0.25, -h * 0.43, w * 0.24, h * 0.16, 0, 0, Math.PI * 2);
+  ctx.ellipse(w * 0.25, -h * 0.43, w * 0.24, h * 0.16, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (froth || Math.random() < 0.2) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.beginPath();
+    ctx.arc((Math.random() - 0.5) * w * 0.5, -h * 0.58 - Math.random() * 8 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawBarTable(ctx, tb, t){
+  const sc = tb.scale;
+  // 1. Bóng đổ bàn xuống sàn
+  ctx.fillStyle = 'rgba(8, 2, 16, 0.65)';
+  ctx.beginPath();
+  ctx.ellipse(tb.x, tb.y + 14 * sc, 126 * sc, 54 * sc, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 2. Chân trụ bàn
+  ctx.fillStyle = '#140c1e';
+  ctx.fillRect(tb.x - 10 * sc, tb.y, 20 * sc, 38 * sc);
+  ctx.fillStyle = '#221530';
+  ctx.fillRect(tb.x - 22 * sc, tb.y + 34 * sc, 44 * sc, 8 * sc);
+
+  // 3. Mặt bàn gỗ mun bóng / đá cẩm thạch
+  const tg = ctx.createRadialGradient(tb.x, tb.y - 12 * sc, 10 * sc, tb.x, tb.y, 116 * sc);
+  tg.addColorStop(0, '#2c1c42');
+  tg.addColorStop(0.7, '#180e26');
+  tg.addColorStop(1, '#0c0616');
+  ctx.fillStyle = tg;
+  ctx.beginPath();
+  ctx.ellipse(tb.x, tb.y, 116 * sc, 50 * sc, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 4. Viền Neon phát sáng quanh bàn (nhấp nháy theo điệu nhạc EDM dập bass)
+  ctx.strokeStyle = tb.color;
+  ctx.lineWidth = (3.2 + bassPulse * 3.5) * sc;
+  ctx.stroke();
+
+  // 5. Tháp bia / Xô đá chai rượu giữa bàn
+  ctx.save();
+  ctx.translate(tb.x, tb.y - 12 * sc);
+  ctx.fillStyle = '#6b7280';
+  ctx.beginPath();
+  ctx.ellipse(0, 4 * sc, 22 * sc, 10 * sc, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#10b981';
+  ctx.fillRect(-6 * sc, -24 * sc, 12 * sc, 24 * sc);
+  ctx.fillStyle = '#ffd700';
+  ctx.fillRect(-3 * sc, -32 * sc, 6 * sc, 9 * sc);
+  ctx.restore();
+
+  // 6. Biển tên bàn LED phát sáng
+  ctx.save();
+  const tagText = tb.name;
+  const fs = Math.max(13, Math.round(24 * sc));
+  ctx.font = `800 ${fs}px "Be Vietnam Pro",sans-serif`;
+  const tw = ctx.measureText(tagText).width + 16 * sc;
+  const th = fs * 1.5;
+  const badgeY = tb.y + 16 * sc;
+  ctx.fillStyle = 'rgba(10, 4, 18, 0.92)';
+  rr(tb.x - tw / 2, badgeY - th / 2, tw, th, th / 2);
+  ctx.fill();
+  ctx.lineWidth = 1.8 * sc;
+  ctx.strokeStyle = tb.color;
+  ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(tagText, tb.x, badgeY + 1);
   ctx.restore();
 }
 
@@ -1329,6 +1851,7 @@ function drawHell(now, dt, t){
     ctx.restore();
   } else if (isBar) {
     // ---------------- QUÁN BAR CLUB QUẨY NHẬU BACKGROUND ----------------
+    bassPulse = Math.max(0, bassPulse - dt * 4.2);
     if (A.bar?.naturalWidth){
       const sc = Math.max(1080 / A.bar.naturalWidth, 1920 / A.bar.naturalHeight);
       const dw = A.bar.naturalWidth * sc, dh = A.bar.naturalHeight * sc;
@@ -1342,22 +1865,14 @@ function drawHell(now, dt, t){
     for (let i = 0; i < 6; i++) {
       const angle = Math.sin(t * 1.5 + i * 1.2) * 0.42;
       const originX = 540 + (i - 2.5) * 170;
-      const alpha = 0.22 + 0.12 * Math.sin(t * 3.6 + i * 2);
-      ctx.strokeStyle = laserColors[i % laserColors.length] + alpha + ')';
-      ctx.lineWidth = 3.5 + 1.5 * Math.sin(t * 2 + i);
+      const alpha = 0.22 + 0.12 * Math.sin(t * 3.6 + i * 2) + bassPulse * 0.25;
+      ctx.strokeStyle = laserColors[i % laserColors.length] + Math.min(1, alpha) + ')';
+      ctx.lineWidth = 3.5 + 1.5 * Math.sin(t * 2 + i) + bassPulse * 3.5;
       ctx.beginPath();
       ctx.moveTo(originX, 180);
       ctx.lineTo(originX + Math.tan(angle) * 1700, 1920);
       ctx.stroke();
     }
-    // Disco ball center glow
-    const barGlow = ctx.createRadialGradient(540, 260, 30, 540, 260, 480);
-    const pBar = 0.32 + 0.14 * Math.sin(t * 4);
-    barGlow.addColorStop(0, `rgba(255, 50, 200, ${pBar})`);
-    barGlow.addColorStop(0.5, `rgba(0, 220, 255, ${pBar * 0.45})`);
-    barGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = barGlow;
-    ctx.fillRect(0, 0, 1080, 900);
     ctx.restore();
 
     // Sàn vũ trường neon phản chiếu
@@ -1367,6 +1882,9 @@ function drawHell(now, dt, t){
     floorG.addColorStop(1, 'rgba(10, 3, 20, 0.75)');
     ctx.fillStyle = floorG;
     ctx.fillRect(0, 1920 * .45, 1080, 1920 * .55);
+
+    // QUẢ CẦU PHA LÊ DISCO XOAY & ĐỐM SÁNG PHẢN CHIẾU VŨ TRƯỜNG
+    drawDiscoBall(ctx, t);
   } else {
     // ---------------- SÁM HỐI ĐỊA NGỤC BACKGROUND ----------------
     if (A.hell?.naturalWidth){
@@ -1408,6 +1926,9 @@ function drawHell(now, dt, t){
   }
 
   const bubbles = [];
+  if (scene === 'bar') {
+    for (const tb of barTables) tb._drawn = false;
+  }
   const list = [...souls.values()].filter(s => s.state !== 'wait').sort((a,b) => {
     const aSaved = a.state === 'saved' ? 1 : 0;
     const bSaved = b.state === 'saved' ? 1 : 0;
@@ -1547,6 +2068,17 @@ function drawHell(now, dt, t){
     const renderX = isSaved ? v.curX : (v.x + shakeX);
     const floatY = isSaved ? Math.sin(t * 1.8 + v.phase) * (4 * s) : 0;
     const actualY = isSaved ? (v.curY + floatY) : v.y;
+
+    // Quán Bar: Vẽ bàn nhậu trước khi vẽ các khách ngồi phía trước hoặc 2 bên bàn
+    if (scene === 'bar' && !isSaved) {
+      for (const tb of barTables) {
+        if (!tb._drawn && actualY >= tb.y) {
+          drawBarTable(ctx, tb, t);
+          tb._drawn = true;
+        }
+      }
+    }
+
     const breathe = v.state === 'sit' ? Math.sin(t*1.1 + v.phase)*2*s : 0;
     if (v.glow > 0 && !isSaved){
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, v.glow*.7);
@@ -1755,10 +2287,21 @@ function drawHell(now, dt, t){
       tagH = 268*s;
     }
     ctx.restore();
+    if (scene === 'bar' && v.seat?.glassX) {
+      drawBeerMug(ctx, v.seat.glassX, v.seat.glassY, v.seat.scale, v.bow > 0);
+    }
     if (scene === 'hell' && v.state === 'sit') drawChainSoul(v, tagH, drawnW);
     const tagMaxW = isSaved ? 180 : Math.max(60, (v.seat?.tagW || v.seat?.gap || 120) - 14);
     hellTag(v.name, renderX, actualY - tagH - 8*s, s, tagMaxW, isSaved, tier, v.inNirvana);
     if (v.bubble && now < v.bubble.until) bubbles.push([v.bubble.text, renderX, actualY - tagH - 8*s - Math.max(16, 26*s/.35), s]); else v.bubble = null;
+  }
+  if (scene === 'bar') {
+    for (const tb of barTables) {
+      if (!tb._drawn) {
+        drawBarTable(ctx, tb, t);
+        tb._drawn = true;
+      }
+    }
   }
   for (const b of bubbles) bubble(...b);
   // petals / hearts (shared array with the pagoda scene)

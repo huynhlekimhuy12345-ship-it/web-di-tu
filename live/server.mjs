@@ -28,6 +28,7 @@ const settings = {
   rate: -20,                         // %
   music: true, mo: true, moBpm: 52,
   autoChant: true, chantEveryMin: 3,
+  barMusic: true, barVolume: 80, barBass: 100,
   seatMode: '100',                   // mặc định 100 chỗ ngồi
   joinOnEnter: true,                 // also seat viewers who only enter the room
   gifts: { readAll: true, minDiamonds: 1 },
@@ -550,7 +551,7 @@ function onControl(m) {
       break;
     }
     case 'barCmd': {
-      const cmd = m.cmd || 'do';
+      const cmd = m.cmd || m.action || 'do';
       broadcast({ t: 'barCmd', cmd });
       if (cmd === 'do') {
         say('1, 2, 3... Dô! 2, 3... Dô! 2, 3... Uống cạn ly nào anh em ơi!');
@@ -561,6 +562,9 @@ function onControl(m) {
       } else if (cmd === 'dropbass') {
         say('Lên nhạc quẩy tung nóc nhà đi anh em ơi!');
         addLog('🎶 Lệnh Bar: Drop Bass bay lắc');
+      } else if (cmd === 'airhorn') {
+        say('Quẩy lên nào anh em ơi!');
+        addLog('📯 Lệnh Bar: Còi hú Airhorn vũ trường');
       } else if (cmd === 'cheers') {
         say('Mời toàn thể anh em bạn bè trong quán nâng ly cụng chén!');
         addLog('🍹 Lệnh Bar: Mời bia vòng quanh quán');

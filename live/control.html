@@ -584,29 +584,41 @@ button.red { background: var(--red); border-color: #b84a33; }
 </div>
 
 <div class="grid section-bar">
-  <!-- Card 6: 5 Lệnh Dân Chơi Bar Club -->
+  <!-- Card 6: Lệnh Dân Chơi & Âm Nhạc Bar Club -->
   <section class="card">
     <div class="scene-pills">
       <button type="button" class="scene-pill pagoda" data-scene="pagoda">🏛️ Chánh điện</button>
       <button type="button" class="scene-pill hell" data-scene="hell">🔥 Địa ngục</button>
       <button type="button" class="scene-pill bar active" data-scene="bar">🍸 Bar Club</button>
     </div>
-    <h2>Lệnh Dân Chơi Bar Club</h2>
-    <p class="hint">Bấm lệnh để hoạt náo không khí vũ trường, phát tiếng cụng ly leng keng, khui champagne nổ giòn giã và giọng đọc quẩy tưng bừng.</p>
+    <h2>Lệnh Dân Chơi & Âm Thanh Vũ Trường</h2>
+    <p class="hint">Hoạt náo không khí đi nhậu: Quả cầu pha lê xoay rực rỡ, bàn nhậu 4-5 người/bàn, tiếng cụng ly leng keng và nhạc sàn EDM dập bass ầm ầm.</p>
     <div class="row">
       <button data-bar="do" class="gold">🍻 1, 2, 3 DÔ!</button>
       <button data-bar="champagne" class="gold">🍾 Khui Champagne</button>
-      <button data-bar="dropbass" class="gold">🎶 Drop Bass</button>
+      <button data-bar="airhorn" class="gold">📯 Còi Airhorn</button>
       <button data-bar="cheers" class="gold">🍹 Mời Cả Quán</button>
       <button data-bar="say" class="gold">🚨 Nhắc Đô Say</button>
     </div>
-    <p class="hint">1 tym trên Live = 1 lần cụng ly leng keng "1 2 3 DÔ!".</p>
+
+    <h3 style="margin-top:14px">Âm Nhạc Quán Bar (Nhạc Sàn Ầm Ầm)</h3>
+    <div class="row tight">
+      <label class="check"><input type="checkbox" id="barMusic" checked> Nhạc EDM Club dập bass ầm ầm (128 BPM)</label>
+    </div>
+    <div class="row">
+      <label>Âm lượng nhạc Bar (%)<input id="barVolume" type="number" min="0" max="150" value="80"></label>
+      <label>Độ dập Bass Sub-808 (%)<input id="barBass" type="number" min="20" max="250" value="100"></label>
+    </div>
+    <div class="row">
+      <button data-bar="dropbass" class="primary">💥 DROP BASS RUNG SÀN</button>
+    </div>
+    <p class="hint">1 tym trên Live = 1 lần cụng ly leng keng "1 2 3 DÔ!" + ly bia bọt tung tóe.</p>
   </section>
 
   <!-- Card 7: Tặng Bia & Thăng Cấp Đô Nhậu -->
   <section class="card">
     <h2>Mời Bia & Thăng Hạng Đô Nhậu (Cấp 1 – 10)</h2>
-    <p class="hint">Thử nghiệm lên Bàn VIP: Khi người xem donate bia/quà, họ sẽ được thăng cấp đô nhậu và ngự trên Bàn VIP Lounge.</p>
+    <p class="hint"><b>Bàn nhậu 4-5 người/bàn:</b> Khách vào phòng sẽ tự động ngồi vào các bàn nhậu 4-5 người cùng ly bia đầy ắp. Khi donate, họ sẽ phi thăng lên Bàn VIP Lounge tầng cao ngự lơ lửng.</p>
     <div class="row">
       <button id="btnBarSalvation" class="gold">✨ Mời Bia (+1 Cấp Đô Nhậu)</button>
       <button data-gift="Rượu Champagne" data-dia="300" class="gold">🍾 Rót Champagne (+1 Cấp, +300 bia)</button>
@@ -629,7 +641,7 @@ const $ = id => document.getElementById(id);
 let ws = null;
 const send = (cmd, extra={}) => ws?.readyState===1 && ws.send(JSON.stringify({ t:'ctl', cmd, ...extra }));
 function logLine(s){ const el=$('log'); el.textContent += s + '\n'; el.scrollTop = el.scrollHeight; }
-const SETTING_IDS = ['voice','pitch','rate','music','mo','autoChant','moBpm','chantEveryMin','title','subtitle','seatMode','joinOnEnter'];
+const SETTING_IDS = ['voice','pitch','rate','music','mo','autoChant','moBpm','chantEveryMin','title','subtitle','seatMode','joinOnEnter','barMusic','barVolume','barBass'];
 function fillSettings(s){ for (const k of SETTING_IDS){ const el=$(k); if (!el || s[k]===undefined) continue; if (el.type==='checkbox') el.checked=!!s[k]; else el.value=s[k]; } }
 function readSettings(){ const o={}; for (const k of SETTING_IDS){ const el=$(k); o[k] = el.type==='checkbox' ? el.checked : el.type==='number' ? +el.value : el.value; } return o; }
 const people = new Map();
